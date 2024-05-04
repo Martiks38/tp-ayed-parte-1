@@ -5,7 +5,8 @@
 import random
 import math
 
-from services.log_in import log_in
+from controller.student.student_authenticator import student_authenticator
+from utils.custom_getpass import getpass
 from views.menus.student_main_menu import view_student_main_menu
 from views.menus.student_submenu import view_student_submenus
 from views.student.view_students_profile import view_students_profile
@@ -92,6 +93,31 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# Inicio de sesión de los estudiantes
+# valid_log_in: boolean
+# attempst: int
+# email, password: string
+def log_in():
+    attempts = 0
+    valid_log_in = False
+
+    print("\nBienvenido.")
+
+    while attempts < 3:
+        email = input("Ingresa tu email: ")
+        password = getpass("Ingresa tu contraseña: ")
+
+        if student_authenticator(email, password):
+            valid_log_in = True
+
+        attempts += 1
+        print("\nLos datos ingresados son incorrectos.\n")
+
+    print("Ha intentado demasiadas veces. Intente más tarde.")
+
+    return valid_log_in
 
 
 # Calculadora de valor de
