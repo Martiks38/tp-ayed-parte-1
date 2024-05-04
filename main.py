@@ -4,9 +4,10 @@
 
 import random
 import math
+import msvcrt
+import sys
 
 from controller.student.student_authenticator import student_authenticator
-from utils.custom_getpass import getpass
 from views.menus.student_main_menu import view_student_main_menu
 from views.menus.student_submenu import view_student_submenus
 from views.student.view_students_profile import view_students_profile
@@ -93,6 +94,38 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# Permite visualizar * en la terminal de sistema operativo Windows
+# Para no instalar librerías se buscó una función que haga lo mismo
+# char, prompt, user_input: string
+def getpass(prompt="Password: "):
+    sys.stdout.write(prompt)
+    sys.stdout.flush()
+
+    user_input = ""
+
+    while True:
+        char = msvcrt.getch().decode()
+        if char in ("\r", "\n"):
+            sys.stdout.write("\n")
+            sys.stdout.flush()
+            break
+
+        if char == "\x03":  # Ctrl-C
+            raise KeyboardInterrupt
+
+        if char == "\x08":  # Backspace
+            if len(user_input) > 0:
+                user_input = user_input[:-1]
+                sys.stdout.write("\b \b")
+                sys.stdout.flush()
+        else:
+            user_input += char
+            sys.stdout.write("*")
+            sys.stdout.flush()
+
+    return user_input
 
 
 # Inicio de sesión de los estudiantes
