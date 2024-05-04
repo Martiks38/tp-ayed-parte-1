@@ -2,47 +2,50 @@
     Archivo de inicio
 """
 
+# TODO
+# Terminar validate_date
+
 import math
 import msvcrt
-import sys
 import random
+import calendar
+import sys
 from datetime import datetime
-from views.student.view_update_student_profile import view_update_student_profile
+
+# Campos de propiedades de estudiante
+# BIRTH_DAY, BIOGRAPHY, HOBBIES: string
+BIRTH_DAY = "birth_day"
+BIOGRAPHY = "biography"
+HOBBIES = "hobbies"
 
 
 # Mock de la base de datos de estudiantes
 # STUDENT_1_EMAIL, STUDENT_1_PASSWORD, student_1_birth_day, student_1_name, student_1_biography, student_1_hobbies: string
-STUDENT_1_EMAIL: str = "estudiante1@ayed.com"
-STUDENT_1_PASSWORD: str = "111222"
-student_1_birth_day: str = "2001/10/01"
-student_1_name: str = "Juan Pérez"
-student_1_biography: str = (
-    "Juan Pérez es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
-)
-student_1_hobbies: str = "Lectura - Senderismo - Juegos de mesa"
+STUDENT_1_EMAIL = "estudiante1@ayed.com"
+STUDENT_1_PASSWORD = "111222"
+student_1_birth_day = "2001/10/01"
+student_1_name = "Juan Pérez"
+student_1_biography = "Juan Pérez es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
+student_1_hobbies = "Lectura - Senderismo - Juegos de mesa"
 
 # STUDENT_2_EMAIL, STUDENT_2_PASSWORD, student_2_birth_day, student_2_name, student_2_biography, student_2_hobbies: string
-STUDENT_2_EMAIL: str = "estudiante2@ayed.com"
-STUDENT_2_PASSWORD: str = "333444"
-student_2_birth_day: str = "1998/04/11"
-student_2_name: str = "María García"
-student_2_biography: str = (
-    "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
-)
-student_2_hobbies: str = (
+STUDENT_2_EMAIL = "estudiante2@ayed.com"
+STUDENT_2_PASSWORD = "333444"
+student_2_birth_day = "1998/04/11"
+student_2_name = "María García"
+student_2_biography = "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
+student_2_hobbies = (
     "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas"
 )
 
 
 # STUDENT_3_EMAIL, STUDENT_3_PASSWORD, student_3_birth_day, student_3_name, student_3_biography, student_3_hobbies: string
-STUDENT_3_EMAIL: str = "estudiante3@ayed.com"
-STUDENT_3_PASSWORD: str = "555666"
-student_3_birth_day: str = "2000/06/30"
-student_3_name: str = "Carlos Martínez"
-student_3_biography: str = (
-    "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
-)
-student_3_hobbies: str = "Correr - Tocar la guitarra - Cocinar platos internacionales"
+STUDENT_3_EMAIL = "estudiante3@ayed.com"
+STUDENT_3_PASSWORD = "555666"
+student_3_birth_day = "2000/06/30"
+student_3_name = "Carlos Martínez"
+student_3_biography = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
+student_3_hobbies = "Correr - Tocar la guitarra - Cocinar platos internacionales"
 
 
 # Función de inicio de la aplicación
@@ -250,6 +253,126 @@ def view_student_submenus(menu_option):
         )
 
     return submenu_option
+
+
+# Modificación de los datos del estudiante.
+# feature, student_id, value: string
+def update_student(student_id, feature, value):
+    global student_1_birth_day, student_1_biography, student_1_hobbies  # pylint: disable= W0603
+    global student_2_birth_day, student_2_biography, student_2_hobbies  # pylint: disable= W0603
+    global student_3_birth_day, student_3_biography, student_3_hobbies  # pylint: disable= W0603
+
+    if student_id == STUDENT_1_EMAIL:
+        if feature == BIRTH_DAY:
+            student_1_birth_day = value
+        elif feature == BIOGRAPHY:
+            student_1_biography = value
+        elif feature == HOBBIES:
+            student_1_hobbies = value
+
+    if student_id == STUDENT_2_EMAIL:
+        if feature == BIRTH_DAY:
+            student_2_birth_day = value
+        elif feature == BIOGRAPHY:
+            student_2_biography = value
+        elif feature == HOBBIES:
+            student_2_hobbies = value
+
+    if student_id == STUDENT_3_EMAIL:
+        if feature == BIRTH_DAY:
+            student_3_birth_day = value
+        elif feature == BIOGRAPHY:
+            student_3_biography = value
+        elif feature == HOBBIES:
+            student_3_hobbies = value
+
+
+# Valida que la fecha esté en formato estándar segun ISO 86011
+# date, patron: string
+def validate_date(date):
+    is_valid_date = False
+    year, month, day = date.split("-")
+
+    are_digit = year.isdigit() and month.isdigit() and day.isdigit()
+
+    if are_digit:
+        year = int(year)
+        month = int(month)
+        day = int(day)
+        is_valid_date = day <= calendar.monthrange(year, month)[1]
+
+    return is_valid_date
+
+
+# Vista del menú de actualización del perfil de un estudiante
+# new_birth_date, option, student_id: string
+# invalid_option: boolean
+def view_update_student_profile(student_id):
+
+    if student_id == STUDENT_1_EMAIL:
+        view_student_profile(
+            student_1_name,
+            student_1_birth_day,
+            student_1_biography,
+            student_1_hobbies,
+        )
+    elif student_id == STUDENT_2_EMAIL:
+        view_student_profile(
+            student_2_name,
+            student_2_birth_day,
+            student_2_biography,
+            student_2_hobbies,
+        )
+    elif student_id == STUDENT_3_EMAIL:
+        view_student_profile(
+            student_3_name,
+            student_3_birth_day,
+            student_3_biography,
+            student_3_hobbies,
+        )
+
+    while True:
+        print("1. Modificar fecha de nacimiento")
+        print("2. Modificar biografía")
+        print("3. Modificar hobbies")
+        print("0. Salir")
+
+        option = input("¿Qué deseas hacer? ")
+        invalid_option = (
+            option != "0" and option != "1" and option != "2" and option != "3"
+        )
+
+        while invalid_option:
+            print("La opción introducida no es válida.")
+            option = input("Por favor, introduzca una opción válida: ")
+
+            invalid_option = (
+                option != "0" and option != "1" and option != "2" and option != "3"
+            )
+
+        if option == "0":
+            break
+
+        if option == "1":
+            new_birth_date = input(
+                "Introduce tu fecha de nacimiento con el formato YYYY-MM-DD:\n"
+            )
+
+            while not validate_date(new_birth_date):
+                print("La fecha introducida no es válida.")
+                new_birth_date = input(
+                    "Introduce tu fecha de nacimiento con el formato YYYY-MM-DD:\n"
+                )
+
+            update_student(student_id, BIRTH_DAY, new_birth_date)
+
+        elif option == "2":
+            new_biography = input("Introduce tu biografía:\n")
+            update_student(student_id, BIOGRAPHY, new_biography)
+
+        elif option == "3":
+            new_hobbies = input("Introduce tus hobbies, separados por espacios:\n")
+            update_student(student_id, HOBBIES, new_hobbies)
 
 
 # Detalla los datos de un estudiante
