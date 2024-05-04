@@ -7,7 +7,6 @@ import math
 import msvcrt
 import sys
 
-from controller.student.student_authenticator import student_authenticator
 from views.menus.student_main_menu import view_student_main_menu
 from views.menus.student_submenu import view_student_submenus
 from views.student.view_students_profile import view_students_profile
@@ -15,6 +14,7 @@ from views.student.view_update_student_profile import view_update_student_profil
 
 
 # Mock de la base de datos de estudiantes
+# STUDENT_1_EMAIL, STUDENT_1_PASSWORD, student_1_birth_day, student_1_name, student_1_biography, student_1_hobbies: string
 STUDENT_1_EMAIL: str = "estudiante1@ayed.com"
 STUDENT_1_PASSWORD: str = "111222"
 student_1_birth_day: str = "2001/10/01"
@@ -24,6 +24,7 @@ student_1_biography: str = (
 )
 student_1_hobbies: str = "Lectura - Senderismo - Juegos de mesa"
 
+# STUDENT_2_EMAIL, STUDENT_2_PASSWORD, student_2_birth_day, student_2_name, student_2_biography, student_2_hobbies: string
 STUDENT_2_EMAIL: str = "estudiante2@ayed.com"
 STUDENT_2_PASSWORD: str = "333444"
 student_2_birth_day: str = "1998/04/11"
@@ -36,6 +37,7 @@ student_2_hobbies: str = (
 )
 
 
+# STUDENT_3_EMAIL, STUDENT_3_PASSWORD, student_3_birth_day, student_3_name, student_3_biography, student_3_hobbies: string
 STUDENT_3_EMAIL: str = "estudiante3@ayed.com"
 STUDENT_3_PASSWORD: str = "555666"
 student_3_birth_day: str = "2000/06/30"
@@ -46,50 +48,52 @@ student_3_biography: str = (
 student_3_hobbies: str = "Correr - Tocar la guitarra - Cocinar platos internacionales"
 
 
+# Función de inicio de la aplicación
+# is_log_in, main_menu_option, me_gusta, submenu_opcion: string
+
+
 def main():
-    me_gusta: str = ""
+    me_gusta = ""
 
     # Login
-    is_log_in: str | bool = log_in()
+    is_log_in = log_in()
 
-    if is_log_in is False:
-        return
+    if is_log_in != "":
+        main_menu_option = ""
+        submenu_opcion = ""
 
-    main_menu_option: str | None = None
-    submenu_opcion: str | None = None
-
-    # Permite al usuario realizar más de una acción
-    # en la misma ejecución
-    while True:
+        # Permite al usuario realizar más de una acción
+        # en la misma ejecución
         while True:
-            main_menu_option = view_student_main_menu()
+            while True:
+                main_menu_option = view_student_main_menu()
 
-            if main_menu_option == "0" or main_menu_option == "4":
+                if main_menu_option == "0" or main_menu_option == "4":
+                    break
+
+                submenu_opcion = view_student_submenus(main_menu_option)
+
+                if submenu_opcion != "c":
+                    break
+
+            if main_menu_option == "0":
                 break
 
-            submenu_opcion = view_student_submenus(main_menu_option)
+            if (
+                main_menu_option != "1"
+                and main_menu_option != "2"
+                and main_menu_option != "5"
+            ) or submenu_opcion != "a":
+                print("\nEn construcción")
 
-            if submenu_opcion != "c":
-                break
+            if main_menu_option == "1" and submenu_opcion == "a":
+                view_update_student_profile(is_log_in)
 
-        if main_menu_option == "0":
-            break
+            if main_menu_option == "2" and submenu_opcion == "a":
+                me_gusta = view_students_profile()
 
-        if (
-            main_menu_option != "1"
-            and main_menu_option != "2"
-            and main_menu_option != "5"
-        ) or submenu_opcion != "a":
-            print("\nEn construcción")
-
-        if main_menu_option == "1" and submenu_opcion == "a":
-            view_update_student_profile(is_log_in)
-
-        if main_menu_option == "2" and submenu_opcion == "a":
-            me_gusta = view_students_profile()
-
-        if main_menu_option == "5":
-            match_roulette()
+            if main_menu_option == "5":
+                match_roulette()
 
 
 if __name__ == "__main__":
@@ -131,10 +135,10 @@ def getpass(prompt="Password: "):
 # Inicio de sesión de los estudiantes
 # valid_log_in: boolean
 # attempst: int
-# email, password: string
+# email, password, valid_log_in: string
 def log_in():
     attempts = 0
-    valid_log_in = False
+    valid_log_in = ""
 
     print("\nBienvenido.")
 
@@ -143,7 +147,7 @@ def log_in():
         password = getpass("Ingresa tu contraseña: ")
 
         if student_authenticator(email, password):
-            valid_log_in = True
+            valid_log_in = email
 
         attempts += 1
         print("\nLos datos ingresados son incorrectos.\n")
