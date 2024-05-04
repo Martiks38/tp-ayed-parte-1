@@ -13,23 +13,14 @@ def student_authenticator(student_id, student_password):
         and student_password == db.students.STUDENT_1_PASSWORD
     )
 
-    if is_student_1:
-        return True
-
     is_student_2 = (
         student_id == db.students.STUDENT_2_EMAIL
         and student_password == db.students.STUDENT_2_PASSWORD
     )
-
-    if is_student_2:
-        return True
 
     is_student_3 = (
         student_id == db.students.STUDENT_3_EMAIL
         and student_password == db.students.STUDENT_3_PASSWORD
     )
 
-    if is_student_3:
-        return True
-
-    return False
+    return is_student_1 or is_student_2 or is_student_3
