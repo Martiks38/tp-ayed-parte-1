@@ -132,6 +132,27 @@ def getpass(prompt="Password: "):
     return user_input
 
 
+# Verifica que el id y la constraseña del estudiante sean válidos
+# Para esta 1° parte del id se tomará el email.
+# student_id, student_password: string
+# is_student_1, is_student_2, is_student_3: boolean
+def student_authenticator(student_id, student_password):
+
+    is_student_1 = (
+        student_id == STUDENT_1_EMAIL and student_password == STUDENT_1_PASSWORD
+    )
+
+    is_student_2 = (
+        student_id == STUDENT_2_EMAIL and student_password == STUDENT_2_PASSWORD
+    )
+
+    is_student_3 = (
+        student_id == STUDENT_3_EMAIL and student_password == STUDENT_3_PASSWORD
+    )
+
+    return is_student_1 or is_student_2 or is_student_3
+
+
 # Inicio de sesión de los estudiantes
 # valid_log_in: boolean
 # attempst: int
