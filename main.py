@@ -2,12 +2,11 @@
     Archivo de inicio
 """
 
-import random
 import math
 import msvcrt
 import sys
-
-from views.student.view_students_profile import view_students_profile
+import random
+from datetime import datetime
 from views.student.view_update_student_profile import view_update_student_profile
 
 
@@ -251,6 +250,90 @@ def view_student_submenus(menu_option):
         )
 
     return submenu_option
+
+
+# Detalla los datos de un estudiante
+# birth_day, biography, format_birth_day, hobbies, name: string
+# current_date: datetime
+# age, day, month, year: int
+def view_student_profile(name, birth_day, biography, hobbies):
+    current_date = datetime.now()
+
+    year = int(birth_day[:4])
+    month = int(birth_day[5:7])
+    day = int(birth_day[-2:])
+    format_birth_day = f"{day}/{month}/{year}"
+
+    age = (
+        current_date.year
+        - year
+        - (current_date.month < month and current_date.day < day)
+    )
+
+    print(f"Nombre: {name}")
+    print(f"Fecha de nacimiento: {format_birth_day}")
+    print(f"Edad: {age}")
+    print(f"Biografía:\n\t{biography}")
+    print("Hobbies:")
+    print(f"\t{hobbies}")
+
+
+# Detalla los datos de los estudiantes
+# me_gusta, student_name, to_match: string
+def view_students_profile():
+    me_gusta: str = ""
+
+    view_student_profile(
+        student_1_name,
+        student_1_birth_day,
+        student_1_biography,
+        student_1_hobbies,
+    )
+    print("\n")
+
+    view_student_profile(
+        student_2_name,
+        student_2_birth_day,
+        student_2_biography,
+        student_2_hobbies,
+    )
+
+    print("\n")
+
+    view_student_profile(
+        student_3_name,
+        student_3_birth_day,
+        student_3_biography,
+        student_3_hobbies,
+    )
+
+    print("\n")
+
+    to_match = input(
+        "¿Quieres hacer match en algún futuro con algún estudiante? (S/N) "
+    )
+
+    while to_match != "S" and to_match != "N":
+        to_match = input("\nSi desea hacer match con algún estudiante ingrese S/N ")
+
+    if to_match == "S":
+        student_name = input("Ingrese el nombre del estudiante: ")
+        invalid_name = (
+            student_name != student_1_name
+            and student_name != student_2_name
+            and student_name != student_3_name
+        )
+
+        while invalid_name:
+            print(f"El nombre {student_name} no existe.")
+            student_name = input("Reingrese el nombre del estudiante: ")
+            invalid_name = (
+                student_name != student_1_name
+                and student_name != student_2_name
+                and student_name != student_3_name
+            )
+
+    return me_gusta
 
 
 # Calculadora de valor de
