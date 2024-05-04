@@ -7,7 +7,6 @@ import math
 import msvcrt
 import sys
 
-from views.menus.student_main_menu import view_student_main_menu
 from views.menus.student_submenu import view_student_submenus
 from views.student.view_students_profile import view_students_profile
 from views.student.view_update_student_profile import view_update_student_profile
@@ -176,6 +175,44 @@ def log_in():
     print("Ha intentado demasiadas veces. Intente más tarde.")
 
     return valid_log_in
+
+
+# Vista principal de los estudiantes
+# option: string
+# invalid_option: boolean
+def view_student_main_menu():
+    print("\n")
+
+    print("Home")
+    print("1. Gestionar mi perfil")
+    print("2. Gestionar candidatos")
+    print("3. Matcheos")
+    print("4. Reportes estadísticos")
+    print("0. Salir")
+
+    option = input("\n¿Qué deseas hacer? ")
+
+    invalid_option = (
+        option != "1"
+        and option != "2"
+        and option != "3"
+        and option != "4"
+        and option != "0"
+    )
+
+    while invalid_option:
+        print("La opción introducida no es válida.")
+        option = input("Por favor, introduzca una opción válida: ")
+
+        invalid_option = (
+            option != "1"
+            and option != "2"
+            and option != "3"
+            and option != "4"
+            and option != "0"
+        )
+
+    return option
 
 
 # Calculadora de valor de
