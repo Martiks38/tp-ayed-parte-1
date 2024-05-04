@@ -2,12 +2,14 @@
     Archivo de inicio
 """
 
+import random
+import math
+
 from services.log_in import log_in
 from views.menus.student_main_menu import view_student_main_menu
 from views.menus.student_submenu import view_student_submenus
 from views.student.view_students_profile import view_students_profile
 from views.student.view_update_student_profile import view_update_student_profile
-import bonus_track.ruleta_match
 
 
 def main():
@@ -40,7 +42,9 @@ def main():
             break
 
         if (
-            main_menu_option != "1" and main_menu_option != "2"
+            main_menu_option != "1"
+            and main_menu_option != "2"
+            and main_menu_option != "5"
         ) or submenu_opcion != "a":
             print("\nEn construcción")
 
@@ -50,7 +54,74 @@ def main():
         if main_menu_option == "2" and submenu_opcion == "a":
             me_gusta = view_students_profile()
 
+        if main_menu_option == "5":
+            match_roulette()
+
 
 if __name__ == "__main__":
     main()
-    bonus_track.ruleta_match.match_roulette()
+
+
+# Calculadora de valor de
+# probability: int
+# rand: float
+def calculate_person_value(probability):
+    rand = random.random()
+    return math.floor(rand * probability * 100)
+
+
+# Ruleta de match de estudiantes
+def match_roulette():
+    person_name = ""
+    person_match_probability_1 = 0
+    person_match_probability_2 = 0
+    person_match_probability_3 = 0
+
+    total_probability = (
+        person_match_probability_1
+        + person_match_probability_2
+        + person_match_probability_3
+    )
+
+    print(
+        "A continuación, se le pedirá ingresar la probabilidad de matcheo con tres persona."
+    )
+    print("Los valores ingresados deben ser enteros y su suma igual a 100.\n")
+
+    while total_probability != 100:
+        person_match_probability_1 = int(
+            input("Introduzca la afinidad con la persona A: ")
+        )
+
+        person_match_probability_2 = int(
+            input("Introduzca la afinidad con la persona B: ")
+        )
+        person_match_probability_3 = int(
+            input("Introduzca la afinidad con la persona C: ")
+        )
+
+        total_probability = (
+            person_match_probability_1
+            + person_match_probability_2
+            + person_match_probability_3
+        )
+
+        if total_probability != 100:
+            print(
+                f"La probabilidad total debe ser igual a 100 y el introducido es {total_probability}."
+            )
+            print("Vuelva a introducir los valores.\n")
+
+    person_value_1 = calculate_person_value(person_match_probability_1)
+    person_value_2 = calculate_person_value(person_match_probability_2)
+    person_value_3 = calculate_person_value(person_match_probability_3)
+
+    # Existe un pequeña probabilidad de que den iguales
+    if person_value_2 <= person_value_1 >= person_value_3:
+        person_name = "A"
+    elif person_value_2 >= person_value_3:
+        person_name = "B"
+    else:
+        person_name = "C"
+
+    print(f"Tu match es la Persona {person_name}")
