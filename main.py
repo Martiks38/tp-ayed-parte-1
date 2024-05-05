@@ -4,11 +4,13 @@
 
 # TODO
 # Terminar validate_date
+# early return y break
 
+import calendar
 import math
 import msvcrt
+import os
 import random
-import calendar
 import sys
 from datetime import datetime
 
@@ -50,34 +52,36 @@ student_3_hobbies = "Correr - Tocar la guitarra - Cocinar platos internacionales
 
 # Función de inicio de la aplicación
 # is_log_in, main_menu_option, me_gusta, submenu_opcion: string
-
-
+# must_exit: boolean
 def main():
     me_gusta = ""
+    must_exit = False
 
-    # Login
     is_log_in = log_in()
 
     if is_log_in != "":
         main_menu_option = ""
         submenu_opcion = ""
 
-        # Permite al usuario realizar más de una acción
-        # en la misma ejecución
-        while True:
-            while True:
+        while must_exit:
+            while (
+                main_menu_option != "0"
+                and main_menu_option != "4"
+                and main_menu_option != "5"
+            ) or submenu_opcion != "c":
                 main_menu_option = view_student_main_menu()
 
-                if main_menu_option == "0" or main_menu_option == "4":
-                    break
+                show_submenu = (
+                    main_menu_option != "0"
+                    and main_menu_option != "4"
+                    and main_menu_option != "5"
+                )
 
-                submenu_opcion = view_student_submenus(main_menu_option)
-
-                if submenu_opcion != "c":
-                    break
+                if show_submenu:
+                    submenu_opcion = view_student_submenus(main_menu_option)
 
             if main_menu_option == "0":
-                break
+                must_exit = True
 
             if (
                 main_menu_option != "1"
@@ -94,6 +98,9 @@ def main():
 
             if main_menu_option == "5":
                 match_roulette()
+
+            main_menu_option = ""
+            submenu_opcion = ""
 
 
 if __name__ == "__main__":
@@ -182,13 +189,14 @@ def log_in():
 # option: string
 # invalid_option: boolean
 def view_student_main_menu():
-    print("\n")
+    os.system("cls")
 
     print("Home")
     print("1. Gestionar mi perfil")
     print("2. Gestionar candidatos")
     print("3. Matcheos")
     print("4. Reportes estadísticos")
+    print("5. Ruleta match")
     print("0. Salir")
 
     option = input("\n¿Qué deseas hacer? ")
@@ -198,6 +206,7 @@ def view_student_main_menu():
         and option != "2"
         and option != "3"
         and option != "4"
+        and option != "5"
         and option != "0"
     )
 
@@ -210,6 +219,7 @@ def view_student_main_menu():
             and option != "2"
             and option != "3"
             and option != "4"
+            and option != "5"
             and option != "0"
         )
 
@@ -220,8 +230,8 @@ def view_student_main_menu():
 # menu_option, submenu_option: string
 # invalid_submenu_option: boolean
 def view_student_submenus(menu_option):
+    os.system("cls")
 
-    print("\n")
     match menu_option:
         case "1":
             print("a. Editar mis datos personales")
@@ -238,7 +248,7 @@ def view_student_submenus(menu_option):
             print("b. Eliminar un matcheo")
             print("c. Volver")
 
-    submenu_option = input("\n¿Qué desea hacer? ")
+    submenu_option = input("\n¿Qué desea hacer? ").lower()
 
     invalid_submenu_option = (
         submenu_option != "a" and submenu_option != "b" and submenu_option != "c"
