@@ -4,12 +4,12 @@
 
 # TODO
 # Terminar validate_date
-# early return y break
 
 import calendar
 import math
 import msvcrt
 import os
+import platform
 import random
 import sys
 from datetime import datetime
@@ -50,61 +50,18 @@ student_3_biography = "Carlos Martínez es un estudiante de medicina enfocado en
 student_3_hobbies = "Correr - Tocar la guitarra - Cocinar platos internacionales"
 
 
-# Función de inicio de la aplicación
-# is_log_in, main_menu_option, me_gusta, submenu_opcion: string
-# must_exit: boolean
-def main():
-    me_gusta = ""
-    must_exit = False
+# command, so: string
+def clear_console():
+    # Detectar sistema operativo para el comando de limpieza de terminal.
+    # Retorna 'Linux', 'Darwin', 'Java', 'Windows'
+    so = platform.system()
 
-    is_log_in = log_in()
+    if so == "Windows":
+        command = "cls"
+    else:
+        command = "clear"
 
-    if is_log_in != "":
-        main_menu_option = ""
-        submenu_opcion = ""
-
-        while must_exit:
-            while (
-                main_menu_option != "0"
-                and main_menu_option != "4"
-                and main_menu_option != "5"
-            ) or submenu_opcion != "c":
-                main_menu_option = view_student_main_menu()
-
-                show_submenu = (
-                    main_menu_option != "0"
-                    and main_menu_option != "4"
-                    and main_menu_option != "5"
-                )
-
-                if show_submenu:
-                    submenu_opcion = view_student_submenus(main_menu_option)
-
-            if main_menu_option == "0":
-                must_exit = True
-
-            if (
-                main_menu_option != "1"
-                and main_menu_option != "2"
-                and main_menu_option != "5"
-            ) or submenu_opcion != "a":
-                print("\nEn construcción")
-
-            if main_menu_option == "1" and submenu_opcion == "a":
-                view_update_student_profile(is_log_in)
-
-            if main_menu_option == "2" and submenu_opcion == "a":
-                me_gusta = view_students_profile()
-
-            if main_menu_option == "5":
-                match_roulette()
-
-            main_menu_option = ""
-            submenu_opcion = ""
-
-
-if __name__ == "__main__":
-    main()
+    os.system(command)
 
 
 # Permite visualizar * en la terminal de sistema operativo Windows
@@ -170,15 +127,15 @@ def log_in():
 
     print("\nBienvenido.")
 
-    while attempts < 3:
+    while attempts < 3 and valid_log_in == "" or attempts >= 3 and valid_log_in != "":
         email = input("Ingresa tu email: ")
         password = getpass("Ingresa tu contraseña: ")
 
         if student_authenticator(email, password):
             valid_log_in = email
-
-        attempts += 1
-        print("\nLos datos ingresados son incorrectos.\n")
+        else:
+            attempts += 1
+            print("\nLos datos ingresados son incorrectos.\n")
 
     print("Ha intentado demasiadas veces. Intente más tarde.")
 
@@ -189,7 +146,7 @@ def log_in():
 # option: string
 # invalid_option: boolean
 def view_student_main_menu():
-    os.system("cls")
+    clear_console()
 
     print("Home")
     print("1. Gestionar mi perfil")
@@ -230,7 +187,7 @@ def view_student_main_menu():
 # menu_option, submenu_option: string
 # invalid_submenu_option: boolean
 def view_student_submenus(menu_option):
-    os.system("cls")
+    clear_console()
 
     match menu_option:
         case "1":
@@ -299,6 +256,7 @@ def update_student(student_id, feature, value):
 
 # Valida que la fecha esté en formato estándar segun ISO 86011
 # date, patron: string
+# is_valid_date: boolean
 def validate_date(date):
     is_valid_date = False
     year, month, day = date.split("-")
@@ -316,8 +274,9 @@ def validate_date(date):
 
 # Vista del menú de actualización del perfil de un estudiante
 # new_birth_date, option, student_id: string
-# invalid_option: boolean
+# continue_update, invalid_option: boolean
 def view_update_student_profile(student_id):
+    continue_update = True
 
     if student_id == STUDENT_1_EMAIL:
         view_student_profile(
@@ -341,7 +300,7 @@ def view_update_student_profile(student_id):
             student_3_hobbies,
         )
 
-    while True:
+    while continue_update:
         print("1. Modificar fecha de nacimiento")
         print("2. Modificar biografía")
         print("3. Modificar hobbies")
@@ -361,7 +320,7 @@ def view_update_student_profile(student_id):
             )
 
         if option == "0":
-            break
+            continue_update = False
 
         if option == "1":
             new_birth_date = input(
@@ -479,6 +438,7 @@ def calculate_person_value(probability):
 
 # Ruleta de match de estudiantes
 def match_roulette():
+    clear_console()
     person_name = ""
     person_match_probability_1 = 0
     person_match_probability_2 = 0
@@ -532,3 +492,65 @@ def match_roulette():
         person_name = "C"
 
     print(f"Tu match es la Persona {person_name}")
+
+
+# Función de inicio de la aplicación
+# is_log_in, main_menu_option, me_gusta, submenu_opcion: string
+# must_continue: boolean
+def main():
+    me_gusta = ""
+    must_continue = True
+
+    is_log_in = log_in()
+
+    if is_log_in != "":
+        while must_continue:
+            main_menu_option = ""
+            submenu_opcion = ""
+
+            while (
+                main_menu_option != "0"
+                and main_menu_option != "4"
+                and main_menu_option != "5"
+            ) or submenu_opcion == "c":
+                submenu_opcion = ""
+                main_menu_option = view_student_main_menu()
+
+                show_submenu = (
+                    main_menu_option != "0"
+                    and main_menu_option != "4"
+                    and main_menu_option != "5"
+                )
+
+                if show_submenu:
+                    submenu_opcion = view_student_submenus(main_menu_option)
+
+            if (
+                (
+                    main_menu_option != "0"
+                    and main_menu_option != "1"
+                    and main_menu_option != "2"
+                    and main_menu_option != "5"
+                )
+                or submenu_opcion != "a"
+                and submenu_opcion != ""
+            ):
+                clear_console()
+                print("En construcción.")
+                input("Presiona cualquier tecla para continuar...")
+
+            if main_menu_option == "1" and submenu_opcion == "a":
+                view_update_student_profile(is_log_in)
+
+            if main_menu_option == "2" and submenu_opcion == "a":
+                me_gusta = view_students_profile()
+
+            if main_menu_option == "5":
+                match_roulette()
+
+            if main_menu_option == "0":
+                must_continue = False
+
+
+if __name__ == "__main__":
+    main()
