@@ -52,7 +52,8 @@ student_3_hobbies = "Correr - Tocar la guitarra - Cocinar platos internacionales
 
 # command, so: string
 def clear_console():
-    # Detectar sistema operativo para el comando de limpieza de terminal.
+    # Detecta el sistema operativo.
+    # No se consideró el uso de implementación en un entorno de Java.
     # Retorna 'Linux', 'Darwin', 'Java', 'Windows'
     so = platform.system()
 
