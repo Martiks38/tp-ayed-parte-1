@@ -15,14 +15,18 @@ import sys
 from datetime import datetime
 
 # Campos de propiedades de estudiante
-# BIRTH_DAY, BIOGRAPHY, HOBBIES: string
+"""
+BIRTH_DAY, BIOGRAPHY, HOBBIES: string
+"""
 BIRTH_DAY = "birth_day"
 BIOGRAPHY = "biography"
 HOBBIES = "hobbies"
 
 
 # Mock de la base de datos de estudiantes
-# STUDENT_1_EMAIL, STUDENT_1_PASSWORD, student_1_birth_day, student_1_name, student_1_biography, student_1_hobbies: string
+"""
+STUDENT_1_EMAIL, STUDENT_1_PASSWORD, student_1_birth_day, student_1_name, student_1_biography, student_1_hobbies: string
+"""
 STUDENT_1_EMAIL = "estudiante1@ayed.com"
 STUDENT_1_PASSWORD = "111222"
 student_1_birth_day = "2001/10/01"
@@ -30,7 +34,9 @@ student_1_name = "Juan Pérez"
 student_1_biography = "Juan Pérez es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
 student_1_hobbies = "Lectura - Senderismo - Juegos de mesa"
 
-# STUDENT_2_EMAIL, STUDENT_2_PASSWORD, student_2_birth_day, student_2_name, student_2_biography, student_2_hobbies: string
+"""
+STUDENT_2_EMAIL, STUDENT_2_PASSWORD, student_2_birth_day, student_2_name, student_2_biography, student_2_hobbies: string
+"""
 STUDENT_2_EMAIL = "estudiante2@ayed.com"
 STUDENT_2_PASSWORD = "333444"
 student_2_birth_day = "1998/04/11"
@@ -40,8 +46,9 @@ student_2_hobbies = (
     "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas"
 )
 
-
-# STUDENT_3_EMAIL, STUDENT_3_PASSWORD, student_3_birth_day, student_3_name, student_3_biography, student_3_hobbies: string
+"""
+STUDENT_3_EMAIL, STUDENT_3_PASSWORD, student_3_birth_day, student_3_name, student_3_biography, student_3_hobbies: string
+"""
 STUDENT_3_EMAIL = "estudiante3@ayed.com"
 STUDENT_3_PASSWORD = "555666"
 student_3_birth_day = "2000/06/30"
@@ -49,8 +56,11 @@ student_3_name = "Carlos Martínez"
 student_3_biography = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
 student_3_hobbies = "Correr - Tocar la guitarra - Cocinar platos internacionales"
 
+"""
+command, so: string
+"""
 
-# command, so: string
+
 def clear_console():
     # Detecta el sistema operativo.
     # No se consideró el uso de implementación en un entorno de Java.
@@ -67,7 +77,11 @@ def clear_console():
 
 # Permite visualizar * en la terminal de sistema operativo Windows
 # Para no instalar librerías se buscó una función que haga lo mismo
-# char, prompt, user_input: string
+"""
+char, prompt, user_input: string
+"""
+
+
 def getpass(prompt="Password: "):
     sys.stdout.write(prompt)
     sys.stdout.flush()
@@ -99,8 +113,12 @@ def getpass(prompt="Password: "):
 
 # Verifica que el id y la constraseña del estudiante sean válidos
 # Para esta 1° parte del id se tomará el email.
-# student_id, student_password: string
-# is_student_1, is_student_2, is_student_3: boolean
+"""
+student_id, student_password: string
+is_student_1, is_student_2, is_student_3: boolean
+"""
+
+
 def student_authenticator(student_id, student_password):
 
     is_student_1 = (
@@ -119,9 +137,13 @@ def student_authenticator(student_id, student_password):
 
 
 # Inicio de sesión de los estudiantes
-# valid_log_in: boolean
-# attempst: int
-# email, password, valid_log_in: string
+"""
+valid_log_in: boolean
+attempst: int
+email, password, valid_log_in: string
+"""
+
+
 def log_in():
     attempts = 0
     valid_log_in = ""
@@ -144,8 +166,12 @@ def log_in():
 
 
 # Vista principal de los estudiantes
-# option: string
-# invalid_option: boolean
+"""
+option: string
+invalid_option: boolean
+"""
+
+
 def view_student_main_menu():
     clear_console()
 
@@ -185,8 +211,12 @@ def view_student_main_menu():
 
 
 # Opciones de las secciones del menú principal de estudiantes
-# menu_option, submenu_option: string
-# invalid_submenu_option: boolean
+"""
+menu_option, submenu_option: string
+invalid_submenu_option: boolean
+"""
+
+
 def view_student_submenus(menu_option):
     clear_console()
 
@@ -224,7 +254,11 @@ def view_student_submenus(menu_option):
 
 
 # Modificación de los datos del estudiante.
-# feature, student_id, value: string
+"""
+feature, student_id, value: string
+"""
+
+
 def update_student(student_id, feature, value):
     global student_1_birth_day, student_1_biography, student_1_hobbies  # pylint: disable= W0603
     global student_2_birth_day, student_2_biography, student_2_hobbies  # pylint: disable= W0603
@@ -256,10 +290,16 @@ def update_student(student_id, feature, value):
 
 
 # Valida que la fecha esté en formato estándar segun ISO 86011
-# date, patron: string
-# is_valid_date: boolean
+"""
+    date: string
+    is_valid_date: boolean
+    year, month, day: string | int
+"""
+
+
 def validate_date(date):
     is_valid_date = False
+    # TODO cambiar
     year, month, day = date.split("-")
 
     are_digit = year.isdigit() and month.isdigit() and day.isdigit()
@@ -274,8 +314,12 @@ def validate_date(date):
 
 
 # Vista del menú de actualización del perfil de un estudiante
-# new_birth_date, option, student_id: string
-# continue_update, invalid_option: boolean
+"""
+new_birth_date, option, student_id: string
+continue_update, invalid_option: boolean
+"""
+
+
 def view_update_student_profile(student_id):
     continue_update = True
 
@@ -346,9 +390,13 @@ def view_update_student_profile(student_id):
 
 
 # Detalla los datos de un estudiante
-# birth_day, biography, format_birth_day, hobbies, name: string
-# current_date: datetime
-# age, day, month, year: int
+"""
+birth_day, biography, format_birth_day, hobbies, name: string
+current_date: datetime
+age, day, month, year: int
+"""
+
+
 def view_student_profile(name, birth_day, biography, hobbies):
     current_date = datetime.now()
 
@@ -372,7 +420,11 @@ def view_student_profile(name, birth_day, biography, hobbies):
 
 
 # Detalla los datos de los estudiantes
-# me_gusta, student_name, to_match: string
+"""
+me_gusta, student_name, to_match: string
+"""
+
+
 def view_students_profile():
     me_gusta: str = ""
 
@@ -429,15 +481,25 @@ def view_students_profile():
     return me_gusta
 
 
-# Calculadora de valor de
-# probability: int
-# rand: float
+# Calculadora de resultado de probabilidad
+"""
+probability: int
+rand: float
+"""
+
+
 def calculate_person_value(probability):
     rand = random.random()
     return math.floor(rand * probability * 100)
 
 
 # Ruleta de match de estudiantes
+"""
+person_name: string
+person_match_probability_1, person_match_probability_2, person_match_probability_3, total_probability, person_value_1, person_value_2, person_value_3: int
+"""
+
+
 def match_roulette():
     clear_console()
     person_name = ""
@@ -496,8 +558,12 @@ def match_roulette():
 
 
 # Función de inicio de la aplicación
-# is_log_in, main_menu_option, me_gusta, submenu_opcion: string
-# must_continue: boolean
+"""
+is_log_in, main_menu_option, me_gusta, submenu_opcion: string
+must_continue: boolean
+"""
+
+
 def main():
     me_gusta = ""
     must_continue = True
@@ -517,6 +583,7 @@ def main():
                 submenu_opcion = ""
                 main_menu_option = view_student_main_menu()
 
+                # TODO modificar submenu para manejar esta comprobación
                 show_submenu = (
                     main_menu_option != "0"
                     and main_menu_option != "4"
