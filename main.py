@@ -48,9 +48,8 @@ def cargar_moderador(mod):
 
     while(cant_inicializados <= 4 and continuar):
         mod[cant_inicializados][0] = cant_inicializados
-
         mod[cant_inicializados][1] = input("Ingrese el email: ")
-        mod[cant_inicializados][2] = input("Ingrese la contraseña: ")
+        mod[cant_inicializados][2] = getpass("Ingrese la contraseña: ")
 
         cant_inicializados = cant_inicializados + 1
 
@@ -96,10 +95,10 @@ def cargar_estudiantes(est):
     cant_estudiantes = 0
     continuar = True
 
+    print("A continuación ingrese los datos iniciales de los estudiantes.\n\n")
+
     while cant_estudiantes < 4 or (continuar and cant_estudiantes <= 7):
         est[cant_estudiantes][0] = str(cant_estudiantes)
-
-        print("A continuación ingrese los datos iniciales de los estudiantes.\n\n")
 
         for prop in range(1, 7):
             match prop:
@@ -107,7 +106,7 @@ def cargar_estudiantes(est):
                     est[cant_estudiantes][prop] = input("Ingrese el email: ")
                     limpiar_consola()
                 case 2:
-                    est[cant_estudiantes][prop] = input("Ingrese la contraseña: ")
+                    est[cant_estudiantes][prop] = getpass("Ingrese la contraseña: ")
                     limpiar_consola()
                 case 3:
                     est[cant_estudiantes][prop] = input("Ingrese la fecha de nacimiento: ")
@@ -292,22 +291,24 @@ def log_in():
         email = input("Ingrese su email: ")
         password = getpass("Ingrese su contraseña: ")
 
-        # valid_email = (
-        #     email == ESTUDIANTE_1_EMAIL
-        #     or email == ESTUDIANTE_2_EMAIL
-        #     or email == ESTUDIANTE_3_EMAIL
-        # )
-        # valid_password = (
-        #     password == ESTUDIANTE_1_PASSWORD
-        #     or password == ESTUDIANTE_2_PASSWORD
-        #     or password == ESTUDIANTE_3_PASSWORD
-        # )
+        login_valido = False
 
-        # if valid_email and valid_password:
-        #     acceso_valido = email
-        # else:
-        #     intentos = intentos - 1
-        #     print("Datos incorrectos. Intentos restantes:", intentos, "\n")
+        for ind in range(0, 8):
+            if not login_valido:
+                login_valido = estudiantes[ind][1] == email and estudiantes[ind][2] == password
+                acceso_valido = str(ind)
+
+        if not login_valido:
+            for ind in range(0, 4):
+                if not login_valido:
+                    login_valido = moderadores[ind][1] == email and moderadores[ind][2] == password
+                    acceso_valido = str(ind)
+
+        if login_valido:
+            acceso_valido = email
+        else:
+            intentos = intentos - 1
+            print("Datos incorrectos. Intentos restantes:", intentos, "\n")
 
     if intentos == 0:
         print("Ha superado el número máximo de intentos. El programa se cerrará.")
@@ -683,9 +684,9 @@ def main():
     inicializar_estudiantes_mock(estudiantes)
     inicializar_moderadores_mock(moderadores)
 
-    accedio = log_in()  # Si está logeado devuelve el email de estudiante
+    usuario_id = log_in()
 
-    if accedio != "":
+    if usuario_id != "":
         opcion_menu_principal = "1"
 
         while opcion_menu_principal != "0":
@@ -693,10 +694,10 @@ def main():
 
             match opcion_menu_principal:
                 case "1":
-                    submenu_gestionar_perfil(accedio)
+                    submenu_gestionar_perfil(usuario_id)
 
                 case "2":
-                    submenu_gestionar_candidatos(accedio)
+                    submenu_gestionar_candidatos(usuario_id)
 
                 case "3":
                     submenu_matcheos()
@@ -705,7 +706,7 @@ def main():
                     en_construccion()
 
                 case "5":
-                    ruleta(accedio)
+                    ruleta(usuario_id)
 
                 case "0":
                     limpiar_consola()
