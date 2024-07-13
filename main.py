@@ -490,8 +490,7 @@ def validar_fecha(dia, mes, anio):
 
     if mes < 1 or mes > 12:
         es_valido = False
-
-    if (
+    elif (
         mes == 1
         or mes == 3
         or mes == 5
@@ -507,16 +506,15 @@ def validar_fecha(dia, mes, anio):
         max_dia_febrero = 28
 
         if (
-            (anio / 4).is_interger()
-            and not (anio / 100).is_integer()
-            or (anio / 400).is_integer()
+            anio% 4 == 0
+            and anio % 100 != 0
+            or anio%400 == 0
         ):
             max_dia_febrero = max_dia_febrero + 1
 
         if dia < 1 or dia > max_dia_febrero:
             es_valido = False
-
-    if anio > 2006 or anio < 1959:
+    elif anio > 2006 or anio < 1959:
         es_valido = False
 
     return es_valido
