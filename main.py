@@ -26,7 +26,32 @@ ESTADOS_ESTUDIANTES = ["INACTIVO", "ACTIVO"]
 ESTUDIANTE_1_EMAIL, ESTUDIANTE_1_PASSWORD, estudiante_1_nacimiento, estudiante_1_nombre, estudiante_1_biografia, estudiante_1_hobbies: string
 """
 ESTUDIANTES = [[""]*7 for n in range(8)]
-MODERADORES = [[]*3 for n in range(4)]
+MODERADORES = [[""]*3 for n in range(4)]
+
+def validar_continuacion(opc):
+    while opc != "S" or opc != "N":
+        opc = input("Opción incorrecta S o N: ").upper()
+
+    limpiar_consola()
+
+    return opc == "S"
+
+
+def cargar_moderador(mod):
+    cant_inicializados = 0
+    continuar = True
+
+    while(cant_inicializados <= 4 and continuar):
+        mod[cant_inicializados][0] = cant_inicializados
+
+        mod[cant_inicializados][1] = input("Ingrese el email: ")
+        mod[cant_inicializados][2] = input("Ingrese la contraseña: ")
+
+        cant_inicializados = cant_inicializados + 1
+
+        opc = input("Añadir un nuevo moderador (S/N) ").upper()
+        opc = validar_continuacion(opc)
+
 
 def inicializar_estudiantes_automatico(est):
     est[0][0] = "0"
@@ -63,31 +88,38 @@ def inicializar_estudiantes_automatico(est):
 
 
 def cargar_estudiantes(est):
-    for ind in range(0, 4):
-        est[ind][0] = str(ind)
+    cant_estudiantes = 0
+    continuar = True
+
+    while cant_estudiantes < 4 or (continuar and cant_estudiantes <= 7):
+        est[cant_estudiantes][0] = str(cant_estudiantes)
 
         print("A continuación ingrese los datos iniciales de los estudiantes.\n\n")
 
         for prop in range(1, 7):
             match prop:
                 case 1:
-                    est[ind][prop] = input("Ingrese el email: ")
+                    est[cant_estudiantes][prop] = input("Ingrese el email: ")
                     limpiar_consola()
                 case 2:
-                    est[ind][prop] = input("Ingrese la contraseña: ")
+                    est[cant_estudiantes][prop] = input("Ingrese la contraseña: ")
                     limpiar_consola()
                 case 3:
-                    est[ind][prop] = input("Ingrese la fecha de nacimiento: ")
+                    est[cant_estudiantes][prop] = input("Ingrese la fecha de nacimiento: ")
                     limpiar_consola()
                 case 4:
-                    est[ind][prop] = input("Ingrese el nombre: ")
+                    est[cant_estudiantes][prop] = input("Ingrese el nombre: ")
                     limpiar_consola()
                 case 5:
-                    est[ind][prop] = input("Ingrese su biografía: ")
+                    est[cant_estudiantes][prop] = input("Ingrese su biografía: ")
                     limpiar_consola()
                 case 6:
-                    est[ind][prop] = ESTADOS_ESTUDIANTES[1]
+                    est[cant_estudiantes][prop] = ESTADOS_ESTUDIANTES[1]
 
+        opc = input("Añadir un nuevo estudiante (S/N) ").upper()
+        opc = validar_continuacion(opc)
+
+        cant_estudiantes = cant_estudiantes + 1
 
 """
 comando, so: string
