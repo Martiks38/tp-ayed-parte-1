@@ -2,8 +2,6 @@
   Integrantes:
     - CAPPA, Giuliano Martin
     - ROBLEDO, Camila Antonella
-    - RANDISI, Jeremias Yair
-    - ZAPATA, Joaquin Josue
 """
 
 from datetime import date, datetime
@@ -20,50 +18,76 @@ NACIMIENTO, BIOGRAFIA, HOBBIES: string
 NACIMIENTO = "nacimiento"
 BIOGRAFIA = "biografia"
 HOBBIES = "hobbies"
+ESTADOS_ESTUDIANTES = ["INACTIVO", "ACTIVO"]
 
 
 # Mock de la base de datos de estudiantes
 """
 ESTUDIANTE_1_EMAIL, ESTUDIANTE_1_PASSWORD, estudiante_1_nacimiento, estudiante_1_nombre, estudiante_1_biografia, estudiante_1_hobbies: string
 """
-ESTUDIANTE_1_EMAIL = "estudiante1@ayed.com"
-ESTUDIANTE_1_PASSWORD = "111222"
-estudiante_1_nacimiento = "2001-10-01"
-estudiante_1_nombre = "Juan Peréz"
-estudiante_1_biografia = "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
-estudiante_1_hobbies = "Lectura - Senderismo - Juegos de mesa"
+ESTUDIANTES = [[""]*7 for n in range(8)]
+MODERADORES = [[]*3 for n in range(4)]
 
-"""
-ESTUDIANTE_2_EMAIL, ESTUDIANTE_2_PASSWORD, estudiante_2_nacimiento, estudiante_2_nombre, estudiante_2_biografia, estudiante_2_hobbies: string
-"""
-ESTUDIANTE_2_EMAIL = "estudiante2@ayed.com"
-ESTUDIANTE_2_PASSWORD = "333444"
-estudiante_2_nacimiento = "1998-04-11"
-estudiante_2_nombre = "María García"
-estudiante_2_biografia = "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
-estudiante_2_hobbies = (
-    "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas"
-)
+def inicializar_estudiantes_automatico(est):
+    est[0][0] = "0"
+    est[0][1] = "estudiante1@ayed.com"
+    est[0][2] = "111222"
+    est[0][3] = "2001-10-01"
+    est[0][4] = "Juan Peréz"
+    est[0][5] = "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
+    est[0][6] = "Lectura - Senderismo - Juegos de mesa"
 
-"""
-ESTUDIANTE_3_EMAIL, ESTUDIANTE_3_PASSWORD, estudiante_3_nacimiento, estudiante_3_nombre, estudiante_3_biografia, estudiante_3_hobbies: string
-"""
-ESTUDIANTE_3_EMAIL = "estudiante3@ayed.com"
-ESTUDIANTE_3_PASSWORD = "555666"
-estudiante_3_nacimiento = "2005-06-30"
-estudiante_3_nombre = "Carlos Martínez"
-estudiante_3_biografia = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
-estudiante_3_hobbies = "Correr - Tocar la guitarra - Cocinar platos internacionales"
+    est[1][0] = "1"
+    est[1][1] = "estudiante2@ayed.com"
+    est[1][2] = "333444"
+    est[1][3] = "1998-04-11"
+    est[1][4] = "María García"
+    est[1][5] = "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
+    est[1][6] = "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas"
 
-"""
-ESTUDIANTE_4_EMAIL, ESTUDIANTE_4_PASSWORD, estudiante_4_nacimiento, estudiante_4_nombre, estudiante_4_biografia, estudiante_4_hobbies: string
-"""
-ESTUDIANTE_4_EMAIL = "estudiante4@ayed.com"
-ESTUDIANTE_4_PASSWORD = "789101"
-estudiante_4_nacimiento = "2001-09-15"
-estudiante_4_nombre = "Ana López"
-estudiante_4_biografia = "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que mejoren la seguridad digital."
-estudiante_4_hobbies = "Leer ciencia ficción - Pintar - Practicar yoga"
+    est[2][0] = "2"
+    est[2][1] = "estudiante3@ayed.com"
+    est[2][2] = "555666"
+    est[2][3] = "2005-06-30"
+    est[2][4] = "Carlos Martínez"
+    est[2][5] = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
+    est[2][6] = "Correr - Tocar la guitarra - Cocinar platos internacionales"
+
+    est[3][0] = "3"
+    est[3][1] = "estudiante4@ayed.com"
+    est[3][2] = "789101"
+    est[3][3] = "2001-09-15"
+    est[3][4] = "Ana López"
+    est[3][5] = "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que mejoren la seguridad digital."
+    est[3][6] = "Leer ciencia ficción - Pintar - Practicar yoga"
+
+
+def cargar_estudiantes(est):
+    for ind in range(0, 4):
+        est[ind][0] = str(ind)
+
+        print("A continuación ingrese los datos iniciales de los estudiantes.\n\n")
+
+        for prop in range(1, 7):
+            match prop:
+                case 1:
+                    est[ind][prop] = input("Ingrese el email: ")
+                    limpiar_consola()
+                case 2:
+                    est[ind][prop] = input("Ingrese la contraseña: ")
+                    limpiar_consola()
+                case 3:
+                    est[ind][prop] = input("Ingrese la fecha de nacimiento: ")
+                    limpiar_consola()
+                case 4:
+                    est[ind][prop] = input("Ingrese el nombre: ")
+                    limpiar_consola()
+                case 5:
+                    est[ind][prop] = input("Ingrese su biografía: ")
+                    limpiar_consola()
+                case 6:
+                    est[ind][prop] = ESTADOS_ESTUDIANTES[1]
+
 
 """
 comando, so: string
@@ -124,41 +148,41 @@ me_gusta, estudiante_id: string
 def vista_perfil_estudiantes(estudiante_id):
     me_gusta = ""
 
-    if estudiante_id != ESTUDIANTE_1_EMAIL:
-        vista_perfil_estudiante(
-            estudiante_1_nombre,
-            estudiante_1_nacimiento,
-            estudiante_1_biografia,
-            estudiante_1_hobbies,
-        )
-        print("\n")
+    # if estudiante_id != ESTUDIANTE_1_EMAIL:
+    #     vista_perfil_estudiante(
+    #         estudiante_1_nombre,
+    #         estudiante_1_nacimiento,
+    #         estudiante_1_biografia,
+    #         estudiante_1_hobbies,
+    #     )
+    #     print("\n")
 
-    if estudiante_id != ESTUDIANTE_2_EMAIL:
-        vista_perfil_estudiante(
-            estudiante_2_nombre,
-            estudiante_2_nacimiento,
-            estudiante_2_biografia,
-            estudiante_2_hobbies,
-        )
-        print("\n")
+    # if estudiante_id != ESTUDIANTE_2_EMAIL:
+    #     vista_perfil_estudiante(
+    #         estudiante_2_nombre,
+    #         estudiante_2_nacimiento,
+    #         estudiante_2_biografia,
+    #         estudiante_2_hobbies,
+    #     )
+    #     print("\n")
 
-    if estudiante_id != ESTUDIANTE_3_EMAIL:
-        vista_perfil_estudiante(
-            estudiante_3_nombre,
-            estudiante_3_nacimiento,
-            estudiante_3_biografia,
-            estudiante_3_hobbies,
-        )
-        print("\n")
+    # if estudiante_id != ESTUDIANTE_3_EMAIL:
+    #     vista_perfil_estudiante(
+    #         estudiante_3_nombre,
+    #         estudiante_3_nacimiento,
+    #         estudiante_3_biografia,
+    #         estudiante_3_hobbies,
+    #     )
+    #     print("\n")
 
-    if estudiante_id != ESTUDIANTE_4_EMAIL:
-        vista_perfil_estudiante(
-            estudiante_4_nombre,
-            estudiante_4_nacimiento,
-            estudiante_4_biografia,
-            estudiante_4_hobbies,
-        )
-        print("\n")
+    # if estudiante_id != ESTUDIANTE_4_EMAIL:
+    #     vista_perfil_estudiante(
+    #         estudiante_4_nombre,
+    #         estudiante_4_nacimiento,
+    #         estudiante_4_biografia,
+    #         estudiante_4_hobbies,
+    #     )
+    #     print("\n")
 
     decision = input(
         "Le gustaría en un futuro hacer matcheo con algún estudiante. (S/N) "
@@ -172,14 +196,14 @@ def vista_perfil_estudiantes(estudiante_id):
             "Ingrese el nombre del estudiante con el que quiere hacer matcheo: "
         )
 
-        while (
-            nombre_estudiante != estudiante_1_nombre
-            and nombre_estudiante != estudiante_2_nombre
-            and nombre_estudiante != estudiante_3_nombre
-            and nombre_estudiante != estudiante_4_nombre
-        ):
-            print("No existe el estudiante", nombre_estudiante)
-            nombre_estudiante = input("Ingrese un nombre de estudiante: ")
+        # while (
+        #     nombre_estudiante != estudiante_1_nombre
+        #     and nombre_estudiante != estudiante_2_nombre
+        #     and nombre_estudiante != estudiante_3_nombre
+        #     and nombre_estudiante != estudiante_4_nombre
+        # ):
+        #     print("No existe el estudiante", nombre_estudiante)
+        #     nombre_estudiante = input("Ingrese un nombre de estudiante: ")
 
         me_gusta = nombre_estudiante
 
@@ -231,22 +255,22 @@ def log_in():
         email = input("Ingrese su email: ")
         password = getpass("Ingrese su contraseña: ")
 
-        valid_email = (
-            email == ESTUDIANTE_1_EMAIL
-            or email == ESTUDIANTE_2_EMAIL
-            or email == ESTUDIANTE_3_EMAIL
-        )
-        valid_password = (
-            password == ESTUDIANTE_1_PASSWORD
-            or password == ESTUDIANTE_2_PASSWORD
-            or password == ESTUDIANTE_3_PASSWORD
-        )
+        # valid_email = (
+        #     email == ESTUDIANTE_1_EMAIL
+        #     or email == ESTUDIANTE_2_EMAIL
+        #     or email == ESTUDIANTE_3_EMAIL
+        # )
+        # valid_password = (
+        #     password == ESTUDIANTE_1_PASSWORD
+        #     or password == ESTUDIANTE_2_PASSWORD
+        #     or password == ESTUDIANTE_3_PASSWORD
+        # )
 
-        if valid_email and valid_password:
-            acceso_valido = email
-        else:
-            intentos = intentos - 1
-            print("Datos incorrectos. Intentos restantes:", intentos, "\n")
+        # if valid_email and valid_password:
+        #     acceso_valido = email
+        # else:
+        #     intentos = intentos - 1
+        #     print("Datos incorrectos. Intentos restantes:", intentos, "\n")
 
     if intentos == 0:
         print("Ha superado el número máximo de intentos. El programa se cerrará.")
@@ -285,37 +309,37 @@ def ruleta(student_id):
     print("Los valores ingresados deben ser enteros y su suma igual a 100.\n")
 
     while probabilidad_match_1 + probabilidad_match_2 + probabilidad_match_3 != 100:
-        if student_id != ESTUDIANTE_1_EMAIL:
-            print(estudiante_1_nombre)
+        # if student_id != ESTUDIANTE_1_EMAIL:
+        #     print(estudiante_1_nombre)
 
-        if student_id != ESTUDIANTE_2_EMAIL:
-            print(estudiante_2_nombre)
+        # if student_id != ESTUDIANTE_2_EMAIL:
+        #     print(estudiante_2_nombre)
 
-        if student_id != ESTUDIANTE_3_EMAIL:
-            print(estudiante_3_nombre)
+        # if student_id != ESTUDIANTE_3_EMAIL:
+        #     print(estudiante_3_nombre)
 
-        if student_id != ESTUDIANTE_4_EMAIL:
-            print(estudiante_4_nombre)
+        # if student_id != ESTUDIANTE_4_EMAIL:
+        #     print(estudiante_4_nombre)
 
-        if student_id == ESTUDIANTE_1_EMAIL:
-            nombre_estudiante_1 = estudiante_2_nombre
-            nombre_estudiante_2 = estudiante_3_nombre
-            nombre_estudiante_3 = estudiante_4_nombre
+        # if student_id == ESTUDIANTE_1_EMAIL:
+        #     nombre_estudiante_1 = estudiante_2_nombre
+        #     nombre_estudiante_2 = estudiante_3_nombre
+        #     nombre_estudiante_3 = estudiante_4_nombre
 
-        elif student_id == ESTUDIANTE_2_EMAIL:
-            nombre_estudiante_1 = estudiante_1_nombre
-            nombre_estudiante_2 = estudiante_3_nombre
-            nombre_estudiante_3 = estudiante_4_nombre
+        # elif student_id == ESTUDIANTE_2_EMAIL:
+        #     nombre_estudiante_1 = estudiante_1_nombre
+        #     nombre_estudiante_2 = estudiante_3_nombre
+        #     nombre_estudiante_3 = estudiante_4_nombre
 
-        elif student_id == ESTUDIANTE_3_EMAIL:
-            nombre_estudiante_1 = estudiante_1_nombre
-            nombre_estudiante_2 = estudiante_2_nombre
-            nombre_estudiante_3 = estudiante_4_nombre
+        # elif student_id == ESTUDIANTE_3_EMAIL:
+        #     nombre_estudiante_1 = estudiante_1_nombre
+        #     nombre_estudiante_2 = estudiante_2_nombre
+        #     nombre_estudiante_3 = estudiante_4_nombre
 
-        elif student_id == ESTUDIANTE_4_EMAIL:
-            nombre_estudiante_1 = estudiante_1_nombre
-            nombre_estudiante_2 = estudiante_2_nombre
-            nombre_estudiante_3 = estudiante_3_nombre
+        # elif student_id == ESTUDIANTE_4_EMAIL:
+        #     nombre_estudiante_1 = estudiante_1_nombre
+        #     nombre_estudiante_2 = estudiante_2_nombre
+        #     nombre_estudiante_3 = estudiante_3_nombre
 
         probabilidades_ingresadas = 0
 
@@ -471,37 +495,37 @@ def actualizar_estudiante(estudiante_id, propiedad, valor):
     global estudiante_3_nacimiento, estudiante_3_biografia, estudiante_3_hobbies
     global estudiante_4_nacimiento, estudiante_4_biografia, estudiante_4_hobbies
 
-    if estudiante_id == ESTUDIANTE_1_EMAIL:
-        if propiedad == NACIMIENTO:
-            estudiante_1_nacimiento = valor
-        elif propiedad == BIOGRAFIA:
-            estudiante_1_biografia = valor
-        elif propiedad == HOBBIES:
-            estudiante_1_hobbies = valor
+    # if estudiante_id == ESTUDIANTE_1_EMAIL:
+    #     if propiedad == NACIMIENTO:
+    #         estudiante_1_nacimiento = valor
+    #     elif propiedad == BIOGRAFIA:
+    #         estudiante_1_biografia = valor
+    #     elif propiedad == HOBBIES:
+    #         estudiante_1_hobbies = valor
 
-    if estudiante_id == ESTUDIANTE_2_EMAIL:
-        if propiedad == NACIMIENTO:
-            estudiante_2_nacimiento = valor
-        elif propiedad == BIOGRAFIA:
-            estudiante_2_biografia = valor
-        elif propiedad == HOBBIES:
-            estudiante_2_hobbies = valor
+    # if estudiante_id == ESTUDIANTE_2_EMAIL:
+    #     if propiedad == NACIMIENTO:
+    #         estudiante_2_nacimiento = valor
+    #     elif propiedad == BIOGRAFIA:
+    #         estudiante_2_biografia = valor
+    #     elif propiedad == HOBBIES:
+    #         estudiante_2_hobbies = valor
 
-    if estudiante_id == ESTUDIANTE_3_EMAIL:
-        if propiedad == NACIMIENTO:
-            estudiante_3_nacimiento = valor
-        elif propiedad == BIOGRAFIA:
-            estudiante_3_biografia = valor
-        elif propiedad == HOBBIES:
-            estudiante_3_hobbies = valor
+    # if estudiante_id == ESTUDIANTE_3_EMAIL:
+    #     if propiedad == NACIMIENTO:
+    #         estudiante_3_nacimiento = valor
+    #     elif propiedad == BIOGRAFIA:
+    #         estudiante_3_biografia = valor
+    #     elif propiedad == HOBBIES:
+    #         estudiante_3_hobbies = valor
 
-    if estudiante_id == ESTUDIANTE_4_EMAIL:
-        if propiedad == NACIMIENTO:
-            estudiante_4_nacimiento = valor
-        elif propiedad == BIOGRAFIA:
-            estudiante_4_biografia = valor
-        elif propiedad == HOBBIES:
-            estudiante_4_hobbies = valor
+    # if estudiante_id == ESTUDIANTE_4_EMAIL:
+    #     if propiedad == NACIMIENTO:
+    #         estudiante_4_nacimiento = valor
+    #     elif propiedad == BIOGRAFIA:
+    #         estudiante_4_biografia = valor
+    #     elif propiedad == HOBBIES:
+    #         estudiante_4_hobbies = valor
 
 
 """
@@ -536,26 +560,27 @@ estudiante_2_biografia, estudiante_2_hobbies, estudiante_3_nombre, estudiante_3_
 estudiante_3_hobbies, estudiante_4_nombre, estudiante_4_nacimiento, estudiante_4_biografia, estudiante_4_hobbies: string
 """
 def print_student_data(email):
-    if email == ESTUDIANTE_1_EMAIL:
-        print("Nombre:", estudiante_1_nombre)
-        print("Fecha de nacimiento:", estudiante_1_nacimiento)
-        print("Biografía:", estudiante_1_biografia)
-        print("Hobbies:", estudiante_1_hobbies)
-    elif email == ESTUDIANTE_2_EMAIL:
-        print("Nombre:", estudiante_2_nombre)
-        print("Fecha de nacimiento:", estudiante_2_nacimiento)
-        print("Biografía:", estudiante_2_biografia)
-        print("Hobbies:", estudiante_2_hobbies)
-    elif email == ESTUDIANTE_3_EMAIL:
-        print("Nombre:", estudiante_3_nombre)
-        print("Fecha de nacimiento:", estudiante_3_nacimiento)
-        print("Biografía:", estudiante_3_biografia)
-        print("Hobbies:", estudiante_3_hobbies)
-    elif email == ESTUDIANTE_4_EMAIL:
-        print("Nombre:", estudiante_4_nombre)
-        print("Fecha de nacimiento:", estudiante_4_nacimiento)
-        print("Biografía:", estudiante_4_biografia)
-        print("Hobbies:", estudiante_4_hobbies)
+    print("Modificar")
+    # if email == ESTUDIANTE_1_EMAIL:
+    #     print("Nombre:", estudiante_1_nombre)
+    #     print("Fecha de nacimiento:", estudiante_1_nacimiento)
+    #     print("Biografía:", estudiante_1_biografia)
+    #     print("Hobbies:", estudiante_1_hobbies)
+    # elif email == ESTUDIANTE_2_EMAIL:
+    #     print("Nombre:", estudiante_2_nombre)
+    #     print("Fecha de nacimiento:", estudiante_2_nacimiento)
+    #     print("Biografía:", estudiante_2_biografia)
+    #     print("Hobbies:", estudiante_2_hobbies)
+    # elif email == ESTUDIANTE_3_EMAIL:
+    #     print("Nombre:", estudiante_3_nombre)
+    #     print("Fecha de nacimiento:", estudiante_3_nacimiento)
+    #     print("Biografía:", estudiante_3_biografia)
+    #     print("Hobbies:", estudiante_3_hobbies)
+    # elif email == ESTUDIANTE_4_EMAIL:
+    #     print("Nombre:", estudiante_4_nombre)
+    #     print("Fecha de nacimiento:", estudiante_4_nacimiento)
+    #     print("Biografía:", estudiante_4_biografia)
+    #     print("Hobbies:", estudiante_4_hobbies)
 
 
 """
@@ -645,4 +670,6 @@ def main():
                     print("¡Hasta luego!")
 
 
-main()
+# main()
+inicializar_estudiantes_automatico(ESTUDIANTES)
+print(ESTUDIANTES)
