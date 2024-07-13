@@ -25,8 +25,8 @@ ESTADOS_ESTUDIANTES = ["INACTIVO", "ACTIVO"]
 """
 ESTUDIANTE_1_EMAIL, ESTUDIANTE_1_PASSWORD, estudiante_1_nacimiento, estudiante_1_nombre, estudiante_1_biografia, estudiante_1_hobbies: string
 """
-ESTUDIANTES = [[""]*7 for n in range(8)]
-MODERADORES = [[""]*3 for n in range(4)]
+estudiantes = [[""]*7 for n in range(8)]
+moderadores = [[""]*3 for n in range(4)]
 
 def validar_continuacion(opc):
     while opc != "S" or opc != "N":
@@ -35,6 +35,11 @@ def validar_continuacion(opc):
     limpiar_consola()
 
     return opc == "S"
+
+def inicializar_moderadores_mock(mod):
+    mod[0][0] = "0"
+    mod[0][1] = "moderador1@ayed.com"
+    mod[0][2] = "111222"
 
 
 def cargar_moderador(mod):
@@ -53,7 +58,7 @@ def cargar_moderador(mod):
         opc = validar_continuacion(opc)
 
 
-def inicializar_estudiantes_automatico(est):
+def inicializar_estudiantes_mock(est):
     est[0][0] = "0"
     est[0][1] = "estudiante1@ayed.com"
     est[0][2] = "111222"
@@ -673,6 +678,11 @@ def editar_datos_estudiante(estudiante_id):
 accedio, opcion_menu_principal: string
 """
 def main():
+    # cargar_estudiantes(estudiantes)
+    # cargar_moderador(moderadores)
+    inicializar_estudiantes_mock(estudiantes)
+    inicializar_moderadores_mock(moderadores)
+
     accedio = log_in()  # Si está logeado devuelve el email de estudiante
 
     if accedio != "":
@@ -702,6 +712,4 @@ def main():
                     print("¡Hasta luego!")
 
 
-# main()
-inicializar_estudiantes_automatico(ESTUDIANTES)
-print(ESTUDIANTES)
+main()
