@@ -129,17 +129,17 @@ def validar_continuacion(opc):
     return opc == "S"
 
 def inicializar_moderadores_mock(mod):
-    mod[0][0] = "0"
+    mod[0][0] = "1"
     mod[0][1] = "moderador1@ayed.com"
     mod[0][2] = "111222"
 
 
 def cargar_moderador(mod):
-    cant_inicializados = 0
+    cant_inicializados = contar_moderadores()
     continuar = True
 
     while(cant_inicializados <= 4 and continuar):
-        mod[cant_inicializados][0] = cant_inicializados
+        mod[cant_inicializados][0] = cant_inicializados + 1 # id
         mod[cant_inicializados][1] = input("Ingrese el email: ")
         mod[cant_inicializados][2] = getpass("Ingrese la contraseña: ")
 
@@ -150,7 +150,7 @@ def cargar_moderador(mod):
 
 
 def inicializar_estudiantes_mock(est):
-    est[0][0] = "0"
+    est[0][0] = "1"
     est[0][1] = "estudiante1@ayed.com"
     est[0][2] = "111222"
     est[0][3] = "2001-10-01"
@@ -158,7 +158,7 @@ def inicializar_estudiantes_mock(est):
     est[0][5] = "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
     est[0][6] = "Lectura - Senderismo - Juegos de mesa"
 
-    est[1][0] = "1"
+    est[1][0] = "2"
     est[1][1] = "estudiante2@ayed.com"
     est[1][2] = "333444"
     est[1][3] = "1998-04-11"
@@ -166,7 +166,7 @@ def inicializar_estudiantes_mock(est):
     est[1][5] = "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
     est[1][6] = "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas"
 
-    est[2][0] = "2"
+    est[2][0] = "3"
     est[2][1] = "estudiante3@ayed.com"
     est[2][2] = "555666"
     est[2][3] = "2005-06-30"
@@ -174,7 +174,7 @@ def inicializar_estudiantes_mock(est):
     est[2][5] = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
     est[2][6] = "Correr - Tocar la guitarra - Cocinar platos internacionales"
 
-    est[3][0] = "3"
+    est[3][0] = "4"
     est[3][1] = "estudiante4@ayed.com"
     est[3][2] = "789101"
     est[3][3] = "2001-09-15"
@@ -184,13 +184,13 @@ def inicializar_estudiantes_mock(est):
 
 
 def cargar_estudiantes(est):
-    cant_estudiantes = 0
+    cant_estudiantes = contar_estudiantes()
     continuar = True
 
     print("A continuación ingrese los datos iniciales de los estudiantes.\n\n")
 
     while cant_estudiantes < 4 or (continuar and cant_estudiantes <= 7):
-        est[cant_estudiantes][0] = str(cant_estudiantes)
+        est[cant_estudiantes][0] = str(cant_estudiantes + 1)
 
         for prop in range(1, 7):
             match prop:
