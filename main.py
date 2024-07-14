@@ -27,11 +27,12 @@ ESTUDIANTE_1_EMAIL, ESTUDIANTE_1_PASSWORD, estudiante_1_nacimiento, estudiante_1
 """
 estudiantes = [[""]*7 for n in range(8)]
 moderadores = [[""]*3 for n in range(4)]
+likes = [[0]*7 for n in range(7)]
 
 def contar_estudiantes():
     cantidad = 0
 
-    for ind in range(0, 8):
+    for ind in range(8):
         if estudiantes[ind][0] != "":
             cantidad = cantidad + 1
 
@@ -40,7 +41,7 @@ def contar_estudiantes():
 def contar_moderadores():
     cantidad = 0
 
-    for ind in range(0, 4):
+    for ind in range(4):
         if moderadores[ind][0] != "":
             cantidad = cantidad + 1
 
@@ -405,14 +406,14 @@ def log_in():
 
         login_valido = False
 
-        for ind in range(0, 8):
+        for ind in range(8):
             if not login_valido:
                 login_valido = estudiantes[ind][1] == email and estudiantes[ind][2] == password
                 acceso_valido[0] = str(ind + 1)
                 acceso_valido[1] = ROLES[0]
 
         if not login_valido:
-            for ind in range(0, 4):
+            for ind in range(4):
                 if not login_valido:
                     login_valido = moderadores[ind][1] == email and moderadores[ind][2] == password
                     acceso_valido[0] = str(ind + 1)
@@ -770,6 +771,65 @@ def editar_datos_estudiante(estudiante_id):
             actualizar_estudiante(estudiante_id, HOBBIES, hobbies)
 
 
+def menu_principal_estudiante(usuario_id):
+    opcion_menu_principal = "1"
+
+    while opcion_menu_principal != "0":
+        opcion_menu_principal = ver_menu_principal_estudiante()
+
+        match opcion_menu_principal:
+            case "1":
+                submenu_gestionar_perfil(usuario_id)
+
+            case "2":
+                submenu_gestionar_candidatos(usuario_id)
+
+            case "3":
+                submenu_matcheos()
+
+            case "4":
+                en_construccion()
+
+            case "5":
+                ruleta(usuario_id)
+
+            case "0":
+                limpiar_consola()
+                print("¡Hasta luego!")
+
+def ver_menu_principal_moderadores():
+    print("TODO")
+    return "0"
+
+def submenu_gestionar_usuarios():
+    print("TODO")
+
+def submenu_gestionar_reportes():
+    print("TODO")
+
+def menu_principal_moderador(usuario_id):
+    opcion_menu_principal = "1"
+
+    while opcion_menu_principal != "0":
+        opcion_menu_principal = ver_menu_principal_moderadores()
+
+        match opcion_menu_principal:
+            case "1":
+                submenu_gestionar_usuarios()
+
+            case "2":
+                submenu_gestionar_reportes()
+
+            case "0":
+                limpiar_consola()
+                print("¡Hasta luego!")
+
+def mostrar_menu_usuario(usuario_id, rol):
+    if rol == "E":
+        menu_principal_estudiante(usuario_id)
+    elif rol == "M":
+        menu_principal_moderador(usuario_id)
+
 """
 accedio, opcion_menu_principal: string
 """
@@ -789,38 +849,13 @@ def main():
                 print("¡Hasta luego!")
             case "1":
                 usuario = log_in() # usuario = [id, rol]
-                # ver_menu_principal_estudiante(usuario)
+
+                usuario_id = usuario[0]
+
+                if usuario_id != "":
+                    rol = usuario[1]
+                    mostrar_menu_usuario(usuario_id, rol)
             case "2":
                 registrar()
-
-
-    usuario_id = log_in()
-
-    if usuario_id != "":
-        opcion_menu_principal = "1"
-
-        while opcion_menu_principal != "0":
-            opcion_menu_principal = ver_menu_principal_estudiante()
-
-            match opcion_menu_principal:
-                case "1":
-                    submenu_gestionar_perfil(usuario_id)
-
-                case "2":
-                    submenu_gestionar_candidatos(usuario_id)
-
-                case "3":
-                    submenu_matcheos()
-
-                case "4":
-                    en_construccion()
-
-                case "5":
-                    ruleta(usuario_id)
-
-                case "0":
-                    limpiar_consola()
-                    print("¡Hasta luego!")
-
 
 main()
