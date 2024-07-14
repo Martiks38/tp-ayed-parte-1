@@ -19,7 +19,7 @@ NACIMIENTO = "nacimiento"
 BIOGRAFIA = "biografia"
 HOBBIES = "hobbies"
 ESTADOS_ESTUDIANTES = ["INACTIVO", "ACTIVO"]
-
+ROLES = ["ESTUDIANTE", "MODERADOR"]
 
 # Mock de la base de datos de estudiantes
 """
@@ -27,6 +27,98 @@ ESTUDIANTE_1_EMAIL, ESTUDIANTE_1_PASSWORD, estudiante_1_nacimiento, estudiante_1
 """
 estudiantes = [[""]*7 for n in range(8)]
 moderadores = [[""]*3 for n in range(4)]
+
+def contar_estudiantes():
+    cantidad = 0
+
+    for ind in range(0, 8):
+        if estudiantes[ind][0] != "":
+            cantidad = cantidad + 1
+
+    return cantidad
+
+def contar_moderadores():
+    cantidad = 0
+
+    for ind in range(0, 4):
+        if moderadores[ind][0] != "":
+            cantidad = cantidad + 1
+
+    return cantidad
+
+def ingresar_fecha_namiciento():
+    dia = input("Ingresa el día de nacimiento: ")
+    mes = input("Ingresa el mes de nacimiento: ")
+    anio = input("Ingresa el año de nacimento: ")
+
+    while not (dia.isdigit() and mes.isdigit() and anio.isdigit()):
+        print("Los datos ingresados no son válidos")
+        dia = input("Ingresa el día de nacimiento: ")
+        mes = input("Ingresa el mes de nacimiento: ")
+        anio = input("Ingresa el año de nacimento: ")
+
+    while not validar_fecha(int(dia), int(mes), int(anio)):
+        print("Los datos ingresados no son válidos")
+        dia = input("Ingresa el día de nacimiento: ")
+        mes = input("Ingresa el mes de nacimiento: ")
+        anio = input("Ingresa el año de nacimento: ")
+
+    fecha = date(int(anio), int(mes), int(dia))
+    return fecha.isoformat()
+
+def ingresar_nombre():
+    nombre = input("Ingrese su nombre: ").capitalize()
+
+    while nombre == "":
+        nombre = input("Debe ingresar un nombre: ").capitalize()
+
+    return nombre
+
+def ingresar_biografia():
+    bio = input("Ingrese su biografía: ").capitalize()
+
+    while bio == "":
+        bio = input("Debe ingresar su biografía: ").capitalize()
+
+    return bio
+
+def registrar():
+    email = input("Ingrese su email: ")
+    password = getpass("Ingrese su contraseña: ")
+    rol = input("Ingrese el rol estudiante(E) o moderador(M). (E/M): ").upper()
+
+    while rol != "E" and rol != "M":
+        print("\nNo es un rol válido.")
+        rol = input("ingrese E (Estudiante) o M (Moderador): ")
+
+    if rol == "E":
+        cant = contar_estudiantes()
+
+        if cant == 8:
+            print("Se produjo un error al registrarse.")
+        else:
+            limpiar_consola()
+            print("Fecha de nacimiento\n")
+            fecha = ingresar_fecha_namiciento()
+            estudiantes[cant - 1][3] = fecha
+
+            nombre = ingresar_nombre()
+            estudiantes[cant - 1][4] = nombre
+            bio = ingresar_biografia()
+            estudiantes[cant - 1][5] = bio
+            estudiantes[cant - 1][6] = ESTADOS_ESTUDIANTES[1]
+
+    elif rol == "M":
+        cant = contar_moderadores()
+
+        if cant == "4":
+            print("Se produjo un error al registrarse.")
+        else:
+            moderadores[cant - 1][1] = email
+            moderadores[cant - 1][2] = password
+
+    input("Registro exictoso!!!")
+
 
 def validar_continuacion(opc):
     while opc != "S" or opc != "N":
@@ -147,6 +239,26 @@ def en_construccion():
     limpiar_consola()
     print("En construcción.")
     input("Presiona Enter para continuar... ")
+
+
+def mostrar_menu_principal():
+    print("\n........Bienvenido........\n")
+
+    print("1. Conectarse")
+    print("2. Registrarse")
+    print("0. Salir")
+
+    opcion = input("\nSeleccione una opción: ")
+
+    while (
+        opcion != "1"
+        and opcion != "2"
+        and opcion != "0"
+    ):
+        print("La opción introducida no es válida.")
+        opcion = input("Por favor, introduzca una opción válida: ")
+
+    return opcion
 
 
 """
@@ -282,10 +394,10 @@ email, password, acceso_valido: string
 intentos: int
 """
 def log_in():
-    acceso_valido = ""
+    acceso_valido = [""]*2
     intentos = 3
 
-    print("\n........Bienvenido........\n")
+    print("\n........Ingreso........\n")
 
     while intentos > 0 and acceso_valido == "":
         email = input("Ingrese su email: ")
@@ -296,13 +408,15 @@ def log_in():
         for ind in range(0, 8):
             if not login_valido:
                 login_valido = estudiantes[ind][1] == email and estudiantes[ind][2] == password
-                acceso_valido = str(ind)
+                acceso_valido[0] = str(ind + 1)
+                acceso_valido[1] = ROLES[0]
 
         if not login_valido:
             for ind in range(0, 4):
                 if not login_valido:
                     login_valido = moderadores[ind][1] == email and moderadores[ind][2] == password
-                    acceso_valido = str(ind)
+                    acceso_valido[0] = str(ind + 1)
+                    acceso_valido[1] = ROLES[1]
 
         if login_valido:
             acceso_valido = email
@@ -643,24 +757,7 @@ def editar_datos_estudiante(estudiante_id):
             opcion = input("Ingrese una opción válida: ")
 
         if opcion == "a":
-            dia = input("Ingresa el día de nacimiento: ")
-            mes = input("Ingresa el mes de nacimiento: ")
-            anio = input("Ingresa el año de nacimento: ")
-
-            while not (dia.isdigit() and mes.isdigit() and anio.isdigit()):
-                print("Los datos ingresados no son válidos")
-                dia = input("Ingresa el día de nacimiento: ")
-                mes = input("Ingresa el mes de nacimiento: ")
-                anio = input("Ingresa el año de nacimento: ")
-
-            while not validar_fecha(int(dia), int(mes), int(anio)):
-                print("Los datos ingresados no son válidos")
-                dia = input("Ingresa el día de nacimiento: ")
-                mes = input("Ingresa el mes de nacimiento: ")
-                anio = input("Ingresa el año de nacimento: ")
-
-            fecha = date(int(anio), int(mes), int(dia))
-            nacimiento = fecha.isoformat()
+            nacimiento = ingresar_fecha_namiciento()
 
             actualizar_estudiante(estudiante_id, NACIMIENTO, nacimiento)
 
@@ -681,6 +778,21 @@ def main():
     # cargar_moderador(moderadores)
     inicializar_estudiantes_mock(estudiantes)
     inicializar_moderadores_mock(moderadores)
+
+    opc = -1
+
+    while opc != "0":
+        opc = mostrar_menu_principal()
+
+        match opc:
+            case "0":
+                print("¡Hasta luego!")
+            case "1":
+                usuario = log_in() # usuario = [id, rol]
+                # ver_menu_principal_estudiante(usuario)
+            case "2":
+                registrar()
+
 
     usuario_id = log_in()
 
