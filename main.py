@@ -31,8 +31,37 @@ ESTUDIANTE_1_EMAIL, ESTUDIANTE_1_PASSWORD, estudiante_1_nacimiento, estudiante_1
 """
 estudiantes = [[""]*8 for n in range(8)]
 moderadores = [[""]*3 for n in range(4)]
-likes = [[False]*7 for n in range(7)]
+me_gusta = [[False]*8 for n in range(7)]
 
+"""
+"""
+def hueco_edades():
+    edades = [""]*8
+
+    print("")
+
+"""
+"""
+def contar_estudiantes_activos():
+    cant = 0
+
+    for ind in range(8):
+        if estudiantes[ind][7] == ESTADO_ESTUDIANTE[1]:
+            cant = cant + 1
+
+    return cant
+
+"""
+"""
+def matcheos_combinados():
+    cant_est = contar_estudiantes_activos()
+
+    cant_matcheos = cant_est*(cant_est - 1)/2
+
+    print(f"La cantidad de matcheos posibles entre {cant_est} estudiantes es: {cant_matcheos}.")
+
+"""
+"""
 def contar_estudiantes():
     cantidad = 0
 
@@ -42,6 +71,8 @@ def contar_estudiantes():
 
     return cantidad
 
+"""
+"""
 def contar_moderadores():
     cantidad = 0
 
@@ -51,26 +82,40 @@ def contar_moderadores():
 
     return cantidad
 
-def ingresar_fecha_namiciento():
-    dia = input("Ingresa el día de nacimiento: ")
-    mes = input("Ingresa el mes de nacimiento: ")
-    anio = input("Ingresa el año de nacimento: ")
+"""
+"""
+def ingresar_fecha():
+    fecha = [""]*3
 
-    while not (dia.isdigit() and mes.isdigit() and anio.isdigit()):
+    fecha[0] = input("Ingresa el día de nacimiento: ")
+    fecha[1] = input("Ingresa el mes de nacimiento: ")
+    fecha[2] = input("Ingresa el año de nacimento: ")
+
+    return fecha
+
+"""
+"""
+def validar_fecha(fecha):
+
+    while not (fecha[0].isdigit() and fecha[1].isdigit() and fecha[2].isdigit()):
         print("Los datos ingresados no son válidos")
-        dia = input("Ingresa el día de nacimiento: ")
-        mes = input("Ingresa el mes de nacimiento: ")
-        anio = input("Ingresa el año de nacimento: ")
+        fecha = ingresar_fecha()
 
-    while not validar_fecha(int(dia), int(mes), int(anio)):
+    while not validar_valores_fecha(int(fecha[0]), int(fecha[1]), int(fecha[2])):
         print("Los datos ingresados no son válidos")
-        dia = input("Ingresa el día de nacimiento: ")
-        mes = input("Ingresa el mes de nacimiento: ")
-        anio = input("Ingresa el año de nacimento: ")
+        fecha = ingresar_fecha()
 
-    fecha = date(int(anio), int(mes), int(dia))
+"""
+"""
+def solicitar_fecha_nacimiento():
+    fecha = ingresar_fecha()
+    validar_fecha(fecha)
+
+    fecha = date(int(fecha[2]), int(fecha[1]), int(fecha[0]))
     return fecha.isoformat()
 
+"""
+"""
 def ingresar_nombre():
     nombre = input("Ingrese su nombre: ").capitalize()
 
@@ -79,6 +124,8 @@ def ingresar_nombre():
 
     return nombre
 
+"""
+"""
 def ingresar_biografia():
     bio = input("Ingrese su biografía: ").capitalize()
 
@@ -87,6 +134,8 @@ def ingresar_biografia():
 
     return bio
 
+"""
+"""
 def registrar():
     limpiar_consola()
 
@@ -108,7 +157,7 @@ def registrar():
         else:
             limpiar_consola()
             print("Fecha de nacimiento\n")
-            fecha = ingresar_fecha_namiciento()
+            fecha = solicitar_fecha_nacimiento()
             estudiantes[cant - 1][3] = fecha
 
             nombre = ingresar_nombre()
@@ -128,7 +177,8 @@ def registrar():
 
     input("Registro exictoso!!!")
 
-
+"""
+"""
 def validar_continuacion(opc):
     while opc != "S" and opc != "N":
         opc = input("Opción incorrecta S o N: ").upper()
@@ -137,12 +187,15 @@ def validar_continuacion(opc):
 
     return opc
 
+"""
+"""
 def inicializar_moderadores_mock(mod):
     mod[0][0] = "1"
     mod[0][1] = "moderador1@ayed.com"
     mod[0][2] = "111222"
 
-
+"""
+"""
 def cargar_moderador(mod):
     cant_inicializados = contar_moderadores()
     continuar = True
@@ -159,7 +212,8 @@ def cargar_moderador(mod):
 
         continuar = opc == "S"
 
-
+"""
+"""
 def inicializar_estudiantes_mock(est):
     est[0][0] = "1"
     est[0][1] = "estudiante1@ayed.com"
@@ -197,7 +251,8 @@ def inicializar_estudiantes_mock(est):
     est[3][6] = "Leer ciencia ficción - Pintar - Practicar yoga"
     est[3][7] = ESTADO_ESTUDIANTE[1]
 
-
+"""
+"""
 def cargar_estudiantes(est):
     cant_estudiantes = contar_estudiantes()
     continuar = True
@@ -217,7 +272,7 @@ def cargar_estudiantes(est):
                     limpiar_consola()
                 case 3:
                     print("Fecha de nacimiento")
-                    est[cant_estudiantes][prop] = ingresar_fecha_namiciento()
+                    est[cant_estudiantes][prop] = solicitar_fecha_nacimiento()
                     limpiar_consola()
                 case 4:
                     est[cant_estudiantes][prop] = input("Ingrese el nombre: ")
@@ -260,13 +315,15 @@ def limpiar_consola():
 
     os.system(comando)
 
-
+"""
+"""
 def en_construccion():
     limpiar_consola()
     print("En construcción.")
     input("Presiona Enter para continuar... ")
 
-
+"""
+"""
 def mostrar_menu_principal():
     limpiar_consola()
     print("\n........Bienvenido........\n")
@@ -318,16 +375,33 @@ def vista_perfil_estudiante(est_id):
             print("\n")
 
 """
-me_gusta, estudiante_id: string
 """
+def buscar_id_estudiante_por_nombre(nombre):
+    est_id = -1
 
+    for ind in range(8):
+        if estudiantes[ind][4] == nombre:
+            est_id = ind + 1
 
-def vista_perfil_estudiantes(estudiante_id):
-    vista_perfil_estudiante(estudiante_id)
+    return est_id
 
-    decision = input(
-        "Le gustaría en un futuro hacer matcheo con algún estudiante. (S/N) "
-    )
+"""
+"""
+def validar_nombre(nombre):
+    est_id = buscar_id_estudiante_por_nombre(nombre)
+
+    while est_id == -1:
+        print("No existe el estudiante", nombre)
+        nombre = input("Ingrese un nombre de estudiante: ")
+
+        est_id = buscar_id_estudiante_por_nombre(nombre)
+
+    return nombre
+
+"""
+"""
+def marcar_match(est_id):
+    decision = input("Le gustaría en un futuro hacer matcheo con algún estudiante. (S/N) ")
 
     while decision != "S" and decision != "N":
         decision = input("Desea hacer matcheo con algún estudiante S o N: ")
@@ -337,23 +411,21 @@ def vista_perfil_estudiantes(estudiante_id):
             "Ingrese el nombre del estudiante con el que quiere hacer matcheo: "
         )
 
-        # while (
-        #     nombre_estudiante != estudiante_1_nombre
-        #     and nombre_estudiante != estudiante_2_nombre
-        #     and nombre_estudiante != estudiante_3_nombre
-        #     and nombre_estudiante != estudiante_4_nombre
-        # ):
-        #     print("No existe el estudiante", nombre_estudiante)
-        #     nombre_estudiante = input("Ingrese un nombre de estudiante: ")
+        nombre_estudiante = validar_nombre(nombre_estudiante)
+        match_id = buscar_id_estudiante_por_nombre(nombre_estudiante)
 
-        me_gusta = nombre_estudiante
+        me_gusta[est_id - 1][match_id - 1] = True
 
+"""
+estudiante_id: string
+"""
+def vista_perfil_estudiantes(estudiante_id):
+    vista_perfil_estudiante(estudiante_id)
+    marcar_match(estudiante_id)
 
 """
 opcion: string
 """
-
-
 def mostrar_menu_principal_estudiante():
     limpiar_consola()
 
@@ -566,8 +638,8 @@ def submenu_gestionar_candidatos(estudiante_id):
             vista_perfil_estudiantes(estudiante_id)
 
         if opcion == "b":
+            # reportar_candidato()
             en_construccion()
-
 
 """
 opcion: string
@@ -596,7 +668,7 @@ def submenu_matcheos():
 max_dia_febrero, dia, mes, anio: int
 es_valido: bool
 """
-def validar_fecha(dia, mes, anio):
+def validar_valores_fecha(dia, mes, anio):
     es_valido = True
 
     if mes < 1 or mes > 12:
@@ -730,7 +802,7 @@ def editar_datos_estudiante(estudiante_id):
             opcion = input("Ingrese una opción válida: ")
 
         if opcion == "a":
-            nacimiento = ingresar_fecha_namiciento()
+            nacimiento = solicitar_fecha_nacimiento()
 
             actualizar_estudiante(estudiante_id, NACIMIENTO, nacimiento)
 
@@ -742,7 +814,33 @@ def editar_datos_estudiante(estudiante_id):
             hobbies = input("Nuevos Hobbies:\n")
             actualizar_estudiante(estudiante_id, HOBBIES, hobbies)
 
+"""
+"""
+def reportes_estadisticos_estudiante(est_id):
+    likes_dados = 0
+    likes_recibidos = 0
+    matches = 0
 
+    for ind in range(8):
+        like_dado = me_gusta[est_id - 1][ind]
+        like_recibido = me_gusta[ind][est_id]
+
+        if est_id - 1 != ind:
+            if like_dado and like_recibido:
+                matches = matches + 1
+            elif like_dado and not like_recibido:
+                likes_dados = likes_dados + 1
+            elif not like_dado and like_recibido:
+                likes_recibidos = likes_recibidos + 1
+
+    porcentaje = matches / (likes_recibidos + likes_dados + matches) * 100
+
+    print(f"Matcheados sobr el % posible: {porcentaje}%")
+    print("Likes dados y no recibidos:", likes_dados)
+    print("Likes recibidos y no respondidos:", likes_recibidos)
+
+"""
+"""
 def menu_principal_estudiante(est_id):
     opcion_menu_principal = "1"
 
@@ -760,7 +858,7 @@ def menu_principal_estudiante(est_id):
                 submenu_matcheos()
 
             case "4":
-                en_construccion()
+                reportes_estadisticos_estudiante(est_id)
 
             case "5":
                 ruleta(est_id)
