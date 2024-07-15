@@ -25,7 +25,7 @@ ROLES = ["ESTUDIANTE", "MODERADOR"]
 """
 ESTUDIANTE_1_EMAIL, ESTUDIANTE_1_PASSWORD, estudiante_1_nacimiento, estudiante_1_nombre, estudiante_1_biografia, estudiante_1_hobbies: string
 """
-estudiantes = [[""]*7 for n in range(8)]
+estudiantes = [[""]*8 for n in range(8)]
 moderadores = [[""]*3 for n in range(4)]
 likes = [[False]*7 for n in range(7)]
 
@@ -126,7 +126,7 @@ def registrar():
 
 
 def validar_continuacion(opc):
-    while opc != "S" or opc != "N":
+    while opc != "S" and opc != "N":
         opc = input("Opción incorrecta S o N: ").upper()
 
     limpiar_consola()
@@ -151,7 +151,7 @@ def cargar_moderador(mod):
         cant_inicializados = cant_inicializados + 1
 
         opc = input("Añadir un nuevo moderador (S/N) ").upper()
-        opc = validar_continuacion(opc)
+        continuar = validar_continuacion(opc)
 
 
 def inicializar_estudiantes_mock(est):
@@ -162,6 +162,7 @@ def inicializar_estudiantes_mock(est):
     est[0][4] = "Juan Peréz"
     est[0][5] = "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
     est[0][6] = "Lectura - Senderismo - Juegos de mesa"
+    est[0][7] = ESTADOS_ESTUDIANTES[1]
 
     est[1][0] = "2"
     est[1][1] = "estudiante2@ayed.com"
@@ -170,6 +171,7 @@ def inicializar_estudiantes_mock(est):
     est[1][4] = "María García"
     est[1][5] = "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
     est[1][6] = "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas"
+    est[1][7] = ESTADOS_ESTUDIANTES[1]
 
     est[2][0] = "3"
     est[2][1] = "estudiante3@ayed.com"
@@ -178,6 +180,7 @@ def inicializar_estudiantes_mock(est):
     est[2][4] = "Carlos Martínez"
     est[2][5] = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
     est[2][6] = "Correr - Tocar la guitarra - Cocinar platos internacionales"
+    est[2][7] = ESTADOS_ESTUDIANTES[1]
 
     est[3][0] = "4"
     est[3][1] = "estudiante4@ayed.com"
@@ -186,6 +189,7 @@ def inicializar_estudiantes_mock(est):
     est[3][4] = "Ana López"
     est[3][5] = "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que mejoren la seguridad digital."
     est[3][6] = "Leer ciencia ficción - Pintar - Practicar yoga"
+    est[3][7] = ESTADOS_ESTUDIANTES[1]
 
 
 def cargar_estudiantes(est):
@@ -197,7 +201,7 @@ def cargar_estudiantes(est):
     while cant_estudiantes < 4 or (continuar and cant_estudiantes <= 7):
         est[cant_estudiantes][0] = str(cant_estudiantes + 1)
 
-        for prop in range(1, 7):
+        for prop in range(1, 8):
             match prop:
                 case 1:
                     est[cant_estudiantes][prop] = input("Ingrese el email: ")
@@ -212,13 +216,15 @@ def cargar_estudiantes(est):
                     est[cant_estudiantes][prop] = input("Ingrese el nombre: ")
                     limpiar_consola()
                 case 5:
-                    est[cant_estudiantes][prop] = input("Ingrese su biografía: ")
+                    est[cant_estudiantes][prop] = input("Ingrese su biografía:\n")
                     limpiar_consola()
                 case 6:
+                    est[cant_estudiantes][prop] = input("Ingrese sus hobbies:\n")
+                case 7:
                     est[cant_estudiantes][prop] = ESTADOS_ESTUDIANTES[1]
 
         opc = input("Añadir un nuevo estudiante (S/N) ").upper()
-        opc = validar_continuacion(opc)
+        continuar = validar_continuacion(opc)
 
         cant_estudiantes = cant_estudiantes + 1
 
@@ -687,12 +693,15 @@ def actualizar_estudiante(estudiante_id, propiedad, valor):
     #         estudiante_4_hobbies = valor
 
 def eliminar_perfil(estudiante_id):
+    global estudiantes
+
     opc = input("¿Desea eliminar su perfil? (S/N) ").upper()
-    opc = validar_continuacion(opc)
+    print(opc)
+    borrar = validar_continuacion(opc)
 
-    if opc == "S":
-        estudiantes[estudiante_id - 1][6] = ESTADOS_ESTUDIANTES[0]
-
+    if borrar:
+        estudiantes[estudiante_id - 1][7] = ESTADOS_ESTUDIANTES[0]
+        print(estudiantes)
 
 """
 estudiante_id, opcion: string
@@ -717,8 +726,7 @@ def submenu_gestionar_perfil(estudiante_id):
             editar_datos_estudiante(estudiante_id)
         elif opcion == "b":
             eliminar_perfil(estudiante_id)
-            print(estudiantes)
-            print(estudiante_id)
+            opcion = "c"
 
 
 """
@@ -791,7 +799,7 @@ def editar_datos_estudiante(estudiante_id):
 def menu_principal_estudiante(est_id):
     opcion_menu_principal = "1"
 
-    while opcion_menu_principal != "0" and estudiantes[est_id-1][6]:
+    while opcion_menu_principal != "0" and estudiantes[est_id - 1][7] != ESTADOS_ESTUDIANTES[0]:
         opcion_menu_principal = mostrar_menu_principal_estudiante()
 
         match opcion_menu_principal:
@@ -841,7 +849,7 @@ def menu_principal_moderador(usuario_id):
                 print("¡Hasta luego!")
 
 def mostrar_menu_usuario(usuario_id, rol):
-    print(rol, usuario_id)
+
     if rol == ROLES[0]:
         menu_principal_estudiante(usuario_id)
     elif rol == ROLES[1]:
@@ -867,7 +875,7 @@ def main():
                 print("¡Hasta luego!")
             case "1":
                 usuario = log_in() # usuario = [id, rol]
-                usuario_id = usuario[0]
+                usuario_id = int(usuario[0])
 
                 if usuario_id != "":
                     rol = usuario[1]
