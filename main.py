@@ -27,7 +27,7 @@ ESTUDIANTE_1_EMAIL, ESTUDIANTE_1_PASSWORD, estudiante_1_nacimiento, estudiante_1
 """
 estudiantes = [[""]*7 for n in range(8)]
 moderadores = [[""]*3 for n in range(4)]
-likes = [[0]*7 for n in range(7)]
+likes = [[False]*7 for n in range(7)]
 
 def contar_estudiantes():
     cantidad = 0
@@ -366,7 +366,7 @@ opcion: string
 """
 
 
-def ver_menu_principal_estudiante():
+def mostrar_menu_principal_estudiante():
     limpiar_consola()
 
     print("\n........Home........")
@@ -412,26 +412,29 @@ def log_in():
         login_valido = False
 
         for ind in range(8):
-            if not login_valido:
-                login_valido = estudiantes[ind][1] == email and estudiantes[ind][2] == password
+            login_valido = estudiantes[ind][1] == email and estudiantes[ind][2] == password
+
+            if login_valido:
                 acceso_valido[0] = str(ind + 1)
                 acceso_valido[1] = ROLES[0]
 
         if not login_valido:
             for ind in range(4):
-                if not login_valido:
-                    login_valido = moderadores[ind][1] == email and moderadores[ind][2] == password
+                login_valido = moderadores[ind][1] == email and moderadores[ind][2] == password
+
+                if login_valido:
                     acceso_valido[0] = str(ind + 1)
                     acceso_valido[1] = ROLES[1]
 
             if not login_valido:
+                limpiar_consola()
                 intentos = intentos - 1
                 print("Datos incorrectos. Intentos restantes:", intentos, "\n")
 
     if intentos == 0:
         print("Ha superado el número máximo de intentos. El programa se cerrará.")
 
-    limpiar_consola()
+    # limpiar_consola()
 
     return acceso_valido
 
@@ -683,6 +686,13 @@ def actualizar_estudiante(estudiante_id, propiedad, valor):
     #     elif propiedad == HOBBIES:
     #         estudiante_4_hobbies = valor
 
+def eliminar_perfil(estudiante_id):
+    opc = input("¿Desea eliminar su perfil? (S/N) ").upper()
+    opc = validar_continuacion(opc)
+
+    if opc == "S":
+        estudiantes[estudiante_id - 1][6] = ESTADOS_ESTUDIANTES[0]
+
 
 """
 estudiante_id, opcion: string
@@ -706,7 +716,9 @@ def submenu_gestionar_perfil(estudiante_id):
         if opcion == "a":
             editar_datos_estudiante(estudiante_id)
         elif opcion == "b":
-            en_construccion()
+            eliminar_perfil(estudiante_id)
+            print(estudiantes)
+            print(estudiante_id)
 
 
 """
@@ -776,18 +788,18 @@ def editar_datos_estudiante(estudiante_id):
             actualizar_estudiante(estudiante_id, HOBBIES, hobbies)
 
 
-def menu_principal_estudiante(usuario_id):
+def menu_principal_estudiante(est_id):
     opcion_menu_principal = "1"
 
-    while opcion_menu_principal != "0":
-        opcion_menu_principal = ver_menu_principal_estudiante()
+    while opcion_menu_principal != "0" and estudiantes[est_id-1][6]:
+        opcion_menu_principal = mostrar_menu_principal_estudiante()
 
         match opcion_menu_principal:
             case "1":
-                submenu_gestionar_perfil(usuario_id)
+                submenu_gestionar_perfil(est_id)
 
             case "2":
-                submenu_gestionar_candidatos(usuario_id)
+                submenu_gestionar_candidatos(est_id)
 
             case "3":
                 submenu_matcheos()
@@ -796,7 +808,7 @@ def menu_principal_estudiante(usuario_id):
                 en_construccion()
 
             case "5":
-                ruleta(usuario_id)
+                ruleta(est_id)
 
             case "0":
                 limpiar_consola()
