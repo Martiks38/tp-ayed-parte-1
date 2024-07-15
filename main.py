@@ -263,6 +263,7 @@ def en_construccion():
 
 
 def mostrar_menu_principal():
+    limpiar_consola()
     print("\n........Bienvenido........\n")
 
     print("1. Conectarse")
@@ -664,43 +665,14 @@ estudiante_id, propiedad, valor, estudiante_1_nacimiento, estudiante_1_biografia
 estudiante_2_nacimiento, estudiante_2_biografia, estudiante_2_hobbies,estudiante_3_nacimiento, estudiante_3_biografia, estudiante_3_hobbies,estudiante_4_nacimiento, estudiante_4_biografia, estudiante_4_hobbies, ESTUDIANTE_1_EMAIL, NACIMIENTO, BIOGRAFIA, HOBBIES, ESTUDIANTE_2_EMAIL, ESTUDIANTE_3_EMAIL: string
 """
 def actualizar_estudiante(estudiante_id, propiedad, valor):
-    # Si no aparece "global", los datos no se modifican
-    global estudiante_1_nacimiento, estudiante_1_biografia, estudiante_1_hobbies
-    global estudiante_2_nacimiento, estudiante_2_biografia, estudiante_2_hobbies
-    global estudiante_3_nacimiento, estudiante_3_biografia, estudiante_3_hobbies
-    global estudiante_4_nacimiento, estudiante_4_biografia, estudiante_4_hobbies
+    estudiante = estudiantes[estudiante_id - 1]
 
-    # if estudiante_id == ESTUDIANTE_1_EMAIL:
-    #     if propiedad == NACIMIENTO:
-    #         estudiante_1_nacimiento = valor
-    #     elif propiedad == BIOGRAFIA:
-    #         estudiante_1_biografia = valor
-    #     elif propiedad == HOBBIES:
-    #         estudiante_1_hobbies = valor
-
-    # if estudiante_id == ESTUDIANTE_2_EMAIL:
-    #     if propiedad == NACIMIENTO:
-    #         estudiante_2_nacimiento = valor
-    #     elif propiedad == BIOGRAFIA:
-    #         estudiante_2_biografia = valor
-    #     elif propiedad == HOBBIES:
-    #         estudiante_2_hobbies = valor
-
-    # if estudiante_id == ESTUDIANTE_3_EMAIL:
-    #     if propiedad == NACIMIENTO:
-    #         estudiante_3_nacimiento = valor
-    #     elif propiedad == BIOGRAFIA:
-    #         estudiante_3_biografia = valor
-    #     elif propiedad == HOBBIES:
-    #         estudiante_3_hobbies = valor
-
-    # if estudiante_id == ESTUDIANTE_4_EMAIL:
-    #     if propiedad == NACIMIENTO:
-    #         estudiante_4_nacimiento = valor
-    #     elif propiedad == BIOGRAFIA:
-    #         estudiante_4_biografia = valor
-    #     elif propiedad == HOBBIES:
-    #         estudiante_4_hobbies = valor
+    if propiedad == NACIMIENTO:
+        estudiante[3] = valor
+    elif propiedad == BIOGRAFIA:
+        estudiante[5] = valor
+    elif propiedad == HOBBIES:
+        estudiante[6] = valor
 
 def eliminar_perfil(estudiante_id):
     eliminado = False
@@ -768,6 +740,7 @@ def editar_datos_estudiante(estudiante_id):
     opcion = ""
 
     while opcion != "n":
+        limpiar_consola()
         mostrar_datos_estudiante(estudiante_id)
 
         print("\n\n........Actualizar perfil........\n")
