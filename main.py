@@ -15,13 +15,14 @@ import random
 """
 NACIMIENTO, BIOGRAFIA, HOBBIES: string
 """
-PROP_ESTUDIANTES = ["nacimiento", "biografia", "hobbies", "sexo", "email", "ciudad", "pais"]
+PROP_ESTUDIANTES = ["nacimiento", "biografia", "hobbies", "sexo", "email", "ciudad", "pais", "me_gusta"]
 NACIMIENTO = "nacimiento"
 BIOGRAFIA = "biografia"
 HOBBIES = "hobbies"
 CIUDAD = "ciudad"
 PAIS = "pais"
 SEXO = "sexo"
+ESTADO_ESTUDIANTE = ["INACTIVO", "ACTIVO"]
 ROLES = ["ESTUDIANTE", "MODERADOR"]
 
 # Mock de la base de datos de estudiantes
@@ -134,7 +135,7 @@ def validar_continuacion(opc):
 
     limpiar_consola()
 
-    return opc == "S"
+    return opc
 
 def inicializar_moderadores_mock(mod):
     mod[0][0] = "1"
@@ -154,7 +155,9 @@ def cargar_moderador(mod):
         cant_inicializados = cant_inicializados + 1
 
         opc = input("Añadir un nuevo moderador (S/N) ").upper()
-        continuar = validar_continuacion(opc)
+        opc = validar_continuacion(opc)
+
+        continuar = opc == "S"
 
 
 def inicializar_estudiantes_mock(est):
@@ -165,7 +168,7 @@ def inicializar_estudiantes_mock(est):
     est[0][4] = "Juan Peréz"
     est[0][5] = "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
     est[0][6] = "Lectura - Senderismo - Juegos de mesa"
-    est[0][7] = True
+    est[0][7] = ESTADO_ESTUDIANTE[1]
 
     est[1][0] = "2"
     est[1][1] = "estudiante2@ayed.com"
@@ -174,7 +177,7 @@ def inicializar_estudiantes_mock(est):
     est[1][4] = "María García"
     est[1][5] = "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
     est[1][6] = "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas"
-    est[1][7] = True
+    est[1][7] = ESTADO_ESTUDIANTE[1]
 
     est[2][0] = "3"
     est[2][1] = "estudiante3@ayed.com"
@@ -183,7 +186,7 @@ def inicializar_estudiantes_mock(est):
     est[2][4] = "Carlos Martínez"
     est[2][5] = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
     est[2][6] = "Correr - Tocar la guitarra - Cocinar platos internacionales"
-    est[2][7] = True
+    est[2][7] = ESTADO_ESTUDIANTE[1]
 
     est[3][0] = "4"
     est[3][1] = "estudiante4@ayed.com"
@@ -192,7 +195,7 @@ def inicializar_estudiantes_mock(est):
     est[3][4] = "Ana López"
     est[3][5] = "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que mejoren la seguridad digital."
     est[3][6] = "Leer ciencia ficción - Pintar - Practicar yoga"
-    est[3][7] = True
+    est[3][7] = ESTADO_ESTUDIANTE[1]
 
 
 def cargar_estudiantes(est):
@@ -234,7 +237,9 @@ def cargar_estudiantes(est):
                 #     est[cant_estudiantes][prop] = True
 
         opc = input("Añadir un nuevo estudiante (S/N) ").upper()
-        continuar = validar_continuacion(opc)
+        opc = validar_continuacion(opc)
+
+        continuar = opc == "S"
 
         cant_estudiantes = cant_estudiantes + 1
 
@@ -288,27 +293,29 @@ nacimiento, biografia, formato_espaniol_nacimiento, hobbies, nombre: string
 nacimiento_estudiante, fecha_actual: datetime
 edad, dia, mes, anios: int
 """
+def vista_perfil_estudiante(est_id):
+    for ind in range(8):
+        if estudiantes[0] != est_id:
+            estudiante = estudiantes[ind]
 
+            fecha_actual = datetime.now()
+            nacimiento_estudiante = datetime.fromisoformat(estudiante[3])
 
-def vista_perfil_estudiante(nombre, nacimiento, biografia, hobbies):
-    fecha_actual = datetime.now()
-    nacimiento_estudiante = datetime.fromisoformat(nacimiento)
+            anios = nacimiento_estudiante.year
+            mes = nacimiento_estudiante.month
+            dia = nacimiento_estudiante.day
+            edad = fecha_actual.year - anios
+            formato_espaniol_nacimiento = str(dia) + "/" + str(mes) + "/" + str(anios)
 
-    anios = nacimiento_estudiante.year
-    mes = nacimiento_estudiante.month
-    dia = nacimiento_estudiante.day
-    edad = fecha_actual.year - anios
-    formato_espaniol_nacimiento = str(dia) + "/" + str(mes) + "/" + str(anios)
+            if fecha_actual.month <= mes and fecha_actual.day < dia:
+                edad = edad - 1
 
-    if fecha_actual.month <= mes and fecha_actual.day < dia:
-        edad = edad - 1
-
-    print("Nombre:", nombre)
-    print("Fecha de nacimiento:", formato_espaniol_nacimiento)
-    print("Edad:", edad)
-    print("Biografía:\n\t" + biografia)
-    print("Hobbies:\n\t", hobbies)
-
+            print("Nombre:", estudiante[4])
+            print("Fecha de nacimiento:", formato_espaniol_nacimiento)
+            print("Edad:", edad)
+            print("Biografía:\n\t" + estudiante[5])
+            print("Hobbies:\n\t", estudiante[6])
+            print("\n")
 
 """
 me_gusta, estudiante_id: string
@@ -316,43 +323,7 @@ me_gusta, estudiante_id: string
 
 
 def vista_perfil_estudiantes(estudiante_id):
-    me_gusta = ""
-
-    # if estudiante_id != ESTUDIANTE_1_EMAIL:
-    #     vista_perfil_estudiante(
-    #         estudiante_1_nombre,
-    #         estudiante_1_nacimiento,
-    #         estudiante_1_biografia,
-    #         estudiante_1_hobbies,
-    #     )
-    #     print("\n")
-
-    # if estudiante_id != ESTUDIANTE_2_EMAIL:
-    #     vista_perfil_estudiante(
-    #         estudiante_2_nombre,
-    #         estudiante_2_nacimiento,
-    #         estudiante_2_biografia,
-    #         estudiante_2_hobbies,
-    #     )
-    #     print("\n")
-
-    # if estudiante_id != ESTUDIANTE_3_EMAIL:
-    #     vista_perfil_estudiante(
-    #         estudiante_3_nombre,
-    #         estudiante_3_nacimiento,
-    #         estudiante_3_biografia,
-    #         estudiante_3_hobbies,
-    #     )
-    #     print("\n")
-
-    # if estudiante_id != ESTUDIANTE_4_EMAIL:
-    #     vista_perfil_estudiante(
-    #         estudiante_4_nombre,
-    #         estudiante_4_nacimiento,
-    #         estudiante_4_biografia,
-    #         estudiante_4_hobbies,
-    #     )
-    #     print("\n")
+    vista_perfil_estudiante(estudiante_id)
 
     decision = input(
         "Le gustaría en un futuro hacer matcheo con algún estudiante. (S/N) "
@@ -678,10 +649,10 @@ def eliminar_perfil(estudiante_id):
     eliminado = False
 
     opc = input("¿Desea eliminar su perfil? (S/N) ").upper()
-    borrar = validar_continuacion(opc)
+    opc = validar_continuacion(opc)
 
-    if borrar:
-        estudiantes[estudiante_id - 1][7] = False
+    if opc == "S":
+        estudiantes[estudiante_id - 1][7] = ESTADO_ESTUDIANTE[0]
         eliminado = True
 
         print("Perfil borrado con exito.")
@@ -775,7 +746,7 @@ def editar_datos_estudiante(estudiante_id):
 def menu_principal_estudiante(est_id):
     opcion_menu_principal = "1"
 
-    while opcion_menu_principal != "0" and estudiantes[est_id - 1][7]:
+    while opcion_menu_principal != "0" and estudiantes[est_id - 1][7] == ESTADO_ESTUDIANTE[1]:
         opcion_menu_principal = mostrar_menu_principal_estudiante()
 
         match opcion_menu_principal:
