@@ -693,15 +693,13 @@ def actualizar_estudiante(estudiante_id, propiedad, valor):
     #         estudiante_4_hobbies = valor
 
 def eliminar_perfil(estudiante_id):
-    global estudiantes
-
     opc = input("¿Desea eliminar su perfil? (S/N) ").upper()
-    print(opc)
     borrar = validar_continuacion(opc)
 
     if borrar:
         estudiantes[estudiante_id - 1][7] = ESTADOS_ESTUDIANTES[0]
-        print(estudiantes)
+        print("Perfil borrado con exito.")
+        input("Presione Enter para continuar ")
 
 """
 estudiante_id, opcion: string
