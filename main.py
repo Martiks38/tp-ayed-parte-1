@@ -84,6 +84,10 @@ def ingresar_biografia():
     return bio
 
 def registrar():
+    limpiar_consola()
+
+    print("\n........Registro........\n")
+
     email = input("Ingrese su email: ")
     password = getpass("Ingrese su contraseña: ")
     rol = input("Ingrese el rol estudiante(E) o moderador(M). (E/M): ").upper()
@@ -398,9 +402,10 @@ def log_in():
     acceso_valido = [""]*2
     intentos = 3
 
+    limpiar_consola()
     print("\n........Ingreso........\n")
 
-    while intentos > 0 and acceso_valido == "":
+    while intentos > 0 and acceso_valido[0] == "":
         email = input("Ingrese su email: ")
         password = getpass("Ingrese su contraseña: ")
 
@@ -419,14 +424,14 @@ def log_in():
                     acceso_valido[0] = str(ind + 1)
                     acceso_valido[1] = ROLES[1]
 
-        if login_valido:
-            acceso_valido = email
-        else:
-            intentos = intentos - 1
-            print("Datos incorrectos. Intentos restantes:", intentos, "\n")
+            if not login_valido:
+                intentos = intentos - 1
+                print("Datos incorrectos. Intentos restantes:", intentos, "\n")
 
     if intentos == 0:
         print("Ha superado el número máximo de intentos. El programa se cerrará.")
+
+    limpiar_consola()
 
     return acceso_valido
 
@@ -795,7 +800,6 @@ def menu_principal_estudiante(usuario_id):
 
             case "0":
                 limpiar_consola()
-                print("¡Hasta luego!")
 
 def ver_menu_principal_moderadores():
     print("TODO")
@@ -825,9 +829,10 @@ def menu_principal_moderador(usuario_id):
                 print("¡Hasta luego!")
 
 def mostrar_menu_usuario(usuario_id, rol):
-    if rol == "E":
+    print(rol, usuario_id)
+    if rol == ROLES[0]:
         menu_principal_estudiante(usuario_id)
-    elif rol == "M":
+    elif rol == ROLES[1]:
         menu_principal_moderador(usuario_id)
 
 """
@@ -846,10 +851,10 @@ def main():
 
         match opc:
             case "0":
+                limpiar_consola()
                 print("¡Hasta luego!")
             case "1":
                 usuario = log_in() # usuario = [id, rol]
-
                 usuario_id = usuario[0]
 
                 if usuario_id != "":
