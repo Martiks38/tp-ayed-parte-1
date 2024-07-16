@@ -33,7 +33,9 @@ estudiantes = [[""]*8 for n in range(8)]
 moderadores = [[""]*3 for n in range(4)]
 me_gusta = [[False]*8 for n in range(7)]
 # Estimamos un máximo de 5 reportes por estudiante para un total de 40 reportes
-reportes = [[""]*4 for n in range(8*5)]
+cant_reportes_por_estudiante = 5
+cant_total_reportes = 8 * cant_reportes_por_estudiante
+reportes = [[""]*5 for n in range(cant_total_reportes)]
 
 """
 """
@@ -453,6 +455,17 @@ def vista_perfil_estudiante(est_id):
             print("Biografía:\n\t" + estudiante[5])
             print("Hobbies:\n\t", estudiante[6])
             print("\n")
+
+"""
+"""
+def obtener_nombre_estudiante_por_id(est_id):
+    nombre = ""
+
+    for ind in range(8):
+        if estudiantes[ind][0] == est_id:
+            nombre = estudiantes[ind][4]
+
+    return nombre
 
 """
 """
@@ -1040,9 +1053,50 @@ def submenu_gestionar_usuarios():
 
 """
 """
-def ver_reportes():
+def contar_reportes():
+    cant_reportes = 0
+    ind = 0
+
+    while ind < cant_total_reportes and reportes[ind][0] != "":
+        cant_reportes = cant_reportes + 1
+        ind = ind + 1
+
+    return cant_reportes
+
+"""
+"""
+def mostrar_reporte(reporte):
+    nombre_reportante = obtener_nombre_estudiante_por_id(reporte[1])
+    nombre_reportado = obtener_nombre_estudiante_por_id(reporte[2])
+
+    print(f"........Reporte {reporte[0]}........\n")
+    print("Reportante:", nombre_reportante)
+    print("Reportado:", nombre_reportado)
+    print(f"Motivo:\n\t{reporte[3]}\n\n")
+
+"""
+"""
+def procesar_reporte(reporte):
+    # TODO
     print("TODO")
-    # obtener_estado_estudiante_por_id
+
+"""
+"""
+def ver_reportes():
+    cant_reportes_en_alta = contar_reportes()
+
+    for ind in range(cant_reportes_en_alta):
+        reporte = reportes[ind]
+
+        estado_reportante = obtener_estado_estudiante_por_id(reporte[1])
+        estado_reportado = obtener_estado_estudiante_por_id(reporte[2])
+        estado_reporte = reporte[4]
+
+        estudiantes_activos = estado_reportado == ESTADO_ESTUDIANTE[1] and estado_reportante == ESTADO_ESTUDIANTE[1]
+
+        if estudiantes_activos and estado_reporte == "0":
+            mostrar_reporte(reporte[:])
+            procesar_reporte(reporte)
 
 """
 """
