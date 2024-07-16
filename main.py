@@ -35,8 +35,14 @@ me_gusta = [[False]*8 for n in range(7)]
 
 """
 """
-def hueco_edades():
-    edades = [""]*8
+def huecos_edades():
+    edades = [0]*8
+    cant_estudiantes = contar_estudiantes()
+
+    for ind in range(4):
+        edades[ind] = calcular_edad(estudiantes[ind][3])
+
+
 
     print("")
 
@@ -344,6 +350,47 @@ def mostrar_menu_principal():
 
     return opcion
 
+"""
+"""
+def obtener_valores_fecha(fecha):
+    fecha = [0]*3
+
+    f = datetime.fromisoformat(fecha)
+
+    fecha[0] = f.day
+    fecha[1] = f.month
+    fecha[2] = f.year
+
+    return fecha
+
+"""
+"""
+def formatear_fecha_espaniol(fecha):
+    valores_fecha = obtener_valores_fecha(fecha)
+
+    dia = valores_fecha[0]
+    mes = valores_fecha[1]
+    anio = valores_fecha[2]
+
+    formato_espaniol_nacimiento = str(dia) + "/" + str(mes) + "/" + str(anio)
+
+    return formato_espaniol_nacimiento
+
+"""
+"""
+def calcular_edad(fecha):
+    fecha_actual = datetime.now()
+    valores_fecha = obtener_valores_fecha(fecha)
+
+    dia = valores_fecha[0]
+    mes = valores_fecha[1]
+    anio = valores_fecha[2]
+    edad = fecha_actual.year - anio
+
+    if fecha_actual.month <= mes and fecha_actual.day < dia:
+        edad = edad - 1
+
+    return edad
 
 """
 nacimiento, biografia, formato_espaniol_nacimiento, hobbies, nombre: string
@@ -355,17 +402,8 @@ def vista_perfil_estudiante(est_id):
         if estudiantes[0] != est_id:
             estudiante = estudiantes[ind]
 
-            fecha_actual = datetime.now()
-            nacimiento_estudiante = datetime.fromisoformat(estudiante[3])
-
-            anios = nacimiento_estudiante.year
-            mes = nacimiento_estudiante.month
-            dia = nacimiento_estudiante.day
-            edad = fecha_actual.year - anios
-            formato_espaniol_nacimiento = str(dia) + "/" + str(mes) + "/" + str(anios)
-
-            if fecha_actual.month <= mes and fecha_actual.day < dia:
-                edad = edad - 1
+            edad = calcular_edad(estudiante[3])
+            formato_espaniol_nacimiento = formatear_fecha_espaniol(estudiante[3])
 
             print("Nombre:", estudiante[4])
             print("Fecha de nacimiento:", formato_espaniol_nacimiento)
@@ -866,16 +904,24 @@ def menu_principal_estudiante(est_id):
             case "0":
                 limpiar_consola()
 
+"""
+"""
 def ver_menu_principal_moderadores():
     print("TODO")
     return "0"
 
+"""
+"""
 def submenu_gestionar_usuarios():
     print("TODO")
 
+"""
+"""
 def submenu_gestionar_reportes():
     print("TODO")
 
+"""
+"""
 def menu_principal_moderador(usuario_id):
     opcion_menu_principal = "1"
 
