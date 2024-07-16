@@ -11,10 +11,10 @@ import os
 import platform
 import random
 
-# Campos de propiedades de estudiante
 """
 NACIMIENTO, BIOGRAFIA, HOBBIES: string
 """
+# Campos de propiedades de estudiante
 PROP_ESTUDIANTES = ["nacimiento", "biografia", "hobbies", "sexo", "email", "ciudad", "pais", "me_gusta"]
 NACIMIENTO = "nacimiento"
 BIOGRAFIA = "biografia"
@@ -32,19 +32,61 @@ ESTUDIANTE_1_EMAIL, ESTUDIANTE_1_PASSWORD, estudiante_1_nacimiento, estudiante_1
 estudiantes = [[""]*8 for n in range(8)]
 moderadores = [[""]*3 for n in range(4)]
 me_gusta = [[False]*8 for n in range(7)]
+# Estimamos un máximo de 5 reportes por estudiante para un total de 40 reportes
+reportes = [[""]*4 for n in range(8*5)]
+
+"""
+"""
+def ordenar_edades_creciente(lista):
+    for i in range(6):
+        for j in range(5):
+            if lista[j] > lista[j+1]:
+                aux = lista[j+1]
+                lista[j+1] = lista[j]
+                lista[j] = aux
+
+"""
+"""
+def mostrar_valores_faltantes(edad_1, edad_2):
+    print("Se detectó un hueco.\n")
+    print(f"Los valores faltantes entre {edad_1} y {edad_2} son:\n")
+
+    for edad in range(edad_1 + 1, edad_2):
+        print("-", edad)
+
+    print("\n")
+
+"""
+"""
+def detectar_huecos_entre_edades(edades):
+    cant_huecos = 0
+
+    for ind in range(5):
+        # Dado que las edades no se repiten la diferencia entre edades es 1
+        edad_1 = edades[ind]
+        edad_2 = edades[ind + 1]
+
+        if edad_2 - edad_1 != 1:
+            cant_huecos = cant_huecos + 1
+            mostrar_valores_faltantes(edad_1, edad_2)
+
+    if cant_huecos != 0:
+        print(f"Se encontraron {cant_huecos} entre las edades de los 6 estudiantes.")
+    else:
+        print("No se encontrarón huecos entra las edades los 6 estudiantes.")
 
 """
 """
 def huecos_edades():
-    edades = [0]*8
-    cant_estudiantes = contar_estudiantes()
+    edades = [21, 18, 20, 19, 23, 24]
 
-    for ind in range(4):
-        edades[ind] = calcular_edad(estudiantes[ind][3])
+    print("Las edades de los estudiantes obtenidas del reporte son:")
+    for ind in range(6):
+        print(f"- {edades[ind]} años")
 
+    ordenar_edades_creciente(edades)
+    detectar_huecos_entre_edades(edades)
 
-
-    print("")
 
 """
 """
@@ -414,7 +456,7 @@ def vista_perfil_estudiante(est_id):
 
 """
 """
-def buscar_id_estudiante_por_nombre(nombre):
+def obtener_id_estudiante_por_nombre(nombre):
     est_id = -1
 
     for ind in range(8):
@@ -425,14 +467,27 @@ def buscar_id_estudiante_por_nombre(nombre):
 
 """
 """
+def obtener_estado_estudiante_por_id(estu_id):
+    estado = False
+
+    for ind in range(8):
+        estudiante = estudiantes[ind]
+
+        if estudiante[0] == estu_id:
+            estado = estudiante[7]
+
+    return estado
+
+"""
+"""
 def validar_nombre(nombre):
-    est_id = buscar_id_estudiante_por_nombre(nombre)
+    est_id = obtener_id_estudiante_por_nombre(nombre)
 
     while est_id == -1:
         print("No existe el estudiante", nombre)
         nombre = input("Ingrese un nombre de estudiante: ")
 
-        est_id = buscar_id_estudiante_por_nombre(nombre)
+        est_id = obtener_id_estudiante_por_nombre(nombre)
 
     return nombre
 
@@ -450,7 +505,7 @@ def marcar_match(est_id):
         )
 
         nombre_estudiante = validar_nombre(nombre_estudiante)
-        match_id = buscar_id_estudiante_por_nombre(nombre_estudiante)
+        match_id = obtener_id_estudiante_por_nombre(nombre_estudiante)
 
         me_gusta[est_id - 1][match_id - 1] = True
 
@@ -532,7 +587,7 @@ def log_in():
     if intentos == 0:
         print("Ha superado el número máximo de intentos. El programa se cerrará.")
 
-    # limpiar_consola()
+    limpiar_consola()
 
     return acceso_valido
 
@@ -942,7 +997,7 @@ def desactivar_usuario():
         estudiante = input("Ingrese el ID o el nombre del usuario: ")
 
         if not estudiante.isdigit():
-            estudiante = str(buscar_id_estudiante_por_nombre(estudiante))
+            estudiante = str(obtener_id_estudiante_por_nombre(estudiante))
 
         estudiante_id = int(estudiante)
 
@@ -987,6 +1042,7 @@ def submenu_gestionar_usuarios():
 """
 def ver_reportes():
     print("TODO")
+    # obtener_estado_estudiante_por_id
 
 """
 """
@@ -1031,6 +1087,8 @@ def menu_principal_moderador():
                 limpiar_consola()
                 print("¡Hasta luego!")
 
+"""
+"""
 def mostrar_menu_usuario(usuario_id, rol):
 
     if rol == ROLES[0]:
