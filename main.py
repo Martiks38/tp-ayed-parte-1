@@ -906,27 +906,116 @@ def menu_principal_estudiante(est_id):
 
 """
 """
-def ver_menu_principal_moderadores():
-    print("TODO")
-    return "0"
+def mostrar_menu_principal_moderadores():
+    limpiar_consola()
+
+    print("\n........Home........")
+    print("1. Gestionar Usuarios")
+    print("2. Gestionar Reportes")
+    print("2. Reportes Estadísticos")
+    print("0. Salir")
+
+    opcion = input("\nSeleccione una opción: ")
+
+    while (
+        opcion != "1"
+        and opcion != "2"
+        and opcion != "3"
+        and opcion != "0"
+    ):
+        print("La opción introducida no es válida.")
+        opcion = input("Por favor, introduzca una opción válida: ")
+
+    return opcion
+
+"""
+"""
+def validar_id_estudiante(est_id, minimo, maximo):
+    return est_id >= minimo and est_id <= maximo
+
+"""
+"""
+def desactivar_usuario():
+    decision = "S"
+
+    while decision == "S":
+        estudiante = input("Ingrese el ID o el nombre del usuario: ")
+
+        if not estudiante.isdigit():
+            estudiante = str(buscar_id_estudiante_por_nombre(estudiante))
+
+        estudiante_id = int(estudiante)
+
+        if validar_id_estudiante(int(estudiante_id), 1, 8):
+            print(f"El usuario de id: {estudiante_id} no existe.\n")
+        else:
+            limpiar_consola()
+            opc = input("Seguro que desea continuar con la desactivación del usuario. S/N ").upper()
+            opc = validar_continuacion(opc)
+
+            if opc == "S":
+                estudiantes[estudiante_id - 1][7] = ESTADO_ESTUDIANTE[0]
+
+                print("Perfil borrado con exito.")
+                input("Presione Enter para continuar ")
+
+        limpiar_consola()
+        decision = input("Desactivar otra cuenta. S/N: ").upper()
+        decision = validar_continuacion(decision)
 
 """
 """
 def submenu_gestionar_usuarios():
+    opcion = ""
+
+    while opcion != "b":
+        limpiar_consola()
+        print("........Gestionar Usuarios........\n")
+        print("a. Desactivar usuario")
+        print("b. Volver")
+
+        opcion = input("\nSeleccione una opción: ")
+
+        while opcion != "a" and opcion != "b":
+            print("\nNo es una opción válida.")
+            opcion = input("Ingrese una opción válida: ")
+
+        if opcion == "a":
+            desactivar_usuario()
+
+"""
+"""
+def ver_reportes():
     print("TODO")
 
 """
 """
 def submenu_gestionar_reportes():
-    print("TODO")
+    opcion = ""
+
+    while opcion != "c":
+        limpiar_consola()
+        print("........Gestionar Reportes........\n")
+        print("a. Ver reportes")
+        print("b. Volver")
+
+        opcion = input("\nSeleccione una opción: ")
+
+        while opcion != "a" and opcion != "b":
+            print("\nNo es una opción válida.")
+            opcion = input("Ingrese una opción válida: ")
+
+        if opcion == "a":
+            ver_reportes()
+
 
 """
 """
-def menu_principal_moderador(usuario_id):
+def menu_principal_moderador():
     opcion_menu_principal = "1"
 
     while opcion_menu_principal != "0":
-        opcion_menu_principal = ver_menu_principal_moderadores()
+        opcion_menu_principal = mostrar_menu_principal_moderadores()
 
         match opcion_menu_principal:
             case "1":
@@ -934,6 +1023,9 @@ def menu_principal_moderador(usuario_id):
 
             case "2":
                 submenu_gestionar_reportes()
+
+            case "3":
+                en_construccion()
 
             case "0":
                 limpiar_consola()
@@ -944,7 +1036,7 @@ def mostrar_menu_usuario(usuario_id, rol):
     if rol == ROLES[0]:
         menu_principal_estudiante(usuario_id)
     elif rol == ROLES[1]:
-        menu_principal_moderador(usuario_id)
+        menu_principal_moderador()
 
 """
 accedio, opcion_menu_principal: string
