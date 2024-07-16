@@ -720,6 +720,11 @@ def ruleta(student_id):
     print("\nTu match es la persona", nombre_match)
     input("\nPresiona Enter para volver al inicio...")
 
+"""
+"""
+def reportar_candidato():
+    # TODO
+    print("TODO")
 
 """
 opcion, estudiante_id: string
@@ -744,8 +749,7 @@ def submenu_gestionar_candidatos(estudiante_id):
             vista_perfil_estudiantes(estudiante_id)
 
         if opcion == "b":
-            # reportar_candidato()
-            en_construccion()
+            reportar_candidato()
 
 """
 opcion: string
@@ -1076,16 +1080,37 @@ def mostrar_reporte(reporte):
 
 """
 """
+def bloquear_reportado(reporte):
+    reportado_id = reporte[2]
+    reporte[4] = "1"
+    estudiantes[reportado_id - 1][7] = ESTADO_ESTUDIANTE[0]
+
+"""
+"""
 def procesar_reporte(reporte):
-    # TODO
-    print("TODO")
+    print("Procesamiento de reporte\n")
+    print("1. Ignorar reporte")
+    print("2. Bloquear al reportado")
+
+    opcion = input("\n\nSeleccione una opción: ")
+
+    while opcion != "1" and opcion != "2":
+        print("\nNo es una opción válida.")
+        opcion = input("Ingrese una opción válida: ")
+
+    if opcion == "1":
+        reporte[4] = "2"
+    elif opcion == "2":
+        bloquear_reportado(reporte)
 
 """
 """
 def ver_reportes():
+    continuar = True
+    ind = 0
     cant_reportes_en_alta = contar_reportes()
 
-    for ind in range(cant_reportes_en_alta):
+    while ind < cant_reportes_en_alta and continuar:
         reporte = reportes[ind]
 
         estado_reportante = obtener_estado_estudiante_por_id(reporte[1])
@@ -1097,6 +1122,17 @@ def ver_reportes():
         if estudiantes_activos and estado_reporte == "0":
             mostrar_reporte(reporte[:])
             procesar_reporte(reporte)
+
+            opc = input("Continuar revisando reportes. (S/N) ").upper()
+            opc = validar_continuacion(opc)
+
+            continuar = opc == "S"
+
+        ind = ind + 1
+
+    if ind == cant_reportes_en_alta:
+        print("No quedan más reportes pendientes.")
+        input("Presione Enter para continuar... ")
 
 """
 """
