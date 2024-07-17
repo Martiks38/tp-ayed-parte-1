@@ -241,10 +241,10 @@ def solicitar_fecha_nacimiento():
 prop, valor: string
 """
 def ingresar_propiedad(prop):
-    valor = input(f"Ingrese {prop}:\n\t").capitalize()
+    valor = input(f"Ingrese {prop}:\n\t")
 
     while valor == "":
-        valor = input(f"Debe ingresar {prop}:\n\t").capitalize()
+        valor = input(f"Debe ingresar {prop}:\n\t")
 
     return valor
 
@@ -255,7 +255,7 @@ def ingresar_contrasenia():
     password = getpass("Ingrese su contraseña: ")
 
     while password == "":
-        password = getpass("Debe ingresar una contraseña: ").capitalize()
+        password = getpass("Debe ingresar una contraseña: ")
 
     return password
 
