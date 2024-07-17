@@ -1080,31 +1080,31 @@ def eliminar_perfil(est_id):
     return eliminado
 
 """
-estudiante_id, opcion: string
+estudiante_id, opc: string
 """
 def submenu_gestionar_perfil(estudiante_id):
-    opcion = ""
+    opc = ""
 
-    while opcion != "c":
+    while opc != "c":
         limpiar_consola()
         print("........Gestionar Perfil........\n")
         print("a. Editar mis datos personales")
         print("b. Eliminar mi perfil")
         print("c. Volver")
 
-        opcion = input("\nSeleccione una opción: ")
+        opc = input("\nSeleccione una opción: ")
 
-        while opcion != "a" and opcion != "b" and opcion != "c":
+        while opc != "a" and opc != "b" and opc != "c":
             print("\nNo es una opción válida.")
-            opcion = input("Ingrese una opción válida: ")
+            opc = input("Ingrese una opción válida: ")
 
-        if opcion == "a":
+        if opc == "a":
             editar_datos_estudiante(estudiante_id)
-        elif opcion == "b":
+        elif opc == "b":
             eliminado = eliminar_perfil(estudiante_id)
 
             if eliminado:
-                opcion = "c"
+                opc = "c"
 
 
 """
@@ -1123,15 +1123,14 @@ def mostrar_datos_estudiante(estudiante_id):
 
 
 """
-estudiante_id, opcion, dia, mes, anio, nacimiento, bibligrafia, hobbies, NACIMIENTO, BIBLIOGRAFIA, HOBBIES:str   
-fecha: date
+estudiante_id, opcion, nacimiento, biografia, hobbies:str   
 """
 def editar_datos_estudiante(estudiante_id):
-    opcion = ""
+    opc = ""
 
-    while opcion != "n":
+    while opc != "n":
         limpiar_consola()
-        mostrar_datos_estudiante(estudiante_id)
+        mostrar_datos_estudiante(int(estudiante_id))
 
         print("\n\n........Actualizar perfil........\n")
         print("a. Cambiar fecha de nacimiento")
@@ -1142,26 +1141,28 @@ def editar_datos_estudiante(estudiante_id):
         print("c. Editar hobbies")
         print("n. Finalizar\n")
 
-        opcion = input("Seleccione una opción: ")
+        opc = input("Seleccione una opción: ")
 
-        while opcion != "a" and opcion != "b" and opcion != "c" and opcion != "n":
+        while opc != "a" and opc != "b" and opc != "c" and opc != "n":
             print("\nNo es una opción válida.")
-            opcion = input("Ingrese una opción válida: ")
+            opc = input("Ingrese una opción válida: ")
 
-        if opcion == "a":
+        if opc == "a":
             nacimiento = solicitar_fecha_nacimiento()
-
             actualizar_estudiante(int(estudiante_id), NACIMIENTO, nacimiento)
 
-        elif opcion == "b":
+        elif opc == "b":
             biografia = input("Nueva biografía:\n")
             actualizar_estudiante(int(estudiante_id), BIOGRAFIA, biografia)
 
-        elif opcion == "c":
+        elif opc == "c":
             hobbies = input("Nuevos Hobbies:\n")
             actualizar_estudiante(int(estudiante_id), HOBBIES, hobbies)
 
 """
+est_id, ind, likes_dados, likes_recibidos, matches: int
+like_dado, like_recibido: bool
+porcentaje: float
 """
 def reportes_estadisticos_estudiante(est_id):
     likes_dados = 0
@@ -1182,11 +1183,13 @@ def reportes_estadisticos_estudiante(est_id):
 
     porcentaje = matches / (likes_recibidos + likes_dados + matches) * 100
 
-    print(f"Matcheados sobr el % posible: {porcentaje}%")
+    print(f"Matcheados sobr el % posible: {porcentaje:.2f}%")
     print("Likes dados y no recibidos:", likes_dados)
     print("Likes recibidos y no respondidos:", likes_recibidos)
 
 """
+est_id: int
+opcion_menu_principal: string
 """
 def menu_principal_estudiante(est_id):
     opcion_menu_principal = "1"
@@ -1214,6 +1217,7 @@ def menu_principal_estudiante(est_id):
                 limpiar_consola()
 
 """
+opc: string
 """
 def mostrar_menu_principal_moderadores():
     limpiar_consola()
@@ -1224,20 +1228,21 @@ def mostrar_menu_principal_moderadores():
     print("3. Reportes Estadísticos")
     print("0. Salir")
 
-    opcion = input("\nSeleccione una opción: ")
+    opc = input("\nSeleccione una opción: ")
 
     while (
-        opcion != "1"
-        and opcion != "2"
-        and opcion != "3"
-        and opcion != "0"
+        opc != "1"
+        and opc != "2"
+        and opc != "3"
+        and opc != "0"
     ):
         print("\nLa opción introducida no es válida.")
-        opcion = input("Por favor, introduzca una opción válida: ")
+        opc = input("Por favor, introduzca una opción válida: ")
 
-    return opcion
+    return opc
 
 """
+decision, estudiante, opc: string
 """
 def desactivar_usuario():
     decision = "S"
@@ -1266,26 +1271,29 @@ def desactivar_usuario():
             decision = validar_continuacion(decision)
 
 """
+opc: string
 """
 def submenu_gestionar_usuarios():
-    opcion = ""
+    opc = ""
 
-    while opcion != "b":
+    while opc != "b":
         limpiar_consola()
         print("........Gestionar Usuarios........\n")
         print("a. Desactivar usuario")
         print("b. Volver")
 
-        opcion = input("\nSeleccione una opción: ")
+        opc = input("\nSeleccione una opción: ")
 
-        while opcion != "a" and opcion != "b":
+        while opc != "a" and opc != "b":
             print("\nNo es una opción válida.")
-            opcion = input("Ingrese una opción válida: ")
+            opc = input("Ingrese una opción válida: ")
 
-        if opcion == "a":
+        if opc == "a":
             desactivar_usuario()
 
 """
+reporte: Arreglo de 0 a 3 de string
+nombre_reportante, nombre_reportado: string
 """
 def mostrar_reporte(reporte):
     nombre_reportante = obtener_nombre_estudiante_por_id(reporte[1])
@@ -1297,6 +1305,8 @@ def mostrar_reporte(reporte):
     print(f"Motivo:\n\t{reporte[3]}\n\n")
 
 """
+reporte: Arreglo de 0 a 3 de string
+opc, reportado_id: string
 """
 def procesar_reporte(reporte, opc):
     if opc == "1":
@@ -1307,24 +1317,27 @@ def procesar_reporte(reporte, opc):
         estudiantes[reportado_id - 1][7] = ESTADO_ESTUDIANTE[0]
 
 """
+reporte: Arreglo de 0 a 3 de string
+opc: string
 """
 def procesamiento_reporte(reporte):
     print("Procesamiento de reporte\n")
     print("1. Ignorar reporte")
     print("2. Bloquear al reportado")
 
-    opcion = input("\n\nSeleccione una opción: ")
+    opc = input("\n\nSeleccione una opción: ")
 
-    while opcion != "1" and opcion != "2":
+    while opc != "1" and opc != "2":
         print("\nNo es una opción válida.")
-        opcion = input("Ingrese una opción válida: ")
+        opc = input("Ingrese una opción válida: ")
 
-    procesar_reporte(reporte, opcion)
+    procesar_reporte(reporte, opc)
 
 """
 reporte: Arreglo de 0 a 3 de string
-continuar: bool
+continuar, estudiantes_activos: bool
 cant_reportes_alta, ind: int
+estado_reportante, estado_reportado, estado_reporte, opc: string
 """
 def ver_reportes():
     continuar = True
