@@ -12,33 +12,65 @@ import random
 
 """
 NACIMIENTO, BIOGRAFIA, HOBBIES: string
+PROP_ESTUDIANTES: Arreglo de 0 a 7 de string
+ESTADO_ESTUDIANTE: Arreglo de 0 a 1 de string
+ESTADO_REPORTE: Arreglo de 0 a 2 de string
+ROLES: Arreglo de 0 a 1 de string
 """
 # Campos de propiedades de estudiante
-PROP_ESTUDIANTES = ["nacimiento", "biografia", "hobbies", "sexo", "email", "ciudad", "pais", "me_gusta"]
 NACIMIENTO = "nacimiento"
 BIOGRAFIA = "biografia"
 HOBBIES = "hobbies"
 CIUDAD = "ciudad"
 PAIS = "pais"
 SEXO = "sexo"
+PROP_ESTUDIANTES = ["nacimiento", "biografia", "hobbies", "sexo", "email", "ciudad", "pais"]
 ESTADO_ESTUDIANTE = ["INACTIVO", "ACTIVO"]
 ESTADO_REPORTE = ["0", "1", "2"]
 ROLES = ["ESTUDIANTE", "MODERADOR"]
 
-# Mock de la base de datos de estudiantes
 """
-ESTUDIANTE_1_EMAIL, ESTUDIANTE_1_PASSWORD, estudiante_1_nacimiento, estudiante_1_nombre, estudiante_1_biografia, estudiante_1_hobbies: string
+cant_total_reportes: int
+estudiantes: Arreglo multi de 8x8 de string
+moderadores: Arreglo multi de 3x4 de string
+me_gusta: Arreglo multi de 8x8 de string
+reportes: Arreglo multi de 5x40 de bool
 """
 estudiantes = [[""]*8 for n in range(8)]
 moderadores = [[""]*3 for n in range(4)]
-me_gusta = [[False]*8 for n in range(7)]
-# Estimamos un máximo de 5 reportes por estudiante para un total de 40 reportes
-cant_reportes_por_estudiante = 5
-cant_total_reportes = 8 * cant_reportes_por_estudiante
+me_gusta = [[False]*8 for n in range(8)]
+# Estimamos un máximo de 5 reportes por estudiante,
+# hay 8 estudiantes, siendo un total de 40 reportes
+cant_total_reportes = 40
 reportes = [[""]*5 for n in range(cant_total_reportes)]
 
+"""
+opc: string
+"""
+def validar_continuacion(opc):
+    while opc != "S" and opc != "N":
+        opc = input("Opción incorrecta S o N: ").upper()
+
+    limpiar_consola()
+
+    return opc
 
 """
+cant, ind: int
+"""
+def contar_estudiantes_activos():
+    cant = 0
+
+    for ind in range(8):
+        if estudiantes[ind][7] == ESTADO_ESTUDIANTE[1]:
+            cant = cant + 1
+
+    return cant
+
+"""
+cant_estudiantes, ind: int
+est_id: string
+encontrado, valido: bool
 """
 def validar_id_estudiante(est_id):
     valido = False
@@ -56,6 +88,7 @@ def validar_id_estudiante(est_id):
     return valido
 
 """
+cant, ind: int
 """
 def contar_reportes():
     cant = 0
@@ -68,16 +101,19 @@ def contar_reportes():
     return cant
 
 """
+edades: Arreglo de 0 a 5 de int
+aux, i, j: int
 """
-def ordenar_edades_creciente(lista):
+def ordenar_edades_creciente(edades):
     for i in range(6):
         for j in range(5):
-            if lista[j] > lista[j+1]:
-                aux = lista[j+1]
-                lista[j+1] = lista[j]
-                lista[j] = aux
+            if edades[j] > edades[j+1]:
+                aux = edades[j+1]
+                edades[j+1] = edades[j]
+                edades[j] = aux
 
 """
+edad, edad_1, edad_2: int
 """
 def mostrar_valores_faltantes(edad_1, edad_2):
     print("Se detectó un hueco.\n")
@@ -89,6 +125,8 @@ def mostrar_valores_faltantes(edad_1, edad_2):
     print("\n")
 
 """
+edades: Arreglo de 0 a 5 de int
+cant_huecos, ind: int
 """
 def detectar_huecos_entre_edades(edades):
     cant_huecos = 0
@@ -108,61 +146,60 @@ def detectar_huecos_entre_edades(edades):
         print("No se encontrarón huecos entra las edades los 6 estudiantes.")
 
 """
+edades: Arreglo de 0 a 5 de int
+ind: int
+"""
+def mostrar_edades(edades):
+    for ind in range(6):
+        print(f"- {edades[ind]} años")
+
+"""
+edades: Arreglo de 0 a 5 de int
 """
 def huecos_edades():
     edades = [21, 18, 20, 19, 23, 24]
 
     print("Las edades de los estudiantes obtenidas del reporte son:")
-    for ind in range(6):
-        print(f"- {edades[ind]} años")
+    mostrar_edades(edades)
 
     ordenar_edades_creciente(edades)
-    detectar_huecos_entre_edades(edades)
-
-
-"""
-"""
-def contar_estudiantes_activos():
-    cant = 0
-
-    for ind in range(8):
-        if estudiantes[ind][7] == ESTADO_ESTUDIANTE[1]:
-            cant = cant + 1
-
-    return cant
+    detectar_huecos_entre_edades(edades[:])
 
 """
+cant_est, cant_matcheos: int
 """
 def matcheos_combinados():
     cant_est = contar_estudiantes_activos()
-
     cant_matcheos = cant_est*(cant_est - 1)/2
 
     print(f"La cantidad de matcheos posibles entre {cant_est} estudiantes es: {cant_matcheos}.")
 
 """
+cant, ind: int
 """
 def contar_estudiantes():
-    cantidad = 0
+    cant = 0
 
     for ind in range(8):
         if estudiantes[ind][0] != "":
-            cantidad = cantidad + 1
+            cant = cant + 1
 
-    return cantidad
+    return cant
 
 """
+cant, ind: int
 """
 def contar_moderadores():
-    cantidad = 0
+    cant = 0
 
     for ind in range(4):
         if moderadores[ind][0] != "":
-            cantidad = cantidad + 1
+            cant = cant + 1
 
-    return cantidad
+    return cant
 
 """
+fecha: Arreglo de 0 a 2 de string
 """
 def ingresar_fecha():
     fecha = [""]*3
@@ -174,9 +211,9 @@ def ingresar_fecha():
     return fecha
 
 """
+fecha: Arreglo de 0 a 2 de string
 """
 def validar_fecha(fecha):
-
     while not (fecha[0].isdigit() and fecha[1].isdigit() and fecha[2].isdigit()):
         print("Los datos ingresados no son válidos")
         fecha = ingresar_fecha()
@@ -186,15 +223,19 @@ def validar_fecha(fecha):
         fecha = ingresar_fecha()
 
 """
+fecha: Arreglo de 0 a 2 de string
+f: date
 """
 def solicitar_fecha_nacimiento():
     fecha = ingresar_fecha()
     validar_fecha(fecha)
 
-    fecha = date(int(fecha[2]), int(fecha[1]), int(fecha[0]))
-    return fecha.isoformat()
+    f = date(int(fecha[2]), int(fecha[1]), int(fecha[0]))
+
+    return f.isoformat()
 
 """
+nombre: string
 """
 def ingresar_nombre():
     nombre = input("Ingrese su nombre: ").capitalize()
@@ -205,6 +246,7 @@ def ingresar_nombre():
     return nombre
 
 """
+bio: string
 """
 def ingresar_biografia():
     bio = input("Ingrese su biografía: ").capitalize()
@@ -215,6 +257,8 @@ def ingresar_biografia():
     return bio
 
 """
+bio, email, fecha, password, rol: string
+cant: int
 """
 def registrar():
     limpiar_consola()
@@ -238,6 +282,9 @@ def registrar():
             limpiar_consola()
             print("Fecha de nacimiento\n")
             fecha = solicitar_fecha_nacimiento()
+
+            estudiantes[cant - 1][1] = email
+            estudiantes[cant - 1][2] = password
             estudiantes[cant - 1][3] = fecha
 
             nombre = ingresar_nombre()
@@ -255,19 +302,10 @@ def registrar():
             moderadores[cant - 1][1] = email
             moderadores[cant - 1][2] = password
 
-    input("Registro exictoso!!!")
+    input("Registro exictoso!!! ")
 
 """
-"""
-def validar_continuacion(opc):
-    while opc != "S" and opc != "N":
-        opc = input("Opción incorrecta S o N: ").upper()
-
-    limpiar_consola()
-
-    return opc
-
-"""
+mod: Arreglo multi de 3x4 de string
 """
 def inicializar_moderadores_mock(mod):
     mod[0][0] = "1"
@@ -275,13 +313,15 @@ def inicializar_moderadores_mock(mod):
     mod[0][2] = "111222"
 
 """
+mod: Arreglo multi de 3x4 de string
+opc: string
 """
 def cargar_moderador(mod):
     cant_inicializados = contar_moderadores()
     continuar = True
 
     while(cant_inicializados <= 4 and continuar):
-        mod[cant_inicializados][0] = cant_inicializados + 1 # id
+        mod[cant_inicializados][0] = str(cant_inicializados + 1) # id
         mod[cant_inicializados][1] = input("Ingrese el email: ")
         mod[cant_inicializados][2] = getpass("Ingrese la contraseña: ")
 
@@ -293,6 +333,7 @@ def cargar_moderador(mod):
         continuar = opc == "S"
 
 """
+est: Arreglo multi de 8x8 de string
 """
 def inicializar_estudiantes_mock(est):
     est[0][0] = "1"
@@ -332,6 +373,10 @@ def inicializar_estudiantes_mock(est):
     est[3][7] = ESTADO_ESTUDIANTE[1]
 
 """
+est: Arreglo multi de 8x8 de string
+cant_estudiantes, prop: int
+continuar: bool
+opc: string
 """
 def cargar_estudiantes(est):
     cant_estudiantes = contar_estudiantes()
@@ -375,14 +420,11 @@ def cargar_estudiantes(est):
         opc = validar_continuacion(opc)
 
         continuar = opc == "S"
-
         cant_estudiantes = cant_estudiantes + 1
 
 """
 comando, so: string
 """
-
-
 def limpiar_consola():
     # Detecta el sistema operativo(SO).
     # Para ejecutar el comando de limpieza de terminal de acuerdo al SO.
@@ -403,11 +445,12 @@ def en_construccion():
     input("Presiona Enter para continuar... ")
 
 """
+opcion: string
 """
 def mostrar_menu_principal():
     limpiar_consola()
-    print("\n........Bienvenido........\n")
 
+    print("\n........Bienvenido........\n")
     print("1. Conectarse")
     print("2. Registrarse")
     print("0. Salir")
@@ -425,40 +468,50 @@ def mostrar_menu_principal():
     return opcion
 
 """
+fecha: Arreglo de 0 a 2 de string
+fecha_nros: Arreglo de 0 a 2 de int
+f: datetime
 """
 def obtener_valores_fecha(fecha):
-    fecha = [0]*3
+    fecha_nros = [0]*3
 
     f = datetime.fromisoformat(fecha)
 
-    fecha[0] = f.day
-    fecha[1] = f.month
-    fecha[2] = f.year
+    fecha_nros[0] = f.day
+    fecha_nros[1] = f.month
+    fecha_nros[2] = f.year
 
-    return fecha
+    return fecha_nros
 
 """
+fecha: Arreglo de 0 a 2 de string
+fecha_nros: Arreglo de 0 a 2 de int
+anio, dia, formato_espaniol_nacimiento, mes: string
 """
 def formatear_fecha_espaniol(fecha):
-    valores_fecha = obtener_valores_fecha(fecha)
+    fecha_nros = obtener_valores_fecha(fecha)
 
-    dia = valores_fecha[0]
-    mes = valores_fecha[1]
-    anio = valores_fecha[2]
+    dia = fecha_nros[0]
+    mes = fecha_nros[1]
+    anio = fecha_nros[2]
 
     formato_espaniol_nacimiento = str(dia) + "/" + str(mes) + "/" + str(anio)
 
     return formato_espaniol_nacimiento
 
 """
+fecha: Arreglo de 0 a 2 de string
+fecha_nros: Arreglo de 0 a 2 de int
+fecha_actual: datetime
+anio, dia, edad, mes: int
 """
 def calcular_edad(fecha):
     fecha_actual = datetime.now()
-    valores_fecha = obtener_valores_fecha(fecha)
+    fecha_nros = obtener_valores_fecha(fecha)
 
-    dia = valores_fecha[0]
-    mes = valores_fecha[1]
-    anio = valores_fecha[2]
+    dia = fecha_nros[0]
+    mes = fecha_nros[1]
+    anio = fecha_nros[2]
     edad = fecha_actual.year - anio
 
     if fecha_actual.month <= mes and fecha_actual.day < dia:
@@ -467,13 +520,13 @@ def calcular_edad(fecha):
     return edad
 
 """
-nacimiento, biografia, formato_espaniol_nacimiento, hobbies, nombre: string
-nacimiento_estudiante, fecha_actual: datetime
-edad, dia, mes, anios: int
+estudiante: Arreglo de 0 a 7 de string
+est_id, formato_espaniol_nacimiento: string
+edad, ind: int
 """
 def vista_perfil_estudiante(est_id):
     for ind in range(8):
-        if estudiantes[0] != est_id:
+        if estudiantes[ind] != est_id:
             estudiante = estudiantes[ind]
 
             edad = calcular_edad(estudiante[3])
@@ -487,6 +540,8 @@ def vista_perfil_estudiante(est_id):
             print("\n")
 
 """
+nombre: string
+est_id, ind: int
 """
 def obtener_nombre_estudiante_por_id(est_id):
     nombre = ""
@@ -501,6 +556,8 @@ def obtener_nombre_estudiante_por_id(est_id):
     return nombre
 
 """
+est_id, ind: int
+nombre: string
 """
 def obtener_id_estudiante_por_nombre(nombre):
     est_id = -1
@@ -515,15 +572,18 @@ def obtener_id_estudiante_por_nombre(nombre):
     return est_id
 
 """
+estudiante: Arreglo de 0 a 7 de string
+estado: bool
+est_id, ind: int
 """
-def obtener_estado_estudiante_por_id(estu_id):
+def obtener_estado_estudiante_por_id(est_id):
     estado = False
     ind = 0
 
     while ind < 8 and not estado:
         estudiante = estudiantes[ind]
 
-        if estudiante[0] == estu_id:
+        if estudiante[0] == est_id:
             estado = estudiante[7]
 
         ind = ind + 1
@@ -531,6 +591,8 @@ def obtener_estado_estudiante_por_id(estu_id):
     return estado
 
 """
+nombre: string
+est_id: int
 """
 def validar_nombre(nombre):
     est_id = obtener_id_estudiante_por_nombre(nombre)
@@ -544,6 +606,8 @@ def validar_nombre(nombre):
     return nombre
 
 """
+est_id, match_id: int
+decision, nombre_estudiante: string
 """
 def marcar_match(est_id):
     decision = input("Le gustaría en un futuro hacer matcheo con algún estudiante. (S/N) ")
@@ -599,9 +663,10 @@ def mostrar_menu_principal_estudiante():
 
 
 """
-valid_email, valid_password: boolean
-email, password, acceso_valido: string
-intentos: int
+acceso_valido: Arreglo de 0 a 1 de string
+intentos, ind: int
+email, password: string
+login_valido: bool
 """
 def log_in():
     acceso_valido = [""]*2
@@ -616,6 +681,8 @@ def log_in():
 
         login_valido = False
 
+        # TODO
+        # Cambiar los for por while
         for ind in range(8):
             login_valido = estudiantes[ind][1] == email and estudiantes[ind][2] == password
 
@@ -645,14 +712,18 @@ def log_in():
 
 
 """
-probabilidad: int
-rand: float
+valores: Arreglo de 0 a 2 de int
+cand: Arreglo de 0 a 2 de string
+ind: int
 """
 def calcular_eleccion_candidatos(valores, cand):
     for ind in range(3):
         valores[ind] = random.randint(0, 100) * int(cand[ind][3])
 
 """
+candidatos: Arreglo de 3x3 de string
+est_id, ind: int
+nuevo_candidato: bool
 """
 def comprobar_nuevo_candidato(candidatos, est_id):
     nuevo_candidato = True
@@ -664,16 +735,20 @@ def comprobar_nuevo_candidato(candidatos, est_id):
     return nuevo_candidato
 
 """
+cand: Arreglo de 0 a 2 de string
+ind, total: int
 """
 def calcular_probabilidad_total_candidatos(cand):
-    sum = 0
+    total = 0
 
     for ind in range(3):
-        sum = sum + int(cand[ind][2])
+        total = total + int(cand[ind][2])
 
-    return sum
+    return total
 
 """
+cand: Arreglo de 0 a 2 de string
+ind: int
 """
 def mostrar_candidatos(cand):
     for ind in range(3):
@@ -682,6 +757,8 @@ def mostrar_candidatos(cand):
     print("\n")
 
 """
+valores: Arreglo de 0 a 2 de int
+ind, mayor, pos, valor: int
 """
 def buscar_candidato_mayor_valor(valores):
     mayor = -1
@@ -697,6 +774,10 @@ def buscar_candidato_mayor_valor(valores):
     return pos
 
 """
+valores: Arreglo de 0 a 2 de int
+cand: Arreglo de 0 a 2 de string
+est_id, pos: int
+nombre_match: string
 """
 def matchear_candidato(valores, cand, est_id):
     pos = buscar_candidato_mayor_valor(valores)
@@ -710,8 +791,8 @@ def matchear_candidato(valores, cand, est_id):
 person_name: string
 probabilidad_match_1, probabilidad_match_2, probabilidad_match_3: int
 """
+# TODO
 def ruleta(estudiante_id):
-    # TODO
     # Hacer esto ciclo mientras el usuario quiera y la cantidad
     #  cant_estudiantes-1 sea mayor que tres pero con cada sigo se le debe restar uno más
     limpiar_consola()
@@ -781,6 +862,8 @@ def ruleta(estudiante_id):
         matchear_candidato(valores_eleccion_candidatos[:], candidatos[:], est_id)
 
 """
+est_id, reporte_id: int
+decision, motivo, opc, reportado_id: string
 """
 def reportar_candidato(est_id):
     decision = "S"
@@ -909,27 +992,36 @@ def validar_valores_fecha(dia, mes, anio):
 
 
 """
-estudiante_id, propiedad, valor, estudiante_1_nacimiento, estudiante_1_biografia, estudiante_1_hobbies,
-estudiante_2_nacimiento, estudiante_2_biografia, estudiante_2_hobbies,estudiante_3_nacimiento, estudiante_3_biografia, estudiante_3_hobbies,estudiante_4_nacimiento, estudiante_4_biografia, estudiante_4_hobbies, ESTUDIANTE_1_EMAIL, NACIMIENTO, BIOGRAFIA, HOBBIES, ESTUDIANTE_2_EMAIL, ESTUDIANTE_3_EMAIL: string
+estudiante: Arreglo de 0 a 7 de string
+est_id: int
+prop, valor: string
 """
-def actualizar_estudiante(estudiante_id, propiedad, valor):
-    estudiante = estudiantes[estudiante_id - 1]
+def actualizar_estudiante(est_id, prop, valor):
+    estudiante = estudiantes[est_id - 1]
 
-    if propiedad == NACIMIENTO:
+    # TODO
+    # hacer que con un mientras búsque el valor de índice de la propiedad para automatizar y no tener q poner los if
+    # props[ind] = prop
+    if prop == NACIMIENTO:
         estudiante[3] = valor
-    elif propiedad == BIOGRAFIA:
+    elif prop == BIOGRAFIA:
         estudiante[5] = valor
-    elif propiedad == HOBBIES:
+    elif prop == HOBBIES:
         estudiante[6] = valor
 
-def eliminar_perfil(estudiante_id):
+"""
+est_id: int
+eliminado: bool
+opc: string
+"""
+def eliminar_perfil(est_id):
     eliminado = False
 
     opc = input("¿Desea eliminar su perfil? (S/N) ").upper()
     opc = validar_continuacion(opc)
 
     if opc == "S":
-        estudiantes[estudiante_id - 1][7] = ESTADO_ESTUDIANTE[0]
+        estudiantes[est_id - 1][7] = ESTADO_ESTUDIANTE[0]
         eliminado = True
 
         print("Perfil borrado con exito.")
@@ -1009,15 +1101,15 @@ def editar_datos_estudiante(estudiante_id):
         if opcion == "a":
             nacimiento = solicitar_fecha_nacimiento()
 
-            actualizar_estudiante(estudiante_id, NACIMIENTO, nacimiento)
+            actualizar_estudiante(int(estudiante_id), NACIMIENTO, nacimiento)
 
         elif opcion == "b":
             biografia = input("Nueva biografía:\n")
-            actualizar_estudiante(estudiante_id, BIOGRAFIA, biografia)
+            actualizar_estudiante(int(estudiante_id), BIOGRAFIA, biografia)
 
         elif opcion == "c":
             hobbies = input("Nuevos Hobbies:\n")
-            actualizar_estudiante(estudiante_id, HOBBIES, hobbies)
+            actualizar_estudiante(int(estudiante_id), HOBBIES, hobbies)
 
 """
 """
