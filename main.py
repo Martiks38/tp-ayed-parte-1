@@ -1223,7 +1223,7 @@ def mostrar_menu_principal_moderadores():
     print("\n........Home........")
     print("1. Gestionar Usuarios")
     print("2. Gestionar Reportes")
-    print("2. Reportes Estadísticos")
+    print("3. Reportes Estadísticos")
     print("0. Salir")
 
     opcion = input("\nSeleccione una opción: ")
