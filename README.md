@@ -9,7 +9,8 @@
 - [ ] Mejorar validación de nombre de estudiante en el match
 - [X] Modificar ruleta
 - [ ] Hacer declaración de variables
-- [ ] Añadir explicación al alcanzar los límites de moderadores, usuarios, reportes
+- [ ] Añadir explicación al alcanzar los límites de moderadores, usuarios, reportes (Falta reportes)
 - [ ] Añadir bonus tracks al menú
 - [ ] Añadir que no se puede tener un email existente en el registro y tampoco cambiar
 - [X] Unir los ingresos de textos para los datos de estudiantes
+- [ ] Verificar que al alcanzar el maximo de estudiantes, moderadores y reportes no deje crear otro

@@ -240,8 +240,8 @@ def solicitar_fecha_nacimiento():
 """
 prop, valor: string
 """
-def ingresar_propiedad_estudiante(prop):
-    valor = input(f"Ingrese su {prop}:\n\t").capitalize()
+def ingresar_propiedad(prop):
+    valor = input(f"Ingrese {prop}:\n\t").capitalize()
 
     while valor == "":
         valor = input(f"Debe ingresar {prop}:\n\t").capitalize()
@@ -249,11 +249,56 @@ def ingresar_propiedad_estudiante(prop):
     return valor
 
 """
+password: string
+"""
+def ingresar_contrasenia():
+    password = getpass("Ingrese su contraseña: ")
+
+    while password == "":
+        password = getpass("Debe ingresar una contraseña: ").capitalize()
+
+    return password
+
+"""
+email: string
+ind: int
+valido: bool
+"""
+def email_existente_estudiante(email):
+    valido = True
+    ind = 0
+
+    while ind < 8 and valido:
+        if estudiantes[ind][1] == email:
+            valido = False
+
+        ind = ind + 1
+
+    return valido
+
+"""
+email: string
+ind: int
+valido: bool
+"""
+def email_existente_moderador(email):
+    valido = True
+    ind = 0
+
+    while ind < 4 and valido:
+        if moderadores[ind][1] == email:
+            valido = False
+
+        ind = ind + 1
+
+    return valido
+
+"""
 email, password: string
 cant: int
 """
 def registrar_estudiante(email, password, cant):
-    if cant == 8:
+    if cant == 8 or not email_existente_estudiante(email):
         print("Se produjo un error al registrarse.")
         input("Presione Enter para continuar... ")
     else:
@@ -265,11 +310,11 @@ def registrar_estudiante(email, password, cant):
         estudiantes[cant][2] = password
         estudiantes[cant][3] = fecha
 
-        nombre = ingresar_propiedad_estudiante("nombre")
+        nombre = ingresar_propiedad("nombre")
         estudiantes[cant][4] = nombre
-        bio = ingresar_propiedad_estudiante("biografía")
+        bio = ingresar_propiedad("biografía")
         estudiantes[cant][5] = bio
-        hobbies = ingresar_propiedad_estudiante("hobbies")
+        hobbies = ingresar_propiedad("hobbies")
         estudiantes[cant][6] = hobbies
         estudiantes[cant][7] = ESTADO_ESTUDIANTE[1]
         print("Registro exictoso!!!")
@@ -280,7 +325,7 @@ email, password: string
 cant: int
 """
 def registrar_moderador(email, password, cant):
-    if cant == "4":
+    if cant == "4" or not email_existente_moderador(email):
         print("Se produjo un error al registrarse.")
     else:
         moderadores[cant][0] = cant + 1
@@ -298,8 +343,8 @@ def registrar():
 
     print("\n........Registro........\n")
 
-    email = input("Ingrese su email: ")
-    password = getpass("Ingrese su contraseña: ")
+    email = ingresar_propiedad("email")
+    password = ingresar_contrasenia()
     rol = input("Ingrese el rol estudiante(E) o moderador(M). (E/M): ").upper()
 
     while rol != "E" and rol != "M":
