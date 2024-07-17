@@ -264,7 +264,7 @@ email: string
 ind: int
 valido: bool
 """
-def email_existente_estudiante(email):
+def email_existente(email):
     valido = True
     ind = 0
 
@@ -274,22 +274,14 @@ def email_existente_estudiante(email):
 
         ind = ind + 1
 
-    return valido
+    if valido:
+        ind = 0
 
-"""
-email: string
-ind: int
-valido: bool
-"""
-def email_existente_moderador(email):
-    valido = True
-    ind = 0
+        while ind < 4 and valido:
+            if moderadores[ind][1] == email:
+                valido = False
 
-    while ind < 4 and valido:
-        if moderadores[ind][1] == email:
-            valido = False
-
-        ind = ind + 1
+            ind = ind + 1
 
     return valido
 
@@ -298,7 +290,7 @@ email, password: string
 cant: int
 """
 def registrar_estudiante(email, password, cant):
-    if cant == 8 or not email_existente_estudiante(email):
+    if cant == 8 or not email_existente(email):
         print("Se produjo un error al registrarse.")
         input("Presione Enter para continuar... ")
     else:
@@ -325,8 +317,9 @@ email, password: string
 cant: int
 """
 def registrar_moderador(email, password, cant):
-    if cant == "4" or not email_existente_moderador(email):
+    if cant == "4" or not email_existente(email):
         print("Se produjo un error al registrarse.")
+        input("Presione Enter para continuar... ")
     else:
         moderadores[cant][0] = cant + 1
         moderadores[cant][1] = email
