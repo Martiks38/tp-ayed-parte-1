@@ -179,10 +179,11 @@ cant, ind: int
 """
 def contar_estudiantes():
     cant = 0
+    ind = 0
 
-    for ind in range(8):
-        if estudiantes[ind][0] != "":
-            cant = cant + 1
+    while ind < 8 and estudiantes[ind][0] != "":
+        cant = cant + 1
+        ind = ind + 1
 
     return cant
 
@@ -216,10 +217,12 @@ fecha: Arreglo de 0 a 2 de string
 def validar_fecha(fecha):
     while not (fecha[0].isdigit() and fecha[1].isdigit() and fecha[2].isdigit()):
         print("Los datos ingresados no son válidos")
+        print("\n")
         fecha = ingresar_fecha()
 
     while not validar_valores_fecha(int(fecha[0]), int(fecha[1]), int(fecha[2])):
         print("Los datos ingresados no son válidos")
+        print("\n")
         fecha = ingresar_fecha()
 
 """
@@ -235,26 +238,56 @@ def solicitar_fecha_nacimiento():
     return f.isoformat()
 
 """
-nombre: string
+prop, valor: string
 """
-def ingresar_nombre():
-    nombre = input("Ingrese su nombre: ").capitalize()
+def ingresar_propiedad_estudiante(prop):
+    valor = input(f"Ingrese su {prop}:\n\t").capitalize()
 
-    while nombre == "":
-        nombre = input("Debe ingresar un nombre: ").capitalize()
+    while valor == "":
+        valor = input(f"Debe ingresar {prop}:\n\t").capitalize()
 
-    return nombre
+    return valor
 
 """
-bio: string
+email, password: string
+cant: int
 """
-def ingresar_biografia():
-    bio = input("Ingrese su biografía: ").capitalize()
+def registrar_estudiante(email, password, cant):
+    if cant == 8:
+        print("Se produjo un error al registrarse.")
+        input("Presione Enter para continuar... ")
+    else:
+        print("Fecha de nacimiento\n")
+        fecha = solicitar_fecha_nacimiento()
 
-    while bio == "":
-        bio = input("Debe ingresar su biografía: ").capitalize()
+        estudiantes[cant][0] = cant + 1
+        estudiantes[cant][1] = email
+        estudiantes[cant][2] = password
+        estudiantes[cant][3] = fecha
 
-    return bio
+        nombre = ingresar_propiedad_estudiante("nombre")
+        estudiantes[cant][4] = nombre
+        bio = ingresar_propiedad_estudiante("biografía")
+        estudiantes[cant][5] = bio
+        hobbies = ingresar_propiedad_estudiante("hobbies")
+        estudiantes[cant][6] = hobbies
+        estudiantes[cant][7] = ESTADO_ESTUDIANTE[1]
+        print("Registro exictoso!!!")
+        input("Presione Enter para continuar...")
+
+"""
+email, password: string
+cant: int
+"""
+def registrar_moderador(email, password, cant):
+    if cant == "4":
+        print("Se produjo un error al registrarse.")
+    else:
+        moderadores[cant][0] = cant + 1
+        moderadores[cant][1] = email
+        moderadores[cant][2] = password
+        print("Registro exictoso!!!")
+        input("Presione Enter para continuar...")
 
 """
 bio, email, fecha, password, rol: string
@@ -273,36 +306,17 @@ def registrar():
         print("\nNo es un rol válido.")
         rol = input("ingrese E (Estudiante) o M (Moderador): ")
 
+    limpiar_consola()
+
     if rol == "E":
         cant = contar_estudiantes()
-
-        if cant == 8:
-            print("Se produjo un error al registrarse.")
-        else:
-            limpiar_consola()
-            print("Fecha de nacimiento\n")
-            fecha = solicitar_fecha_nacimiento()
-
-            estudiantes[cant - 1][1] = email
-            estudiantes[cant - 1][2] = password
-            estudiantes[cant - 1][3] = fecha
-
-            nombre = ingresar_nombre()
-            estudiantes[cant - 1][4] = nombre
-            bio = ingresar_biografia()
-            estudiantes[cant - 1][5] = bio
-            estudiantes[cant - 1][6] = True
+        registrar_estudiante(email, password, cant)
 
     elif rol == "M":
         cant = contar_moderadores()
+        registrar_moderador(email, password, cant)
 
-        if cant == "4":
-            print("Se produjo un error al registrarse.")
-        else:
-            moderadores[cant - 1][1] = email
-            moderadores[cant - 1][2] = password
-
-    input("Registro exictoso!!! ")
+    limpiar_consola()
 
 """
 mod: Arreglo multi de 3x4 de string
