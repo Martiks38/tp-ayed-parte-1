@@ -460,10 +460,13 @@ def vista_perfil_estudiante(est_id):
 """
 def obtener_nombre_estudiante_por_id(est_id):
     nombre = ""
+    ind = 0
 
-    for ind in range(8):
+    while ind < 8 and nombre == "":
         if estudiantes[ind][0] == est_id:
             nombre = estudiantes[ind][4]
+
+        ind = ind + 1
 
     return nombre
 
@@ -471,10 +474,13 @@ def obtener_nombre_estudiante_por_id(est_id):
 """
 def obtener_id_estudiante_por_nombre(nombre):
     est_id = -1
+    ind = 0
 
-    for ind in range(8):
+    while ind < 8 and est_id == -1:
         if estudiantes[ind][4] == nombre:
             est_id = ind + 1
+
+        ind = ind + 1
 
     return est_id
 
@@ -482,12 +488,15 @@ def obtener_id_estudiante_por_nombre(nombre):
 """
 def obtener_estado_estudiante_por_id(estu_id):
     estado = False
+    ind = 0
 
-    for ind in range(8):
+    while ind < 8 and not estado:
         estudiante = estudiantes[ind]
 
         if estudiante[0] == estu_id:
             estado = estudiante[7]
+
+        ind = ind + 1
 
     return estado
 
@@ -609,122 +618,168 @@ def log_in():
 probabilidad: int
 rand: float
 """
-def calcular__valor_persona(probabilidad):
-    rand = random.random()
-    return math.floor(rand * probabilidad * 100)
+def calcular_eleccion_candidatos(valores, cand):
+    for ind in range(3):
+        valores[ind] = random.randint(0, 100) * int(cand[ind][3])
 
+"""
+"""
+def comprobar_nuevo_candidato(candidatos, est_id):
+    nuevo_candidato = True
+
+    for ind in range(3):
+        if candidatos[ind][0] == est_id:
+            nuevo_candidato = False
+
+    return nuevo_candidato
+
+"""
+"""
+def calcular_probabilidad_total_candidatos(cand):
+    sum = 0
+
+    for ind in range(3):
+        sum = sum + int(cand[ind][2])
+
+    return sum
+
+"""
+"""
+def mostrar_candidatos(cand):
+    for ind in range(3):
+        print(f"{ind + 1}. {cand[ind][1]}")
+
+    print("\n")
+
+"""
+"""
+def buscar_candidato_mayor_valor(valores):
+    mayor = -1
+    pos = 0
+
+    for ind in range(3):
+        valor = valores[ind]
+
+        if valores[ind] > mayor:
+            mayor = valor
+            pos = ind
+
+    return pos
+
+"""
+"""
+def matchear_candidato(valores, cand, est_id):
+    pos = buscar_candidato_mayor_valor(valores)
+
+    nombre_match = cand[pos][1]
+    me_gusta[est_id - 1][pos] = True
+
+    print("\nTu match es la persona", nombre_match)
 
 """
 person_name: string
 probabilidad_match_1, probabilidad_match_2, probabilidad_match_3: int
 """
-def ruleta(student_id):
+def ruleta(estudiante_id):
+    # TODO
+    # Hacer esto ciclo mientras el usuario quiera y la cantidad
+    #  cant_estudiantes-1 sea mayor que tres pero con cada sigo se le debe restar uno más
     limpiar_consola()
 
-    nombre_estudiante_1 = ""
-    probabilidad_match_1 = 0
-    nombre_estudiante_2 = ""
-    probabilidad_match_2 = 0
-    nombre_estudiante_3 = ""
-    probabilidad_match_3 = 0
-    nombre_match = ""
+    # TODO
+    # Añadir filtro que tampoco ya les haya dado match
+    cant_estudiantes = contar_estudiantes_activos()
 
-    print("........RULETA........")
-    print(
-        "A continuación, se le pedirá ingresar la probabilidad de matcheo con tres estudiantes."
-    )
-    print("Los valores ingresados deben ser enteros y su suma igual a 100.\n")
-
-    while probabilidad_match_1 + probabilidad_match_2 + probabilidad_match_3 != 100:
-        # if student_id != ESTUDIANTE_1_EMAIL:
-        #     print(estudiante_1_nombre)
-
-        # if student_id != ESTUDIANTE_2_EMAIL:
-        #     print(estudiante_2_nombre)
-
-        # if student_id != ESTUDIANTE_3_EMAIL:
-        #     print(estudiante_3_nombre)
-
-        # if student_id != ESTUDIANTE_4_EMAIL:
-        #     print(estudiante_4_nombre)
-
-        # if student_id == ESTUDIANTE_1_EMAIL:
-        #     nombre_estudiante_1 = estudiante_2_nombre
-        #     nombre_estudiante_2 = estudiante_3_nombre
-        #     nombre_estudiante_3 = estudiante_4_nombre
-
-        # elif student_id == ESTUDIANTE_2_EMAIL:
-        #     nombre_estudiante_1 = estudiante_1_nombre
-        #     nombre_estudiante_2 = estudiante_3_nombre
-        #     nombre_estudiante_3 = estudiante_4_nombre
-
-        # elif student_id == ESTUDIANTE_3_EMAIL:
-        #     nombre_estudiante_1 = estudiante_1_nombre
-        #     nombre_estudiante_2 = estudiante_2_nombre
-        #     nombre_estudiante_3 = estudiante_4_nombre
-
-        # elif student_id == ESTUDIANTE_4_EMAIL:
-        #     nombre_estudiante_1 = estudiante_1_nombre
-        #     nombre_estudiante_2 = estudiante_2_nombre
-        #     nombre_estudiante_3 = estudiante_3_nombre
-
-        probabilidades_ingresadas = 0
-
-        print("\n")
-        while probabilidades_ingresadas < 3:
-            valor = input(
-                "Ingresar la probabilidad del estudiante "
-                + str(probabilidades_ingresadas + 1)
-                + ": "
-            )
-
-            while not valor.isnumeric():
-                valor = input("Por favor ingrese un valor numérico entero: ")
-
-            probabilidades_ingresadas = probabilidades_ingresadas + 1
-
-            if probabilidades_ingresadas == 1:
-                probabilidad_match_1 = int(valor)
-
-            elif probabilidades_ingresadas == 2:
-                probabilidad_match_2 = int(valor)
-
-            else:
-                probabilidad_match_3 = int(valor)
-
-        probabilidad_total = (
-            probabilidad_match_1 + probabilidad_match_2 + probabilidad_match_3
-        )
-
-        if probabilidad_total != 100:
-            limpiar_consola()
-            print(
-                "\n\nLa probabilidad total debe ser igual a 100 y el introducido es",
-                probabilidad_total,
-                ".",
-            )
-            print("Vuelva a introducir los valores.\n\n")
-
-    Valor_persona_1 = calcular__valor_persona(probabilidad_match_1)
-    valor_persona_2 = calcular__valor_persona(probabilidad_match_2)
-    valor_persona_3 = calcular__valor_persona(probabilidad_match_3)
-
-    # Existe una pequeña probabilidad de que den iguales
-    if valor_persona_2 <= Valor_persona_1 and valor_persona_3 <= Valor_persona_1:
-        nombre_match = nombre_estudiante_1
-    elif valor_persona_2 >= valor_persona_3:
-        nombre_match = nombre_estudiante_2
+    if cant_estudiantes - 1 < 4:
+        print("No hay suficientes estudiantes activos para esta función.")
     else:
-        nombre_match = nombre_estudiante_3
+        candidatos = [[""]*3 for n in range(3)]
+        cant_candidatos = 0
 
-    print("\nTu match es la persona", nombre_match)
-    input("\nPresiona Enter para volver al inicio...")
+        # TODO
+        # Se reducen los casos pero no tanto se podría mejorar con un while hasta que lo encuentre
+        while cant_candidatos < 3:
+            est_id = random.randint(1, cant_estudiantes)
+
+            if estudiante_id != est_id:
+                if not comprobar_nuevo_candidato(candidatos[:], est_id):
+                    if comprobar_nuevo_candidato(candidatos[:], est_id - 1):
+                        est_id = est_id - 1
+                    elif comprobar_nuevo_candidato(candidatos[:], est_id + 1):
+                        est_id = est_id + 1
+
+                candidatos[cant_candidatos][0] = est_id
+                candidatos[cant_candidatos][1] = obtener_nombre_estudiante_por_id(est_id)
+                candidatos[cant_candidatos][2] = "0"
+
+                cant_candidatos = cant_candidatos + 1
+
+        print("........RULETA........")
+        print(
+            "A continuación, se le pedirá ingresar la probabilidad de matcheo con tres estudiantes."
+        )
+        print("Los valores ingresados deben ser enteros y su suma igual a 100.\n")
+
+        while calcular_probabilidad_total_candidatos(candidatos[:]) != 100:
+            mostrar_candidatos(candidatos[:])
+
+            probabilidades_ingresadas = 0
+
+            print("\n")
+            while probabilidades_ingresadas < 3:
+                valor = input(f"Ingresar la probabilidad del estudiante {str(probabilidades_ingresadas + 1)}: ")
+
+                while not valor.isnumeric():
+                    valor = input("Por favor ingrese un valor numérico entero: ")
+
+                candidatos[probabilidades_ingresadas][2] = valor
+                probabilidades_ingresadas = probabilidades_ingresadas + 1
+
+            probabilidad_total = calcular_probabilidad_total_candidatos(candidatos[:])
+
+            if probabilidad_total != 100:
+                limpiar_consola()
+                print(
+                    "\n\nLa probabilidad total debe ser igual a 100 y el introducido es",
+                    probabilidad_total,
+                    ".",
+                )
+                print("Vuelva a introducir los valores.\n\n")
+
+        valores_eleccion_candidatos = [0]*3
+        calcular_eleccion_candidatos(valores_eleccion_candidatos, candidatos[:])
+        matchear_candidato(valores_eleccion_candidatos[:], candidatos[:], est_id)
 
 """
 """
 def reportar_candidato():
-    # TODO
-    print("TODO")
+    decision = "S"
+
+    while decision == "S":
+        candidato = input("Ingrese el nombre o el id del candidato: ")
+
+        if not candidato.isdigit():
+            candidato = str(obtener_id_estudiante_por_nombre(candidato))
+
+        estudiante_id = int(candidato)
+
+        if validar_id_estudiante(int(estudiante_id), 1, 8):
+            print(f"El usuario de id {estudiante_id}, no existe.\n")
+        else:
+            limpiar_consola()
+            opc = input("Seguro que desea continuar con reporte del candidato. S/N ").upper()
+            opc = validar_continuacion(opc)
+
+            if opc == "S":
+                estudiantes[estudiante_id - 1][7] = ESTADO_ESTUDIANTE[0]
+
+                print("Perfil borrado con exito.")
+                input("Presione Enter para continuar ")
+
+            limpiar_consola()
+            decision = input("Desactivar otra cuenta. S/N: ").upper()
+            decision = validar_continuacion(decision)
+
 
 """
 opcion, estudiante_id: string
@@ -1031,9 +1086,9 @@ def desactivar_usuario():
                 print("Perfil borrado con exito.")
                 input("Presione Enter para continuar ")
 
-        limpiar_consola()
-        decision = input("Desactivar otra cuenta. S/N: ").upper()
-        decision = validar_continuacion(decision)
+            limpiar_consola()
+            decision = input("Desactivar otra cuenta. S/N: ").upper()
+            decision = validar_continuacion(decision)
 
 """
 """
