@@ -23,6 +23,7 @@ CIUDAD = "ciudad"
 PAIS = "pais"
 SEXO = "sexo"
 ESTADO_ESTUDIANTE = ["INACTIVO", "ACTIVO"]
+ESTADO_REPORTE = ["0", "1", "2"]
 ROLES = ["ESTUDIANTE", "MODERADOR"]
 
 # Mock de la base de datos de estudiantes
@@ -36,6 +37,36 @@ me_gusta = [[False]*8 for n in range(7)]
 cant_reportes_por_estudiante = 5
 cant_total_reportes = 8 * cant_reportes_por_estudiante
 reportes = [[""]*5 for n in range(cant_total_reportes)]
+
+
+"""
+"""
+def validar_id_estudiante(est_id):
+    valido = False
+    encontrado = False
+    cant_estudiantes = contar_estudiantes_activos()
+    ind = 0
+
+    while ind < cant_estudiantes and not encontrado:
+        estudiante = estudiantes[ind]
+
+        if estudiante[0] == est_id:
+            valido = estudiante[7] == ESTADO_ESTUDIANTE[1]
+            encontrado = True
+
+    return valido
+
+"""
+"""
+def contar_reportes():
+    cant = 0
+    ind = 0
+
+    while ind < cant_total_reportes and reportes[ind][0] != "":
+        cant = cant + 1
+        ind = ind + 1
+
+    return cant
 
 """
 """
@@ -752,33 +783,43 @@ def ruleta(estudiante_id):
 
 """
 """
-def reportar_candidato():
+def reportar_candidato(est_id):
     decision = "S"
 
     while decision == "S":
-        candidato = input("Ingrese el nombre o el id del candidato: ")
+        reportado_id = input("Ingrese el nombre o el id del candidato: ")
 
-        if not candidato.isdigit():
-            candidato = str(obtener_id_estudiante_por_nombre(candidato))
+        if not reportado_id.isdigit():
+            reportado_id = str(obtener_id_estudiante_por_nombre(reportado_id))
 
-        estudiante_id = int(candidato)
-
-        if validar_id_estudiante(int(estudiante_id), 1, 8):
-            print(f"El usuario de id {estudiante_id}, no existe.\n")
+        if validar_id_estudiante(reportado_id):
+            print("El usuario ha reportar no existe.\n")
         else:
             limpiar_consola()
             opc = input("Seguro que desea continuar con reporte del candidato. S/N ").upper()
             opc = validar_continuacion(opc)
 
             if opc == "S":
-                estudiantes[estudiante_id - 1][7] = ESTADO_ESTUDIANTE[0]
+                motivo = input("Motivo:\n\t")
 
-                print("Perfil borrado con exito.")
-                input("Presione Enter para continuar ")
+                while motivo == "":
+                    print("Debe ingresar el motivo del reporte.")
+                    motivo = input("Por favor. Ingrese el motivo:\n\t")
 
-            limpiar_consola()
-            decision = input("Desactivar otra cuenta. S/N: ").upper()
-            decision = validar_continuacion(decision)
+                reporte_id = contar_reportes()
+
+                reportes[reporte_id][0] = reporte_id + 1
+                reportes[reporte_id][1] = est_id
+                reportes[reporte_id][2] = reportado_id
+                reportes[reporte_id][3] = motivo
+                reportes[reporte_id][4] = ESTADO_REPORTE[0]
+
+                print("Reporte generado con éxito.")
+                input("Presione Enter para continuar... ")
+
+                limpiar_consola()
+                decision = input("Generar un nuevo reporte. S/N: ").upper()
+                decision = validar_continuacion(decision)
 
 
 """
@@ -804,7 +845,7 @@ def submenu_gestionar_candidatos(estudiante_id):
             vista_perfil_estudiantes(estudiante_id)
 
         if opcion == "b":
-            reportar_candidato()
+            reportar_candidato(estudiante_id)
 
 """
 opcion: string
@@ -1057,11 +1098,6 @@ def mostrar_menu_principal_moderadores():
 
 """
 """
-def validar_id_estudiante(est_id, minimo, maximo):
-    return est_id >= minimo and est_id <= maximo
-
-"""
-"""
 def desactivar_usuario():
     decision = "S"
 
@@ -1071,17 +1107,15 @@ def desactivar_usuario():
         if not estudiante.isdigit():
             estudiante = str(obtener_id_estudiante_por_nombre(estudiante))
 
-        estudiante_id = int(estudiante)
-
-        if validar_id_estudiante(int(estudiante_id), 1, 8):
-            print(f"El usuario de id: {estudiante_id} no existe.\n")
+        if validar_id_estudiante(estudiante):
+            print(f"El usuario de id: {estudiante} no existe.\n")
         else:
             limpiar_consola()
             opc = input("Seguro que desea continuar con la desactivación del usuario. S/N ").upper()
             opc = validar_continuacion(opc)
 
             if opc == "S":
-                estudiantes[estudiante_id - 1][7] = ESTADO_ESTUDIANTE[0]
+                estudiantes[estudiante - 1][7] = ESTADO_ESTUDIANTE[0]
 
                 print("Perfil borrado con exito.")
                 input("Presione Enter para continuar ")
@@ -1112,18 +1146,6 @@ def submenu_gestionar_usuarios():
 
 """
 """
-def contar_reportes():
-    cant_reportes = 0
-    ind = 0
-
-    while ind < cant_total_reportes and reportes[ind][0] != "":
-        cant_reportes = cant_reportes + 1
-        ind = ind + 1
-
-    return cant_reportes
-
-"""
-"""
 def mostrar_reporte(reporte):
     nombre_reportante = obtener_nombre_estudiante_por_id(reporte[1])
     nombre_reportado = obtener_nombre_estudiante_por_id(reporte[2])
@@ -1135,14 +1157,17 @@ def mostrar_reporte(reporte):
 
 """
 """
-def bloquear_reportado(reporte):
-    reportado_id = reporte[2]
-    reporte[4] = "1"
-    estudiantes[reportado_id - 1][7] = ESTADO_ESTUDIANTE[0]
+def procesar_reporte(reporte, opc):
+    if opc == "1":
+        reporte[4] = ESTADO_REPORTE[2]
+    elif opc == "2":
+        reportado_id = reporte[2]
+        reporte[4] = ESTADO_REPORTE[1]
+        estudiantes[reportado_id - 1][7] = ESTADO_ESTUDIANTE[0]
 
 """
 """
-def procesar_reporte(reporte):
+def procesamiento_reporte(reporte):
     print("Procesamiento de reporte\n")
     print("1. Ignorar reporte")
     print("2. Bloquear al reportado")
@@ -1153,10 +1178,7 @@ def procesar_reporte(reporte):
         print("\nNo es una opción válida.")
         opcion = input("Ingrese una opción válida: ")
 
-    if opcion == "1":
-        reporte[4] = "2"
-    elif opcion == "2":
-        bloquear_reportado(reporte)
+    procesar_reporte(reporte, opcion)
 
 """
 """
@@ -1174,9 +1196,9 @@ def ver_reportes():
 
         estudiantes_activos = estado_reportado == ESTADO_ESTUDIANTE[1] and estado_reportante == ESTADO_ESTUDIANTE[1]
 
-        if estudiantes_activos and estado_reporte == "0":
+        if estudiantes_activos and estado_reporte == ESTADO_REPORTE[0]:
             mostrar_reporte(reporte[:])
-            procesar_reporte(reporte)
+            procesamiento_reporte(reporte)
 
             opc = input("Continuar revisando reportes. (S/N) ").upper()
             opc = validar_continuacion(opc)
