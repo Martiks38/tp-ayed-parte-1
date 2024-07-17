@@ -1359,7 +1359,7 @@ def ver_reportes():
 def submenu_gestionar_reportes():
     opcion = ""
 
-    while opcion != "c":
+    while opcion != "b":
         limpiar_consola()
         print("........Gestionar Reportes........\n")
         print("a. Ver reportes")
