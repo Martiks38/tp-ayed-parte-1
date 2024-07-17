@@ -625,22 +625,20 @@ def obtener_id_estudiante_por_nombre(nombre):
 
 """
 estudiante: Arreglo de 0 a 7 de string
-estado: bool
+estado: string
 est_id, ind: int
 """
 def obtener_estado_estudiante_por_id(est_id):
-    estado = False
+    encontrado = False
     ind = 0
 
-    while ind < 8 and not estado:
-        estudiante = estudiantes[ind]
+    while ind < 8 and not encontrado:
+        if estudiantes[ind][0] == est_id:
+            encontrado = True
+        else:
+            ind = ind + 1
 
-        if estudiante[0] == est_id:
-            estado = estudiante[7]
-
-        ind = ind + 1
-
-    return estado
+    return estudiantes[ind][7]
 
 """
 nombre: string
@@ -1234,7 +1232,7 @@ def mostrar_menu_principal_moderadores():
         and opcion != "3"
         and opcion != "0"
     ):
-        print("La opción introducida no es válida.")
+        print("\nLa opción introducida no es válida.")
         opcion = input("Por favor, introduzca una opción válida: ")
 
     return opcion
@@ -1324,13 +1322,16 @@ def procesamiento_reporte(reporte):
     procesar_reporte(reporte, opcion)
 
 """
+reporte: Arreglo de 0 a 3 de string
+continuar: bool
+cant_reportes_alta, ind: int
 """
 def ver_reportes():
     continuar = True
     ind = 0
-    cant_reportes_en_alta = contar_reportes()
+    cant_reportes_alta = contar_reportes()
 
-    while ind < cant_reportes_en_alta and continuar:
+    while ind < cant_reportes_alta and continuar:
         reporte = reportes[ind]
 
         estado_reportante = obtener_estado_estudiante_por_id(reporte[1])
@@ -1350,40 +1351,41 @@ def ver_reportes():
 
         ind = ind + 1
 
-    if ind == cant_reportes_en_alta:
+    if ind == cant_reportes_alta:
         print("No quedan más reportes pendientes.")
         input("Presione Enter para continuar... ")
 
 """
+opc: string
 """
 def submenu_gestionar_reportes():
-    opcion = ""
+    opc = ""
 
-    while opcion != "b":
+    while opc != "b":
         limpiar_consola()
         print("........Gestionar Reportes........\n")
         print("a. Ver reportes")
         print("b. Volver")
 
-        opcion = input("\nSeleccione una opción: ")
+        opc = input("\nSeleccione una opción: ")
 
-        while opcion != "a" and opcion != "b":
+        while opc != "a" and opc != "b":
             print("\nNo es una opción válida.")
-            opcion = input("Ingrese una opción válida: ")
+            opc = input("Ingrese una opción válida: ")
 
-        if opcion == "a":
+        if opc == "a":
             ver_reportes()
 
-
 """
+opc: string
 """
 def menu_principal_moderador():
-    opcion_menu_principal = "1"
+    opc = "1"
 
-    while opcion_menu_principal != "0":
-        opcion_menu_principal = mostrar_menu_principal_moderadores()
+    while opc != "0":
+        opc = mostrar_menu_principal_moderadores()
 
-        match opcion_menu_principal:
+        match opc:
             case "1":
                 submenu_gestionar_usuarios()
 
@@ -1398,6 +1400,8 @@ def menu_principal_moderador():
                 print("¡Hasta luego!")
 
 """
+usuario_id: int
+rol: string
 """
 def mostrar_menu_usuario(usuario_id, rol):
 
@@ -1407,7 +1411,9 @@ def mostrar_menu_usuario(usuario_id, rol):
         menu_principal_moderador()
 
 """
-accedio, opcion_menu_principal: string
+usuario: Arreglo de 0 a 1 de string
+usuario_id: int
+opc, rol: string
 """
 def main():
     # cargar_estudiantes(estudiantes)
@@ -1415,7 +1421,7 @@ def main():
     inicializar_estudiantes_mock(estudiantes)
     inicializar_moderadores_mock(moderadores)
 
-    opc = -1
+    opc = ""
 
     while opc != "0":
         opc = mostrar_menu_principal()
