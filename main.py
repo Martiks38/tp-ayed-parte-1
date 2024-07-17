@@ -6,7 +6,6 @@
 
 from datetime import date, datetime
 from getpass import getpass
-import math
 import os
 import platform
 import random
