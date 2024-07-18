@@ -12,31 +12,33 @@ import random
 
 """
 NACIMIENTO, BIOGRAFIA, HOBBIES: string
-PROP_ESTUDIANTES: Arreglo de 0 a 7 de string
+PROP_EDIT_ESTUDIANTES: Arreglo de 0 a 5 de string
+PROPS_ADICIONALES_ESTUDIANTES: Arreglo de 0 a 5 de string
 ESTADO_ESTUDIANTE: Arreglo de 0 a 1 de string
 ESTADO_REPORTE: Arreglo de 0 a 2 de string
+SEXO: Arreglo de 0 a 1 de string
 ROLES: Arreglo de 0 a 1 de string
 """
-# Campos de propiedades de estudiante
 NACIMIENTO = "nacimiento"
 BIOGRAFIA = "biografia"
 HOBBIES = "hobbies"
 CIUDAD = "ciudad"
 PAIS = "pais"
-SEXO = "sexo"
-PROP_ESTUDIANTES = ["nacimiento", "biografia", "hobbies", "sexo", "email", "ciudad", "pais"]
+SEXO = ["F", "M"]
+PROP_EDIT_ESTUDIANTES = ["nacimiento", "biografía", "hobbies", "sexo", "ciudad", "pais"]
+PROPS_ADICIONALES_ESTUDIANTES = ["nombre", "biografía", "hobbies", "sexo", "ciudad", "pais"]
 ESTADO_ESTUDIANTE = ["INACTIVO", "ACTIVO"]
 ESTADO_REPORTE = ["0", "1", "2"]
 ROLES = ["ESTUDIANTE", "MODERADOR"]
 
 """
 cant_total_reportes: int
-estudiantes: Arreglo multi de 8x8 de string
+estudiantes: Arreglo multi de 11x8 de string
 moderadores: Arreglo multi de 3x4 de string
 me_gusta: Arreglo multi de 8x8 de string
 reportes: Arreglo multi de 5x40 de bool
 """
-estudiantes = [[""]*8 for n in range(8)]
+estudiantes = [[""]*11 for n in range(8)]
 moderadores = [[""]*3 for n in range(4)]
 me_gusta = [[False]*8 for n in range(8)]
 # Estimamos un máximo de 5 reportes por estudiante,
@@ -301,15 +303,13 @@ def registrar_estudiante(email, password, cant):
         estudiantes[cant][1] = email
         estudiantes[cant][2] = password
         estudiantes[cant][3] = fecha
-
-        nombre = ingresar_propiedad("nombre")
-        estudiantes[cant][4] = nombre
-        bio = ingresar_propiedad("biografía")
-        estudiantes[cant][5] = bio
-        hobbies = ingresar_propiedad("hobbies")
-        estudiantes[cant][6] = hobbies
         estudiantes[cant][7] = ESTADO_ESTUDIANTE[1]
-        print("Registro exictoso!!!")
+
+        for ind in range(4, 11):
+            if ind != 7:
+                estudiantes[cant][ind] = ingresar_propiedad(PROPS_ADICIONALES_ESTUDIANTES[ind - 4])
+
+        print("Registro exitoso!!!")
         input("Presione Enter para continuar...")
 
 """
@@ -324,7 +324,7 @@ def registrar_moderador(email, password, cant):
         moderadores[cant][0] = cant + 1
         moderadores[cant][1] = email
         moderadores[cant][2] = password
-        print("Registro exictoso!!!")
+        print("Registro exitoso!!!")
         input("Presione Enter para continuar...")
 
 """
@@ -396,6 +396,9 @@ def inicializar_estudiantes_mock(est):
     est[0][5] = "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
     est[0][6] = "Lectura - Senderismo - Juegos de mesa"
     est[0][7] = ESTADO_ESTUDIANTE[1]
+    est[0][8] = SEXO[1]
+    est[0][9] = "Rosario"
+    est[0][10] = "Argentina"
 
     est[1][0] = "2"
     est[1][1] = "estudiante2@ayed.com"
@@ -405,6 +408,9 @@ def inicializar_estudiantes_mock(est):
     est[1][5] = "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
     est[1][6] = "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas"
     est[1][7] = ESTADO_ESTUDIANTE[1]
+    est[1][8] = SEXO[0]
+    est[1][9] = "Madrid"
+    est[1][10] = "España"
 
     est[2][0] = "3"
     est[2][1] = "estudiante3@ayed.com"
@@ -414,6 +420,9 @@ def inicializar_estudiantes_mock(est):
     est[2][5] = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
     est[2][6] = "Correr - Tocar la guitarra - Cocinar platos internacionales"
     est[2][7] = ESTADO_ESTUDIANTE[1]
+    est[2][8] = SEXO[1]
+    est[2][9] = "La Paz"
+    est[2][10] = "Bolivia"
 
     est[3][0] = "4"
     est[3][1] = "estudiante4@ayed.com"
@@ -423,6 +432,9 @@ def inicializar_estudiantes_mock(est):
     est[3][5] = "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que mejoren la seguridad digital."
     est[3][6] = "Leer ciencia ficción - Pintar - Practicar yoga"
     est[3][7] = ESTADO_ESTUDIANTE[1]
+    est[3][8] = SEXO[0]
+    est[3][9] = "Asuncion"
+    est[3][10] = "Paraguay"
 
 """
 est: Arreglo multi de 8x8 de string
@@ -578,7 +590,7 @@ edad, ind: int
 """
 def vista_perfil_estudiante(est_id):
     for ind in range(8):
-        if estudiantes[ind] != est_id:
+        if estudiantes[ind] != str(est_id):
             estudiante = estudiantes[ind]
 
             edad = calcular_edad(estudiante[3])
@@ -676,11 +688,11 @@ def marcar_match(est_id):
         me_gusta[est_id - 1][match_id - 1] = True
 
 """
-estudiante_id: string
+est_id: int
 """
-def vista_perfil_estudiantes(estudiante_id):
-    vista_perfil_estudiante(estudiante_id)
-    marcar_match(estudiante_id)
+def vista_perfil_estudiantes(est_id):
+    vista_perfil_estudiante(est_id)
+    marcar_match(est_id)
 
 """
 opcion: string
@@ -940,8 +952,8 @@ def reportar_candidato(est_id):
 
                 reporte_id = contar_reportes()
 
-                reportes[reporte_id][0] = reporte_id + 1
-                reportes[reporte_id][1] = est_id
+                reportes[reporte_id][0] = str(reporte_id + 1)
+                reportes[reporte_id][1] = str(est_id)
                 reportes[reporte_id][2] = reportado_id
                 reportes[reporte_id][3] = motivo
                 reportes[reporte_id][4] = ESTADO_REPORTE[0]
@@ -1080,7 +1092,8 @@ def eliminar_perfil(est_id):
     return eliminado
 
 """
-estudiante_id, opc: string
+estudiante_id: int
+opc: string
 """
 def submenu_gestionar_perfil(estudiante_id):
     opc = ""
@@ -1123,20 +1136,21 @@ def mostrar_datos_estudiante(estudiante_id):
 
 
 """
-estudiante_id, opcion, nacimiento, biografia, hobbies:str   
+estudiante_id: int
+opcion, nacimiento, biografia, hobbies:str   
 """
 def editar_datos_estudiante(estudiante_id):
     opc = ""
 
     while opc != "n":
         limpiar_consola()
-        mostrar_datos_estudiante(int(estudiante_id))
+        mostrar_datos_estudiante(estudiante_id)
 
         print("\n\n........Actualizar perfil........\n")
         print("a. Cambiar fecha de nacimiento")
-        # print("b. Cambiar sexo")
-        # print("c. Cambiar ciudad")
-        # print("d. Cambiar país")
+        print("b. Cambiar sexo")
+        print("c. Cambiar ciudad")
+        print("d. Cambiar país")
         print("b. Editar biografía")
         print("c. Editar hobbies")
         print("n. Finalizar\n")
@@ -1149,15 +1163,15 @@ def editar_datos_estudiante(estudiante_id):
 
         if opc == "a":
             nacimiento = solicitar_fecha_nacimiento()
-            actualizar_estudiante(int(estudiante_id), NACIMIENTO, nacimiento)
+            actualizar_estudiante(estudiante_id, NACIMIENTO, nacimiento)
 
         elif opc == "b":
             biografia = input("Nueva biografía:\n")
-            actualizar_estudiante(int(estudiante_id), BIOGRAFIA, biografia)
+            actualizar_estudiante(estudiante_id, BIOGRAFIA, biografia)
 
         elif opc == "c":
             hobbies = input("Nuevos Hobbies:\n")
-            actualizar_estudiante(int(estudiante_id), HOBBIES, hobbies)
+            actualizar_estudiante(estudiante_id, HOBBIES, hobbies)
 
 """
 est_id, ind, likes_dados, likes_recibidos, matches: int
@@ -1181,11 +1195,16 @@ def reportes_estadisticos_estudiante(est_id):
             elif not like_dado and like_recibido:
                 likes_recibidos = likes_recibidos + 1
 
-    porcentaje = matches / (likes_recibidos + likes_dados + matches) * 100
+    porcentaje = 0
 
-    print(f"Matcheados sobr el % posible: {porcentaje:.2f}%")
+    if likes_dados != 0 or likes_recibidos != 0 or matches != 0:
+        porcentaje = matches / (likes_recibidos + likes_dados + matches) * 100
+
+    limpiar_consola()
+    print(f"Matcheados sobre el % posible: {porcentaje:.2f}%")
     print("Likes dados y no recibidos:", likes_dados)
     print("Likes recibidos y no respondidos:", likes_recibidos)
+    input("Presiona Enter para volver al menú... ")
 
 """
 est_id: int
@@ -1417,7 +1436,6 @@ usuario_id: int
 rol: string
 """
 def mostrar_menu_usuario(usuario_id, rol):
-
     if rol == ROLES[0]:
         menu_principal_estudiante(usuario_id)
     elif rol == ROLES[1]:
