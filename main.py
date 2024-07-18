@@ -72,7 +72,7 @@ cant_estudiantes, ind: int
 est_id: string
 """
 def validar_id_estudiante(est_id):
-    cant_estudiantes = contar_estudiantes_activos()
+    cant_estudiantes = contar_estudiantes()
     ind = 0
 
     while ind < cant_estudiantes and estudiantes[ind][0] != est_id:
@@ -984,16 +984,16 @@ est_id, reporte_id: int
 decision, motivo, opc, reportado_id: string
 """
 def reportar_candidato(est_id):
-    decision = "S"
+    decision = ""
 
-    while decision == "S":
+    while decision != "N":
         reportado_id = input("Ingrese el nombre o el id del candidato: ")
 
         if not reportado_id.isdigit():
             reportado_id = str(obtener_id_estudiante_por_nombre(reportado_id))
 
-        if validar_id_estudiante(reportado_id):
-            print("El usuario ha reportar no existe.\n")
+        if str(est_id) == reportado_id or not validar_id_estudiante(reportado_id):
+            print("El usuario ha reportar no es válido.\n")
         else:
             limpiar_consola()
             opc = input("Seguro que desea continuar con reporte del candidato. S/N ").upper()
@@ -1006,21 +1006,25 @@ def reportar_candidato(est_id):
                     print("Debe ingresar el motivo del reporte.")
                     motivo = input("Por favor. Ingrese el motivo:\n\t")
 
-                reporte_id = contar_reportes()
+                reporte_ind = contar_reportes()
+                reporte_id = reporte_ind + 1
 
-                reportes[reporte_id][0] = str(reporte_id + 1)
-                reportes[reporte_id][1] = str(est_id)
-                reportes[reporte_id][2] = reportado_id
-                reportes[reporte_id][3] = motivo
-                reportes[reporte_id][4] = ESTADO_REPORTE[0]
+                if reporte_ind == cant_total_reportes:
+                    print("\nError al generar el reporte.")
+                else:
+                    reportes[reporte_ind][0] = str(reporte_id)
+                    reportes[reporte_ind][1] = str(est_id)
+                    reportes[reporte_ind][2] = reportado_id
+                    reportes[reporte_ind][3] = motivo
+                    reportes[reporte_ind][4] = ESTADO_REPORTE[0]
 
-                print("Reporte generado con éxito.")
+                    print("Reporte generado con éxito.")
+
                 input("Presione Enter para continuar... ")
-
-                limpiar_consola()
-                decision = input("Generar un nuevo reporte. S/N: ").upper()
+                decision = input("\nGenerar un nuevo reporte. S/N: ").upper()
                 decision = validar_continuacion(decision)
 
+    input("abs")
 
 """
 opcion, estudiante_id: string
