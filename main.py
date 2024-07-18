@@ -605,7 +605,10 @@ est_id, formato_espaniol_nacimiento: string
 edad, ind: int
 """
 def vista_perfil_estudiante(est_id):
-    for ind in range(8):
+    ind = 0
+
+    limpiar_consola()
+    while ind < 8 and estudiantes[ind][0] != "":
         if estudiantes[ind] != str(est_id):
             estudiante = estudiantes[ind]
 
@@ -618,6 +621,8 @@ def vista_perfil_estudiante(est_id):
             print("Biografía:\n\t" + estudiante[5])
             print("Hobbies:\n\t", estudiante[6])
             print("\n")
+
+        ind = ind + 1
 
 """
 nombre: string
@@ -722,6 +727,8 @@ def mostrar_menu_principal_estudiante():
     print("3. Matcheos")
     print("4. Reportes estadísticos")
     print("5. Ruleta")
+    print("6. Bonus track 2")
+    print("7. Bonus track 3")
     print("0. Salir")
 
     opcion = input("\nSeleccione una opción: ")
@@ -1246,6 +1253,12 @@ def menu_principal_estudiante(est_id):
 
             case "5":
                 ruleta(est_id)
+
+            case "6":
+                print("Bonus track 2")
+
+            case "7":
+                print("Bonus track 2")
 
             case "0":
                 limpiar_consola()
