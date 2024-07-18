@@ -1126,9 +1126,6 @@ est_id, ind: int
 def mostrar_datos_estudiante(est_id):
     print("Datos de usuario\n")
 
-    PROP_EDIT_ESTUDIANTES = ["Nacimiento", "Biografía", "Hobbies", "Sexo", "Ciudad", "Pais"]
-    PROPS_ADICIONALES_ESTUDIANTES = ["Nombre", "Biografía", "Hobbies", "Sexo", "Ciudad", "Pais"]
-
     for ind in range(3, 11):
         if ind == 4:
             print(PROPS_ADICIONALES_ESTUDIANTES[ind - 4], ":", estudiantes[est_id - 1][ind])
