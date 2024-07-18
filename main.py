@@ -25,8 +25,8 @@ HOBBIES = "hobbies"
 CIUDAD = "ciudad"
 PAIS = "pais"
 SEXO = ["F", "M"]
-PROP_EDIT_ESTUDIANTES = ["nacimiento", "biografía", "hobbies", "sexo", "ciudad", "pais"]
-PROPS_ADICIONALES_ESTUDIANTES = ["nombre", "biografía", "hobbies", "sexo", "ciudad", "pais"]
+PROP_EDIT_ESTUDIANTES = ["Nacimiento", "Biografía", "Hobbies", "Sexo", "Ciudad", "Pais"]
+PROPS_ADICIONALES_ESTUDIANTES = ["Nombre", "Biografía", "Hobbies", "Sexo", "Ciudad", "Pais"]
 ESTADO_ESTUDIANTE = ["INACTIVO", "ACTIVO"]
 ESTADO_REPORTE = ["0", "1", "2"]
 ROLES = ["ESTUDIANTE", "MODERADOR"]
@@ -1121,19 +1121,19 @@ def submenu_gestionar_perfil(estudiante_id):
 
 
 """
-TODO
+est_id, ind: int
 """
-def mostrar_datos_estudiante(estudiante_id):
-    print("Datos de usuario\n\n")
+def mostrar_datos_estudiante(est_id):
+    print("Datos de usuario\n")
 
-    print("Nombre:", estudiantes[estudiante_id - 1][4])
-    # print("Sexo:", estudiantes[estudiante_id - 1][8])
-    print("Fecha de nacimiento:", estudiantes[estudiante_id - 1][3])
-    # print("Ciudad:", estudiantes[estudiante_id - 1][9])
-    # print("País:", estudiantes[estudiante_id - 1][10])
-    print("Biografía:\n", estudiantes[estudiante_id - 1][5])
-    print("Hobbies:\n", estudiantes[estudiante_id - 1][6])
+    PROP_EDIT_ESTUDIANTES = ["Nacimiento", "Biografía", "Hobbies", "Sexo", "Ciudad", "Pais"]
+    PROPS_ADICIONALES_ESTUDIANTES = ["Nombre", "Biografía", "Hobbies", "Sexo", "Ciudad", "Pais"]
 
+    for ind in range(3, 11):
+        if ind == 4:
+            print(PROPS_ADICIONALES_ESTUDIANTES[ind - 4], ":", estudiantes[est_id - 1][ind])
+        elif ind != 7:
+            print(PROP_EDIT_ESTUDIANTES[ind - 4], ":", estudiantes[est_id - 1][ind])
 
 """
 estudiante_id: int
