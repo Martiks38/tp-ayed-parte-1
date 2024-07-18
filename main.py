@@ -620,6 +620,12 @@ def vista_perfil_estudiante(est_id):
             print("Edad:", edad)
             print("Biografía:\n\t" + estudiante[5])
             print("Hobbies:\n\t", estudiante[6])
+
+            if me_gusta[est_id - 1][ind]:
+                print("Estado del Match: Tienes match ✔️")
+            else:
+                print("Estado del Match: No tienes match ❌")
+
             print("\n")
 
         ind = ind + 1
@@ -692,28 +698,54 @@ def validar_nombre(nombre):
 est_id, match_id: int
 decision, nombre_estudiante: string
 """
-def marcar_match(est_id):
-    decision = input("Le gustaría en un futuro hacer matcheo con algún estudiante. (S/N) ")
+def marcar_match(est_id, realizo_matcheo):
+    decision = "S"
 
-    while decision != "S" and decision != "N":
-        decision = input("Desea hacer matcheo con algún estudiante S o N: ")
+    if not realizo_matcheo:
+        decision = input("Le gustaría en un futuro hacer matcheo con algún estudiante. (S/N) ").upper()
 
-    if decision == "S":
+        while decision != "S" and decision != "N":
+            decision = input("Desea hacer matcheo con algún estudiante S o N: ").upper()
+
+    if realizo_matcheo or decision == "S":
         nombre_estudiante = input(
-            "Ingrese el nombre del estudiante con el que quiere hacer matcheo: "
+            "\nIngrese el nombre del estudiante con el que quiere hacer matcheo: "
         )
 
         nombre_estudiante = validar_nombre(nombre_estudiante)
         match_id = obtener_id_estudiante_por_nombre(nombre_estudiante)
 
-        me_gusta[est_id - 1][match_id - 1] = True
+        if me_gusta[est_id - 1][match_id - 1]:
+            print("\nYa tiene match con", nombre_estudiante)
+        else:
+            me_gusta[est_id - 1][match_id - 1] = True
+
+            limpiar_consola()
+            vista_perfil_estudiante(est_id)
+            print("Se envío el match a", nombre_estudiante)
+
+        input("Presione Enter para continuar... ")
 
 """
 est_id: int
+opc: string
 """
 def vista_perfil_estudiantes(est_id):
-    vista_perfil_estudiante(est_id)
-    marcar_match(est_id)
+    opc = ""
+    realizo_matcheo = False
+
+    while opc != "N":
+        vista_perfil_estudiante(est_id)
+        marcar_match(est_id, realizo_matcheo)
+
+        opc = input("\nRealizar un nuevo match, S/N: ").upper()
+
+        while opc != "S" and opc != "N":
+            limpiar_consola()
+            opc = input("Realizar un nuevo match, S/N: ").upper()
+
+        if opc == "S" and not realizo_matcheo:
+            realizo_matcheo = True
 
 """
 opcion: string
