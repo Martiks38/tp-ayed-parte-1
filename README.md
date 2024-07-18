@@ -3,12 +3,12 @@
 - [ ] Añadir nombre de integrantes
 - [ ] Añadir menu de moderadores
 - [ ] Añadir validaciones a cargar_estudiantes
-- [ ] Añadir nuevos datos a estudiantes
+- [X] Añadir nuevos datos a estudiantes
 - [ ] Modificar actualizar estudiante con el arreglo de props de estudiante
 - [ ] Convertir a hobbies como un arreglo sacarlo de prop estudiante y su posición corresponde al id del estudiante menos uno, id-1.
 - [ ] Mejorar validación de nombre de estudiante en el match
 - [X] Modificar ruleta
-- [X] Hacer declaración de variables
+- [ ] Hacer declaración de variables
 - [ ] Añadir explicación al alcanzar los límites de moderadores, usuarios, reportes (Falta reportes)
 - [ ] Añadir bonus tracks al menú
 - [ ] Añadir que no se puede tener un email existente en el registro y tampoco cambiar
@@ -21,10 +21,19 @@
     
     - [X] Registro
     - [X] Log in
+    - [ ] Declaración correcta de estudiante_id, est_id son enteros
 
     ### Estudiante
 
-    - [ ] Ver menú correctamente
+    - [ ] Ver menú correctamente (añadir bonus track 2 y 3)
+    - [X] Submenu 1
+    - [ ] Submenu 2 (no funciona a ni b)
+    - [X] Submenu 3
+    - [X] Submenu 4
+    - [ ] Submenu 5 Bonus 1
+    - [ ] Submenu 6 Bonus 2
+    - [ ] Submenu 7 Bonus 3
+
 
     ### Moderador
 
