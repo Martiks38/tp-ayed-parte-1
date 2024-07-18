@@ -12,11 +12,10 @@ import random
 
 """
 NACIMIENTO, BIOGRAFIA, HOBBIES: string
-PROP_EDIT_ESTUDIANTES: Arreglo de 0 a 5 de string
-PROPS_ADICIONALES_ESTUDIANTES: Arreglo de 0 a 5 de string
+PROPS_ESTUDIANTE: Arreglo de 0 a 6 de string
 ESTADO_ESTUDIANTE: Arreglo de 0 a 1 de string
 ESTADO_REPORTE: Arreglo de 0 a 2 de string
-SEXO: Arreglo de 0 a 1 de string
+GENERO: Arreglo de 0 a 1 de string
 ROLES: Arreglo de 0 a 1 de string
 """
 NACIMIENTO = "nacimiento"
@@ -24,9 +23,8 @@ BIOGRAFIA = "biografia"
 HOBBIES = "hobbies"
 CIUDAD = "ciudad"
 PAIS = "pais"
-SEXO = ["F", "M"]
-PROP_EDIT_ESTUDIANTES = ["Nacimiento", "Biografía", "Hobbies", "Sexo", "Ciudad", "Pais"]
-PROPS_ADICIONALES_ESTUDIANTES = ["Nombre", "Biografía", "Hobbies", "Sexo", "Ciudad", "Pais"]
+GENERO = ["F", "M"]
+PROPS_ESTUDIANTE = ["Nacimiento", "Nombre", "Biografía", "Hobbies", "Género", "Ciudad", "País"]
 ESTADO_ESTUDIANTE = ["INACTIVO", "ACTIVO"]
 ESTADO_REPORTE = ["0", "1", "2"]
 ROLES = ["ESTUDIANTE", "MODERADOR"]
@@ -64,7 +62,7 @@ def contar_estudiantes_activos():
     cant = 0
 
     for ind in range(8):
-        if estudiantes[ind][7] == ESTADO_ESTUDIANTE[1]:
+        if estudiantes[ind][10] == ESTADO_ESTUDIANTE[1]:
             cant = cant + 1
 
     return cant
@@ -72,22 +70,15 @@ def contar_estudiantes_activos():
 """
 cant_estudiantes, ind: int
 est_id: string
-encontrado, valido: bool
 """
 def validar_id_estudiante(est_id):
-    valido = False
-    encontrado = False
     cant_estudiantes = contar_estudiantes_activos()
     ind = 0
 
-    while ind < cant_estudiantes and not encontrado:
-        estudiante = estudiantes[ind]
+    while ind < cant_estudiantes and estudiantes[ind][0] != est_id:
+        ind = ind + 1
 
-        if estudiante[0] == est_id:
-            valido = estudiante[7] == ESTADO_ESTUDIANTE[1]
-            encontrado = True
-
-    return valido
+    return ind != cant_estudiantes
 
 """
 cant, ind: int
@@ -243,10 +234,16 @@ def solicitar_fecha_nacimiento():
 prop, valor: string
 """
 def ingresar_propiedad(prop):
-    valor = input(f"Ingrese {prop}:\n\t")
+    if prop == PROPS_ESTUDIANTE[4]:
+        valor = input(f"Ingrese {GENERO[1]} o {GENERO[0]}: ")
 
-    while valor == "":
-        valor = input(f"Debe ingresar {prop}:\n\t")
+        while valor != GENERO[0] and valor != GENERO[1]:
+            valor = input(f"Debe ingresar {prop}:\n\t")
+    else:
+        valor = input(f"Ingrese {prop}:\n\t")
+        while valor == "":
+            valor = input(f"Debe ingresar {prop}:\n\t")
+
 
     return valor
 
@@ -290,33 +287,41 @@ def email_existente(email):
 """
 email, password: string
 cant: int
+registrado: bool
 """
 def registrar_estudiante(email, password, cant):
+    registrado = False
+
     if cant == 8 or not email_existente(email):
         print("Se produjo un error al registrarse.")
         input("Presione Enter para continuar... ")
     else:
-        print("Fecha de nacimiento\n")
+        print("F\necha de nacimiento")
         fecha = solicitar_fecha_nacimiento()
 
         estudiantes[cant][0] = cant + 1
         estudiantes[cant][1] = email
         estudiantes[cant][2] = password
         estudiantes[cant][3] = fecha
-        estudiantes[cant][7] = ESTADO_ESTUDIANTE[1]
+        estudiantes[cant][10] = ESTADO_ESTUDIANTE[1]
 
-        for ind in range(4, 11):
-            if ind != 7:
-                estudiantes[cant][ind] = ingresar_propiedad(PROPS_ADICIONALES_ESTUDIANTES[ind - 4])
+        for ind in range(4, 10):
+            estudiantes[cant][ind] = ingresar_propiedad(PROPS_ESTUDIANTE[ind - 3])
 
-        print("Registro exitoso!!!")
+        registrado = True
+        print("\nRegistro exitoso!!!")
         input("Presione Enter para continuar...")
+
+    return registrado
 
 """
 email, password: string
 cant: int
+registrado: bool
 """
 def registrar_moderador(email, password, cant):
+    registrado = False
+
     if cant == "4" or not email_existente(email):
         print("Se produjo un error al registrarse.")
         input("Presione Enter para continuar... ")
@@ -324,35 +329,46 @@ def registrar_moderador(email, password, cant):
         moderadores[cant][0] = cant + 1
         moderadores[cant][1] = email
         moderadores[cant][2] = password
-        print("Registro exitoso!!!")
+        registrado = True
+        print("\nRegistro exitoso!!!")
         input("Presione Enter para continuar...")
+
+    return registrado
 
 """
 bio, email, fecha, password, rol: string
 cant: int
+continuar, registrado: bool
 """
 def registrar():
-    limpiar_consola()
-
-    print("\n........Registro........\n")
-
-    email = ingresar_propiedad("email")
-    password = ingresar_contrasenia()
-    rol = input("Ingrese el rol estudiante(E) o moderador(M). (E/M): ").upper()
-
-    while rol != "E" and rol != "M":
-        print("\nNo es un rol válido.")
-        rol = input("ingrese E (Estudiante) o M (Moderador): ")
+    registrado = False
+    continuar = True
 
     limpiar_consola()
+    while not registrado and continuar:
+        print("\n........Registro........\n")
 
-    if rol == "E":
-        cant = contar_estudiantes()
-        registrar_estudiante(email, password, cant)
+        email = ingresar_propiedad("email")
+        password = ingresar_contrasenia()
+        rol = input("Ingrese el rol estudiante(E) o moderador(M). (E/M): ").upper()
 
-    elif rol == "M":
-        cant = contar_moderadores()
-        registrar_moderador(email, password, cant)
+        while rol != "E" and rol != "M":
+            print("\nNo es un rol válido.")
+            rol = input("ingrese E (Estudiante) o M (Moderador): ")
+
+        if rol == "E":
+            cant = contar_estudiantes()
+            registrado = registrar_estudiante(email, password, cant)
+
+        elif rol == "M":
+            cant = contar_moderadores()
+            registrado = registrar_moderador(email, password, cant)
+
+        if not registrado:
+            decision = input("\nIntentar registrarse nuevamente. S/N ").upper()
+            decision = validar_continuacion(decision)
+
+            continuar = decision == "S"
 
     limpiar_consola()
 
@@ -395,10 +411,10 @@ def inicializar_estudiantes_mock(est):
     est[0][4] = "Juan Peréz"
     est[0][5] = "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
     est[0][6] = "Lectura - Senderismo - Juegos de mesa"
-    est[0][7] = ESTADO_ESTUDIANTE[1]
-    est[0][8] = SEXO[1]
-    est[0][9] = "Rosario"
-    est[0][10] = "Argentina"
+    est[0][7] = GENERO[1]
+    est[0][8] = "Rosario"
+    est[0][9] = "Argentina"
+    est[0][10] = ESTADO_ESTUDIANTE[1]
 
     est[1][0] = "2"
     est[1][1] = "estudiante2@ayed.com"
@@ -407,10 +423,10 @@ def inicializar_estudiantes_mock(est):
     est[1][4] = "María García"
     est[1][5] = "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
     est[1][6] = "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas"
-    est[1][7] = ESTADO_ESTUDIANTE[1]
-    est[1][8] = SEXO[0]
+    est[1][7] = "España"
+    est[1][8] = GENERO[0]
     est[1][9] = "Madrid"
-    est[1][10] = "España"
+    est[1][10] = ESTADO_ESTUDIANTE[1]
 
     est[2][0] = "3"
     est[2][1] = "estudiante3@ayed.com"
@@ -419,10 +435,10 @@ def inicializar_estudiantes_mock(est):
     est[2][4] = "Carlos Martínez"
     est[2][5] = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
     est[2][6] = "Correr - Tocar la guitarra - Cocinar platos internacionales"
-    est[2][7] = ESTADO_ESTUDIANTE[1]
-    est[2][8] = SEXO[1]
+    est[2][7] = "Bolivia"
+    est[2][8] = GENERO[1]
     est[2][9] = "La Paz"
-    est[2][10] = "Bolivia"
+    est[2][10] = ESTADO_ESTUDIANTE[1]
 
     est[3][0] = "4"
     est[3][1] = "estudiante4@ayed.com"
@@ -431,10 +447,10 @@ def inicializar_estudiantes_mock(est):
     est[3][4] = "Ana López"
     est[3][5] = "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que mejoren la seguridad digital."
     est[3][6] = "Leer ciencia ficción - Pintar - Practicar yoga"
-    est[3][7] = ESTADO_ESTUDIANTE[1]
-    est[3][8] = SEXO[0]
+    est[3][7] = "Paraguay"
+    est[3][8] = GENERO[0]
     est[3][9] = "Asuncion"
-    est[3][10] = "Paraguay"
+    est[3][10] = ESTADO_ESTUDIANTE[1]
 
 """
 est: Arreglo multi de 8x8 de string
@@ -650,7 +666,7 @@ def obtener_estado_estudiante_por_id(est_id):
         else:
             ind = ind + 1
 
-    return estudiantes[ind][7]
+    return estudiantes[ind][10]
 
 """
 nombre: string
@@ -741,32 +757,33 @@ def log_in():
         email = input("Ingrese su email: ")
         password = getpass("Ingrese su contraseña: ")
 
-        login_valido = False
+        ind = 0
+        while ind < 8 and (estudiantes[ind][1] != email or estudiantes[ind][2] != password):
+            ind = ind + 1
 
-        # TODO
-        # Cambiar los for por while
-        for ind in range(8):
-            login_valido = estudiantes[ind][1] == email and estudiantes[ind][2] == password
+        login_valido = ind < 8 and estudiantes[ind][10] != ESTADO_ESTUDIANTE[0]
+
+        if login_valido:
+            acceso_valido[0] = str(ind + 1)
+            acceso_valido[1] = ROLES[0]
+        else:
+            ind = 0
+            while ind < 4 and (moderadores[ind][1] != email or moderadores[ind][2] != password):
+                ind = ind + 1
+
+            login_valido = ind < 4
 
             if login_valido:
                 acceso_valido[0] = str(ind + 1)
-                acceso_valido[1] = ROLES[0]
-
-        if not login_valido:
-            for ind in range(4):
-                login_valido = moderadores[ind][1] == email and moderadores[ind][2] == password
-
-                if login_valido:
-                    acceso_valido[0] = str(ind + 1)
-                    acceso_valido[1] = ROLES[1]
-
-            if not login_valido:
+                acceso_valido[1] = ROLES[1]
+            else:
                 limpiar_consola()
                 intentos = intentos - 1
                 print("Datos incorrectos. Intentos restantes:", intentos, "\n")
 
     if intentos == 0:
         print("Ha superado el número máximo de intentos. El programa se cerrará.")
+        input("Presione Enter para continuar... ")
 
     limpiar_consola()
 
@@ -992,25 +1009,25 @@ def submenu_gestionar_candidatos(estudiante_id):
             reportar_candidato(estudiante_id)
 
 """
-opcion: string
+opc: string
 """
 def submenu_matcheos():
-    opcion = ""
+    opc = ""
 
-    while opcion != "c":
+    while opc != "c":
         limpiar_consola()
         print("........Matcheos........\n")
         print("a. Ver matcheos")
         print("b. Eliminar un matcheo")
         print("c. Volver")
 
-        opcion = input("\nSeleccione una opción: ")
+        opc = input("\nSeleccione una opción: ")
 
-        while opcion != "a" and opcion != "b" and opcion != "c":
+        while opc != "a" and opc != "b" and opc != "c":
             print("\nNo es una opción válida.")
-            opcion = input("\nSeleccione una opción: ")
+            opc = input("\nSeleccione una opción: ")
 
-        if opcion == "a" or opcion == "b":
+        if opc == "a" or opc == "b":
             en_construccion()
 
 
@@ -1054,22 +1071,16 @@ def validar_valores_fecha(dia, mes, anio):
 
 
 """
-estudiante: Arreglo de 0 a 7 de string
-est_id: int
-prop, valor: string
+est_id, ind: int
+prop, valor: str
 """
 def actualizar_estudiante(est_id, prop, valor):
-    estudiante = estudiantes[est_id - 1]
+    ind = 0
 
-    # TODO
-    # hacer que con un mientras búsque el valor de índice de la propiedad para automatizar y no tener q poner los if
-    # props[ind] = prop
-    if prop == NACIMIENTO:
-        estudiante[3] = valor
-    elif prop == BIOGRAFIA:
-        estudiante[5] = valor
-    elif prop == HOBBIES:
-        estudiante[6] = valor
+    while ind < 7 and prop != PROPS_ESTUDIANTE[ind]:
+            ind = ind + 1
+
+    estudiantes[est_id - 1][ind + 3] = valor
 
 """
 est_id: int
@@ -1079,11 +1090,12 @@ opc: string
 def eliminar_perfil(est_id):
     eliminado = False
 
+    print("\n")
     opc = input("¿Desea eliminar su perfil? (S/N) ").upper()
     opc = validar_continuacion(opc)
 
     if opc == "S":
-        estudiantes[est_id - 1][7] = ESTADO_ESTUDIANTE[0]
+        estudiantes[est_id - 1][10] = ESTADO_ESTUDIANTE[0]
         eliminado = True
 
         print("Perfil borrado con exito.")
@@ -1126,15 +1138,12 @@ est_id, ind: int
 def mostrar_datos_estudiante(est_id):
     print("Datos de usuario\n")
 
-    for ind in range(3, 11):
-        if ind == 4:
-            print(PROPS_ADICIONALES_ESTUDIANTES[ind - 4], ":", estudiantes[est_id - 1][ind])
-        elif ind != 7:
-            print(PROP_EDIT_ESTUDIANTES[ind - 4], ":", estudiantes[est_id - 1][ind])
+    for ind in range(3, 10):
+        print(PROPS_ESTUDIANTE[ind - 3], ":", estudiantes[est_id - 1][ind])
 
 """
 estudiante_id: int
-opcion, nacimiento, biografia, hobbies:str   
+opc, valor: str   
 """
 def editar_datos_estudiante(estudiante_id):
     opc = ""
@@ -1145,30 +1154,39 @@ def editar_datos_estudiante(estudiante_id):
 
         print("\n\n........Actualizar perfil........\n")
         print("a. Cambiar fecha de nacimiento")
-        print("b. Cambiar sexo")
-        print("c. Cambiar ciudad")
-        print("d. Cambiar país")
         print("b. Editar biografía")
         print("c. Editar hobbies")
+        print("d. Cambiar género")
+        print("e. Cambiar ciudad")
+        print("f. Cambiar país")
         print("n. Finalizar\n")
 
         opc = input("Seleccione una opción: ")
 
-        while opc != "a" and opc != "b" and opc != "c" and opc != "n":
-            print("\nNo es una opción válida.")
+        print("\n")
+        while opc != "a" and opc != "b" and opc != "c" and opc != "d" and opc != "e" and opc != "f" and opc != "n":
+            print("No es una opción válida.")
             opc = input("Ingrese una opción válida: ")
 
-        if opc == "a":
-            nacimiento = solicitar_fecha_nacimiento()
-            actualizar_estudiante(estudiante_id, NACIMIENTO, nacimiento)
-
-        elif opc == "b":
-            biografia = input("Nueva biografía:\n")
-            actualizar_estudiante(estudiante_id, BIOGRAFIA, biografia)
-
-        elif opc == "c":
-            hobbies = input("Nuevos Hobbies:\n")
-            actualizar_estudiante(estudiante_id, HOBBIES, hobbies)
+        match opc:
+            case "a":
+                valor = solicitar_fecha_nacimiento()
+                actualizar_estudiante(estudiante_id, PROPS_ESTUDIANTE[0], valor)
+            case "b":
+                valor = ingresar_propiedad(PROPS_ESTUDIANTE[2])
+                actualizar_estudiante(estudiante_id, PROPS_ESTUDIANTE[2], valor)
+            case "c":
+                valor = ingresar_propiedad(PROPS_ESTUDIANTE[3])
+                actualizar_estudiante(estudiante_id, PROPS_ESTUDIANTE[3], valor)
+            case "d":
+                valor = ingresar_propiedad(PROPS_ESTUDIANTE[4])
+                actualizar_estudiante(estudiante_id, PROPS_ESTUDIANTE[4], valor)
+            case "e":
+                valor = ingresar_propiedad(PROPS_ESTUDIANTE[5])
+                actualizar_estudiante(estudiante_id, PROPS_ESTUDIANTE[5], valor)
+            case "f":
+                valor = ingresar_propiedad(PROPS_ESTUDIANTE[6])
+                actualizar_estudiante(estudiante_id, PROPS_ESTUDIANTE[6], valor)
 
 """
 est_id, ind, likes_dados, likes_recibidos, matches: int
@@ -1210,7 +1228,7 @@ opcion_menu_principal: string
 def menu_principal_estudiante(est_id):
     opcion_menu_principal = "1"
 
-    while opcion_menu_principal != "0" and estudiantes[est_id - 1][7] == ESTADO_ESTUDIANTE[1]:
+    while opcion_menu_principal != "0" and estudiantes[est_id - 1][10] == ESTADO_ESTUDIANTE[1]:
         opcion_menu_principal = mostrar_menu_principal_estudiante()
 
         match opcion_menu_principal:
@@ -1277,7 +1295,7 @@ def desactivar_usuario():
             opc = validar_continuacion(opc)
 
             if opc == "S":
-                estudiantes[estudiante - 1][7] = ESTADO_ESTUDIANTE[0]
+                estudiantes[estudiante - 1][10] = ESTADO_ESTUDIANTE[0]
 
                 print("Perfil borrado con exito.")
                 input("Presione Enter para continuar ")
@@ -1330,7 +1348,7 @@ def procesar_reporte(reporte, opc):
     elif opc == "2":
         reportado_id = reporte[2]
         reporte[4] = ESTADO_REPORTE[1]
-        estudiantes[reportado_id - 1][7] = ESTADO_ESTUDIANTE[0]
+        estudiantes[reportado_id - 1][10] = ESTADO_ESTUDIANTE[0]
 
 """
 reporte: Arreglo de 0 a 3 de string
@@ -1460,11 +1478,14 @@ def main():
                 print("¡Hasta luego!")
             case "1":
                 usuario = log_in() # usuario = [id, rol]
-                usuario_id = int(usuario[0])
+                usuario_id = usuario[0]
 
                 if usuario_id != "":
                     rol = usuario[1]
-                    mostrar_menu_usuario(usuario_id, rol)
+
+                    mostrar_menu_usuario(int(usuario_id), rol)
+                else:
+                    opc = "0"
             case "2":
                 registrar()
 
