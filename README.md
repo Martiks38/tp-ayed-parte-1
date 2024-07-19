@@ -14,6 +14,7 @@
 - [ ] Añadir que no se puede tener un email existente en el registro y tampoco cambiar
 - [X] Unir los ingresos de textos para los datos de estudiantes
 - [ ] Verificar que al alcanzar el maximo de estudiantes, moderadores y reportes no deje crear otro
+- [ ] Pasar las listas a la función principal (esto va a ser un desastre)
 
 ## Revisión
 
@@ -25,19 +26,20 @@
 
     ### Estudiante
 
-    - [ ] Ver menú correctamente (añadir bonus track 2 y 3)
+    - [X] Ver menú correctamente (añadir bonus track 2 y 3)
     - [X] Submenu 1
-    - [ ] Submenu 2 (no funciona a ni b)
+    - [X] Submenu 2
     - [X] Submenu 3
     - [X] Submenu 4
     - [ ] Submenu 5 Bonus 1
-    - [ ] Submenu 6 Bonus 2
-    - [ ] Submenu 7 Bonus 3
+    - [X] Submenu 6 Bonus 2
+    - [X] Submenu 7 Bonus 3
 
 
     ### Moderador
 
     - [X] Ver menú correctamente
     - [X] Submenús correctos (funcionamiento de elección y vista)
-    - [ ] Función primer submenu
-    - [ ] Función segundo submenu
+    - [X] submenu 1
+    - [X] submenu 2
+    - [X] submenu 3
