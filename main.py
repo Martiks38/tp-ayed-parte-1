@@ -56,14 +56,32 @@ def validar_continuacion(opc):
     return opc
 
 """
+cant, est_id, ind: int
+"""
+def contar_estudiantes_activos_no_matcheados(est_id):
+    cant = 0
+    ind = 0
+
+    while ind < 8 and estudiantes[ind][0] != str(est_id):
+        if estudiantes[ind][10] == ESTADO_ESTUDIANTE[1] and me_gusta[est_id - 1][ind]:
+            cant = cant + 1
+
+        ind = ind + 1
+
+    return cant
+
+"""
 cant, ind: int
 """
 def contar_estudiantes_activos():
     cant = 0
+    ind = 0
 
-    for ind in range(8):
+    while ind < 8 and estudiantes[ind][0] != "":
         if estudiantes[ind][10] == ESTADO_ESTUDIANTE[1]:
             cant = cant + 1
+
+        ind = ind + 1
 
     return cant
 
@@ -156,6 +174,7 @@ def huecos_edades():
     mostrar_edades(edades)
 
     ordenar_edades_creciente(edades)
+    mostrar_edades(edades)
     detectar_huecos_entre_edades(edades[:])
 
 """
@@ -759,8 +778,8 @@ def mostrar_menu_principal_estudiante():
     print("3. Matcheos")
     print("4. Reportes estadísticos")
     print("5. Ruleta")
-    print("6. Bonus track 2")
-    print("7. Bonus track 3")
+    print("6. Hueco edades estudiantes")
+    print("7. Matcheos combinandos")
     print("0. Salir")
 
     opcion = input("\nSeleccione una opción: ")
@@ -771,6 +790,8 @@ def mostrar_menu_principal_estudiante():
         and opcion != "3"
         and opcion != "4"
         and opcion != "5"
+        and opcion != "6"
+        and opcion != "7"
         and opcion != "0"
     ):
         print("La opción introducida no es válida.")
@@ -911,73 +932,75 @@ probabilidad_match_1, probabilidad_match_2, probabilidad_match_3: int
 """
 # TODO
 def ruleta(estudiante_id):
-    # Hacer esto ciclo mientras el usuario quiera y la cantidad
-    #  cant_estudiantes-1 sea mayor que tres pero con cada sigo se le debe restar uno más
-    limpiar_consola()
+    continuar = ""
+    cant_estudiantes = contar_estudiantes_activos_no_matcheados(estudiante_id)
 
-    # TODO
-    # Añadir filtro que tampoco ya les haya dado match
-    cant_estudiantes = contar_estudiantes_activos()
+    while continuar != "N" and cant_estudiantes < 4:
+        limpiar_consola()
 
-    if cant_estudiantes - 1 < 4:
-        print("No hay suficientes estudiantes activos para esta función.")
-    else:
-        candidatos = [[""]*3 for n in range(3)]
-        cant_candidatos = 0
+        if cant_estudiantes < 4:
+            print("No hay suficientes estudiantes activos para esta función.")
+        else:
+            candidatos = [[""]*3 for n in range(3)]
+            cant_candidatos = 0
 
-        # TODO
-        # Se reducen los casos pero no tanto se podría mejorar con un while hasta que lo encuentre
-        while cant_candidatos < 3:
-            est_id = random.randint(1, cant_estudiantes)
+            # TODO
+            # Se reducen los casos pero no tanto se podría mejorar con un while hasta que lo encuentre
+            while cant_candidatos < 3:
+                est_id = random.randint(0, cant_estudiantes - 1)
 
-            if estudiante_id != est_id:
-                if not comprobar_nuevo_candidato(candidatos[:], est_id):
-                    if comprobar_nuevo_candidato(candidatos[:], est_id - 1):
-                        est_id = est_id - 1
-                    elif comprobar_nuevo_candidato(candidatos[:], est_id + 1):
-                        est_id = est_id + 1
+                if estudiante_id != est_id:
+                    if not comprobar_nuevo_candidato(candidatos[:], est_id):
+                        if comprobar_nuevo_candidato(candidatos[:], est_id - 1):
+                            est_id = est_id - 1
+                        elif comprobar_nuevo_candidato(candidatos[:], est_id + 1):
+                            est_id = est_id + 1
 
-                candidatos[cant_candidatos][0] = est_id
-                candidatos[cant_candidatos][1] = obtener_nombre_estudiante_por_id(est_id)
-                candidatos[cant_candidatos][2] = "0"
+                    candidatos[cant_candidatos][0] = est_id
+                    candidatos[cant_candidatos][1] = obtener_nombre_estudiante_por_id(est_id)
+                    candidatos[cant_candidatos][2] = "0"
 
-                cant_candidatos = cant_candidatos + 1
+                    cant_candidatos = cant_candidatos + 1
 
-        print("........RULETA........")
-        print(
-            "A continuación, se le pedirá ingresar la probabilidad de matcheo con tres estudiantes."
-        )
-        print("Los valores ingresados deben ser enteros y su suma igual a 100.\n")
+            print("........RULETA........")
+            print(
+                "A continuación, se le pedirá ingresar la probabilidad de matcheo con tres estudiantes."
+            )
+            print("Los valores ingresados deben ser enteros y su suma igual a 100.\n")
 
-        while calcular_probabilidad_total_candidatos(candidatos[:]) != 100:
-            mostrar_candidatos(candidatos[:])
+            while calcular_probabilidad_total_candidatos(candidatos[:]) != 100:
+                mostrar_candidatos(candidatos[:])
 
-            probabilidades_ingresadas = 0
+                probabilidades_ingresadas = 0
 
-            print("\n")
-            while probabilidades_ingresadas < 3:
-                valor = input(f"Ingresar la probabilidad del estudiante {str(probabilidades_ingresadas + 1)}: ")
+                print("\n")
+                while probabilidades_ingresadas < 3:
+                    valor = input(f"Ingresar la probabilidad del estudiante {str(probabilidades_ingresadas + 1)}: ")
 
-                while not valor.isnumeric():
-                    valor = input("Por favor ingrese un valor numérico entero: ")
+                    while not valor.isnumeric():
+                        valor = input("Por favor ingrese un valor numérico entero: ")
 
-                candidatos[probabilidades_ingresadas][2] = valor
-                probabilidades_ingresadas = probabilidades_ingresadas + 1
+                    candidatos[probabilidades_ingresadas][2] = valor
+                    probabilidades_ingresadas = probabilidades_ingresadas + 1
 
-            probabilidad_total = calcular_probabilidad_total_candidatos(candidatos[:])
+                probabilidad_total = calcular_probabilidad_total_candidatos(candidatos[:])
 
-            if probabilidad_total != 100:
-                limpiar_consola()
-                print(
-                    "\n\nLa probabilidad total debe ser igual a 100 y el introducido es",
-                    probabilidad_total,
-                    ".",
-                )
-                print("Vuelva a introducir los valores.\n\n")
+                if probabilidad_total != 100:
+                    limpiar_consola()
+                    print(
+                        "\n\nLa probabilidad total debe ser igual a 100 y el introducido es",
+                        probabilidad_total,
+                        ".",
+                    )
+                    print("Vuelva a introducir los valores.\n\n")
 
-        valores_eleccion_candidatos = [0]*3
-        calcular_eleccion_candidatos(valores_eleccion_candidatos, candidatos[:])
-        matchear_candidato(valores_eleccion_candidatos[:], candidatos[:], est_id)
+            valores_eleccion_candidatos = [0]*3
+            calcular_eleccion_candidatos(valores_eleccion_candidatos, candidatos[:])
+            matchear_candidato(valores_eleccion_candidatos[:], candidatos[:], est_id)
+
+        continuar = input("Usar la ruleta nuevamente. S/N ")
+        continuar = validar_continuacion(continuar)
+        cant_estudiantes = contar_estudiantes_activos_no_matcheados(estudiante_id)
 
 """
 est_id, reporte_id: int
@@ -1291,10 +1314,10 @@ def menu_principal_estudiante(est_id):
                 ruleta(est_id)
 
             case "6":
-                print("Bonus track 2")
+                huecos_edades()
 
             case "7":
-                print("Bonus track 2")
+                matcheos_combinados()
 
             case "0":
                 limpiar_consola()
