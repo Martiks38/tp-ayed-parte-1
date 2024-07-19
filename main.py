@@ -397,6 +397,19 @@ def registrar():
 
     limpiar_consola()
 
+def inicializar_reportes_mock():
+    reportes[0][0] = "0"
+    reportes[0][1] = "1"
+    reportes[0][2] = "2"
+    reportes[0][3] = "Motivo 1"
+    reportes[0][4] = ESTADO_REPORTE[0]
+
+    reportes[1][0] = "0"
+    reportes[1][1] = "2"
+    reportes[1][2] = "3"
+    reportes[1][3] = "Motivo 2"
+    reportes[1][4] = ESTADO_REPORTE[0]
+
 """
 mod: Arreglo multi de 3x4 de string
 """
@@ -941,10 +954,10 @@ def ruleta(estudiante_id):
     continuar = ""
     cant_estudiantes = contar_estudiantes_activos_no_matcheados(estudiante_id)
 
-    while continuar != "N" and cant_estudiantes < 4:
+    while continuar != "N" and cant_estudiantes < 3:
         limpiar_consola()
 
-        if cant_estudiantes < 4:
+        if cant_estudiantes < 3:
             print("No hay suficientes estudiantes activos para esta función.")
         else:
             candidatos = [[""]*3 for n in range(3)]
@@ -1360,27 +1373,29 @@ def desactivar_usuario():
     decision = "S"
 
     while decision == "S":
+        limpiar_consola()
         estudiante = input("Ingrese el ID o el nombre del usuario: ")
 
         if not estudiante.isdigit():
             estudiante = str(obtener_id_estudiante_por_nombre(estudiante))
 
-        if validar_id_estudiante(estudiante):
-            print(f"El usuario de id: {estudiante} no existe.\n")
+        if estudiantes[int(estudiante) - 1][10] == ESTADO_ESTUDIANTE[0] or  not validar_id_estudiante(estudiante):
+            print("El usuario no existe o ya está desactivado.\n")
         else:
             limpiar_consola()
             opc = input("Seguro que desea continuar con la desactivación del usuario. S/N ").upper()
             opc = validar_continuacion(opc)
 
             if opc == "S":
-                estudiantes[estudiante - 1][10] = ESTADO_ESTUDIANTE[0]
+                estudiantes[int(estudiante) - 1][10] = ESTADO_ESTUDIANTE[0]
 
                 print("Perfil borrado con exito.")
-                input("Presione Enter para continuar ")
 
-            limpiar_consola()
-            decision = input("Desactivar otra cuenta. S/N: ").upper()
-            decision = validar_continuacion(decision)
+        input("Presione Enter para continuar ")
+
+        limpiar_consola()
+        decision = input("Desactivar otra cuenta. S/N: ").upper()
+        decision = validar_continuacion(decision)
 
 """
 opc: string
@@ -1544,6 +1559,7 @@ def main():
     # cargar_moderador(moderadores)
     inicializar_estudiantes_mock(estudiantes)
     inicializar_moderadores_mock(moderadores)
+    inicializar_reportes_mock()
 
     opc = ""
 
