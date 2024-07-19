@@ -127,8 +127,8 @@ def ordenar_edades_creciente(edades):
 edad, edad_1, edad_2: int
 """
 def mostrar_valores_faltantes(edad_1, edad_2):
-    print("Se detectó un hueco.\n")
-    print(f"Los valores faltantes entre {edad_1} y {edad_2} son:\n")
+    print("\nSe detectó un hueco.")
+    print(f"Los valores faltantes entre {edad_1} y {edad_2} años son:\n")
 
     for edad in range(edad_1 + 1, edad_2):
         print("-", edad)
@@ -143,7 +143,6 @@ def detectar_huecos_entre_edades(edades):
     cant_huecos = 0
 
     for ind in range(5):
-        # Dado que las edades no se repiten la diferencia entre edades es 1
         edad_1 = edades[ind]
         edad_2 = edades[ind + 1]
 
@@ -152,7 +151,7 @@ def detectar_huecos_entre_edades(edades):
             mostrar_valores_faltantes(edad_1, edad_2)
 
     if cant_huecos != 0:
-        print(f"Se encontraron {cant_huecos} entre las edades de los 6 estudiantes.")
+        print(f"Se encontraron {cant_huecos} huecos entre las edades de los 6 estudiantes.")
     else:
         print("No se encontrarón huecos entra las edades los 6 estudiantes.")
 
@@ -170,21 +169,28 @@ edades: Arreglo de 0 a 5 de int
 def huecos_edades():
     edades = [21, 18, 20, 19, 23, 24]
 
+    limpiar_consola()
     print("Las edades de los estudiantes obtenidas del reporte son:")
     mostrar_edades(edades)
 
+    print("\nLas edades de los estudiantes ordenadas de forma creciente son:")
     ordenar_edades_creciente(edades)
     mostrar_edades(edades)
     detectar_huecos_entre_edades(edades[:])
+
+    input("Presiona Enter para volver al inicio...")
 
 """
 cant_est, cant_matcheos: int
 """
 def matcheos_combinados():
+    limpiar_consola()
     cant_est = contar_estudiantes_activos()
-    cant_matcheos = cant_est*(cant_est - 1)/2
+    cant_matcheos = int(cant_est*(cant_est - 1)/2)
 
-    print(f"La cantidad de matcheos posibles entre {cant_est} estudiantes es: {cant_matcheos}.")
+    print(f"La cantidad de matcheos posibles entre {cant_est} estudiantes es {cant_matcheos}.")
+
+    input("\nPresiona Enter para volver al inicio...")
 
 """
 cant, ind: int
