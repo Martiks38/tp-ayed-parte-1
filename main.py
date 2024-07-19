@@ -398,17 +398,23 @@ def registrar():
     limpiar_consola()
 
 def inicializar_reportes_mock():
-    reportes[0][0] = "0"
+    reportes[0][0] = "1"
     reportes[0][1] = "1"
     reportes[0][2] = "2"
     reportes[0][3] = "Motivo 1"
     reportes[0][4] = ESTADO_REPORTE[0]
 
-    reportes[1][0] = "0"
+    reportes[1][0] = "2"
     reportes[1][1] = "2"
     reportes[1][2] = "3"
     reportes[1][3] = "Motivo 2"
     reportes[1][4] = ESTADO_REPORTE[0]
+
+    reportes[2][0] = "2"
+    reportes[2][1] = "4"
+    reportes[2][2] = "2"
+    reportes[2][3] = "Motivo 3"
+    reportes[2][4] = ESTADO_REPORTE[0]
 
 """
 mod: Arreglo multi de 3x4 de string
@@ -1434,14 +1440,22 @@ def mostrar_reporte(reporte):
 """
 reporte: Arreglo de 0 a 3 de string
 opc, reportado_id: string
+ind: int
 """
 def procesar_reporte(reporte, opc):
     if opc == "1":
         reporte[4] = ESTADO_REPORTE[2]
     elif opc == "2":
+        ind = 0
         reportado_id = reporte[2]
-        reporte[4] = ESTADO_REPORTE[1]
-        estudiantes[reportado_id - 1][10] = ESTADO_ESTUDIANTE[0]
+
+        estudiantes[int(reportado_id) - 1][10] = ESTADO_ESTUDIANTE[0]
+
+        while ind < cant_total_reportes and reportes[ind][0] != "":
+            if reportes[ind][2] == reportado_id:
+                reportes[ind][4] = ESTADO_REPORTE[1]
+
+            ind = ind + 1
 
 """
 reporte: Arreglo de 0 a 3 de string
@@ -1474,11 +1488,11 @@ def ver_reportes():
     while ind < cant_reportes_alta and continuar:
         reporte = reportes[ind]
 
-        estado_reportante = obtener_estado_estudiante_por_id(reporte[1])
+        limpiar_consola()
         estado_reportado = obtener_estado_estudiante_por_id(reporte[2])
         estado_reporte = reporte[4]
 
-        estudiantes_activos = estado_reportado == ESTADO_ESTUDIANTE[1] and estado_reportante == ESTADO_ESTUDIANTE[1]
+        estudiantes_activos = estado_reportado == ESTADO_ESTUDIANTE[1]
 
         if estudiantes_activos and estado_reporte == ESTADO_REPORTE[0]:
             mostrar_reporte(reporte[:])
