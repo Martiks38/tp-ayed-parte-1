@@ -11,18 +11,12 @@ import platform
 import random
 
 """
-NACIMIENTO, BIOGRAFIA, HOBBIES: string
 PROPS_ESTUDIANTE: Arreglo de 0 a 6 de string
 ESTADO_ESTUDIANTE: Arreglo de 0 a 1 de string
 ESTADO_REPORTE: Arreglo de 0 a 2 de string
 GENERO: Arreglo de 0 a 1 de string
 ROLES: Arreglo de 0 a 1 de string
 """
-NACIMIENTO = "nacimiento"
-BIOGRAFIA = "biografia"
-HOBBIES = "hobbies"
-CIUDAD = "ciudad"
-PAIS = "pais"
 GENERO = ["F", "M"]
 PROPS_ESTUDIANTE = ["Nacimiento", "Nombre", "Biografía", "Hobbies", "Género", "Ciudad", "País"]
 ESTADO_ESTUDIANTE = ["INACTIVO", "ACTIVO"]
