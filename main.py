@@ -270,7 +270,7 @@ def matcheos_combinados(estudiantes: list[list[str]]):
     cant_est = contar_estudiantes_activos(estudiantes[:])
     cant_matcheos = int(cant_est*(cant_est - 1)/2)
 
-    print(f"La cantidad de matcheos posibles entre {cant_est} estudiantes es {cant_matcheos}.")
+    print(f"La cantidad de matcheos posibles entre los {cant_est} estudiantes actuales es igual a {cant_matcheos}.")
 
     input("\nPresiona Enter para volver al inicio...")
 
@@ -1246,9 +1246,9 @@ def ruleta(usuario_id: int, estudiantes: list[list[str]], me_gusta: list[list[bo
             continuar = validar_continuacion(continuar)
             cant_est_posibles = contar_estudiantes_activos_no_matcheados(usuario_id, estudiantes[:], me_gusta[:])
 
-            if cant_est_posibles < 3:
-                print("No hay suficientes estudiantes activos para esta función.")
-                input("Presione Enter para volver al inicio... ")
+        if cant_est_posibles < 3 and continuar == "S":
+            print("No hay suficientes estudiantes activos para esta función.")
+            input("Presione Enter para volver al inicio... ")
 
 ### Reporte ###
 
@@ -1638,7 +1638,7 @@ def main():
                 if usuario_id != "":
                     rol = usuario[1]
 
-                    mostrar_menu_usuario(usuario_id, rol, estudiantes, reportes, me_gusta)
+                    mostrar_menu_usuario(int(usuario_id), rol, estudiantes, reportes, me_gusta)
                 else:
                     opc = "0"
             case "2":
