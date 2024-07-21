@@ -526,29 +526,33 @@ def cargar_estudiantes(estudiantes: list[list[str]]):
         for prop in range(1, 11):
             match prop:
                 case 1:
-                    estudiantes[cant_estudiantes][prop] = input("Ingrese el email: ")
+                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad("Email")
                     limpiar_consola()
                 case 2:
-                    estudiantes[cant_estudiantes][prop] = getpass("Ingrese la contraseña: ")
+                    estudiantes[cant_estudiantes][prop] = ingresar_contrasenia()
                     limpiar_consola()
                 case 3:
                     print("Fecha de nacimiento")
                     estudiantes[cant_estudiantes][prop] = solicitar_fecha_nacimiento()
                     limpiar_consola()
                 case 4:
-                    estudiantes[cant_estudiantes][prop] = input("Ingrese el nombre: ")
+                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad(PROPS_ESTUDIANTE[1])
                     limpiar_consola()
                 case 5:
-                    estudiantes[cant_estudiantes][prop] = input("Ingrese su biografía:\n")
+                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad(PROPS_ESTUDIANTE[2])
                     limpiar_consola()
                 case 6:
-                    estudiantes[cant_estudiantes][prop] = input("Ingrese sus hobbies:\n")
+                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad(PROPS_ESTUDIANTE[3])
+                    limpiar_consola()
                 case 7:
-                    estudiantes[cant_estudiantes][prop] = True
+                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad(PROPS_ESTUDIANTE[4])
+                    limpiar_consola()
                 case 8:
-                    estudiantes[cant_estudiantes][prop] = True
+                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad(PROPS_ESTUDIANTE[5])
+                    limpiar_consola()
                 case 9:
-                    estudiantes[cant_estudiantes][prop] = True
+                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad(PROPS_ESTUDIANTE[6])
+                    limpiar_consola()
                 case 10:
                     estudiantes[cant_estudiantes][prop] = True
 
