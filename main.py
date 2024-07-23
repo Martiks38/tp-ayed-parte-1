@@ -1314,7 +1314,9 @@ def ver_reportes(reportes: list[list[str]], estudiantes: list[list[str]]):
     ind = 0
     opc = ""
 
-    while ind < 40 and opc != "N" and reportes[ind][0] != "":
+    cant_reportes = contar_reportes(reportes)
+
+    while ind < cant_reportes and opc != "N" and reportes[ind][0] != "":
         reporte = reportes[ind]
 
         limpiar_consola()
@@ -1330,7 +1332,7 @@ def ver_reportes(reportes: list[list[str]], estudiantes: list[list[str]]):
 
         ind = ind + 1
 
-    if ind == 40:
+    if ind == cant_reportes:
         print("No quedan más reportes pendientes.")
         input("Presione Enter para continuar... ")
 
