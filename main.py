@@ -262,12 +262,13 @@ def solicitar_fecha_nacimiento() -> str:
 
 """
 estudiantes: Arreglo multi de 8x8 de string
+estados: Arreglo de 0 a 7 de bool
 cant_est, cant_matcheos: int
 """
-def matcheos_combinados(estudiantes: list[list[str]]):
+def matcheos_combinados(estudiantes: list[list[str]], estados: list[bool]):
     limpiar_consola()
-    cant_est = contar_estudiantes_activos(estudiantes[:])
-    cant_matcheos = int(cant_est*(cant_est - 1)/2)
+    cant_est = contar_estudiantes_activos(estudiantes[:], estados[:])
+    cant_matcheos = cant_est*(cant_est - 1)//2
 
     print(f"La cantidad de matcheos posibles entre los {cant_est} estudiantes actuales es igual a {cant_matcheos}.")
 
@@ -589,17 +590,11 @@ def registrar_estudiante(email: str, password: str, cant: int, estudiantes: list
 
 """
 estudiantes: Arreglo multi de 9x8 de string
-cant_estudiantes, ind: int
-est_id: string
+estados: Arreglo de 0 a 7 de bool
+est_id: int
 """
-def validar_id_estudiante(est_id: str, estudiantes: list[list[str]]):
-    cant_estudiantes = contar_estudiantes(estudiantes[:])
-    ind = 0
-
-    while ind < cant_estudiantes and estudiantes[ind][0] != est_id:
-        ind = ind + 1
-
-    return ind != cant_estudiantes
+def validar_id_estudiante(est_id: int, estudiantes: list[list[str]], estados: list[bool]):
+    return 0 <= est_id and est_id <= contar_estudiantes_activos(estudiantes, estados)
 
 """
 estudiantes: Arreglo multi de 9x8 de string
@@ -613,7 +608,6 @@ def contar_estudiantes_activos(estudiantes: list[list[str]], estados: list[bool]
     while ind < 8 and estudiantes[ind][0] != "":
         if estados[ind]:
             cant = cant + 1
-
         ind = ind + 1
 
     return cant
@@ -643,10 +637,10 @@ nombre: string
 def obtener_id_estudiante_por_nombre(nombre: str, estudiantes: list[list[str]]):
     ind = 0
 
-    while ind < 8 and estudiantes[ind][4] != nombre:
+    while ind < 8 and estudiantes[ind][3] != nombre:
         ind = ind + 1
 
-    return ind + 1
+    return ind
 
 """
 estudiantes: Arreglo multi de 9x8 de string
@@ -659,7 +653,7 @@ def obtener_nombre_estudiante_por_id(est_id: str, estudiantes: list[list[str]]):
     while ind < 8 and estudiantes[ind][0] != est_id:
         ind = ind + 1
 
-    return estudiantes[ind][4]
+    return estudiantes[ind][3]
 
 """
 estudiantes: Arreglo multi de 9x8 de string
@@ -725,7 +719,7 @@ def reportar_candidato(est_id: int, estudiantes: list[list[str]], reportes: list
         if not reportado_id.isdigit():
             reportado_id = str(obtener_id_estudiante_por_nombre(reportado_id, estudiantes))
 
-        if str(est_id) == reportado_id or not validar_id_estudiante(reportado_id, estudiantes[:]):
+        if str(est_id) == reportado_id or not validar_id_estudiante(reportado_id):
             print("El usuario ha reportar no es válido.\n")
         else:
             limpiar_consola()
@@ -1039,27 +1033,34 @@ def reportes_estadisticos_estudiante(est_id: int, me_gusta: list[list[bool]]):
 
 """
 estudiantes: Arreglo multi de 8x11 de string
+estados: Arreglo de 0 a 7 de bool
 decision, estudiante, opc: string
+est_id: int
 """
-def desactivar_usuario(estudiantes: list[list[str]]):
+def desactivar_usuario(estudiantes: list[list[str]], estados: list[bool]):
     decision = ""
 
     while decision != "N":
         limpiar_consola()
         estudiante = input("Ingrese el ID o el nombre del usuario: ")
+        est_id = -1
 
         if not estudiante.isdigit():
-            estudiante = str(obtener_id_estudiante_por_nombre(estudiante, estudiantes[:]))
+            est_id = obtener_id_estudiante_por_nombre(estudiante, estudiantes[:])
+        else:
+            est_id = int(estudiante)
 
-        if estudiantes[int(estudiante) - 1][10] == ESTADO_ESTUDIANTE[0] or not validar_id_estudiante(estudiante, estudiantes[:]):
-            print("El usuario no existe o ya está desactivado.\n")
+        if not validar_id_estudiante(est_id, estudiantes[:], estados[:]):
+            print("El usuario no existe.\n")
+        elif not estados[est_id]:
+            print("El usuario ya está desactivado.\n")
         else:
             limpiar_consola()
             opc = input("Seguro que desea continuar con la desactivación del usuario. S/N ").upper()
             opc = validar_continuacion(opc)
 
             if opc == "S":
-                estudiantes[int(estudiante) - 1][10] = ESTADO_ESTUDIANTE[0]
+                estados[est_id] = False
 
                 print("Perfil borrado con exito.")
 
@@ -1353,9 +1354,10 @@ def registrar_moderador(email: str, password: str, cant: int, estudiantes: list[
 
 """
 estudiantes: Arreglo multi de 8x11 de string
+estados: Arreglo de 0 a 7 de bool
 opc: string
 """
-def manejador_submenu_gestionar_usuarios(estudiantes: list[list[str]]):
+def manejador_submenu_gestionar_usuarios(estudiantes: list[list[str]], estados: list[bool]):
     opc = ""
 
     while opc != "b":
@@ -1371,12 +1373,12 @@ def manejador_submenu_gestionar_usuarios(estudiantes: list[list[str]]):
             opc = input("Ingrese una opción válida: ")
 
         if opc == "a":
-            desactivar_usuario(estudiantes)
+            desactivar_usuario(estudiantes[:], estados)
 
 """
 estudiantes: Arreglo multi de 9x8 de string
-reportes: Arreglo multi de 5x40 de string
-opc: string
+reportes: Arreglo multi de 5x4|0 de string
+opc: string|
 """
 def manejador_submenu_gestionar_reportes(reportes: list[list[str]], estudiantes: list[list[str]]):
     opc = ""
@@ -1460,14 +1462,14 @@ def mostrar_menu_principal_moderadores():
 estudiantes: Arreglo multi de 8x11 de string
 reportes: Arreglo multi de 5x40 de string
 me_gusta: Arreglo multi de 8x8 de bool
-usuario_id: int
-rol: string
+estados: Arreglo de 0 a 7 de bool
+rol, usuario_id: int
 """
-def mostrar_menu_usuario(usuario_id: int, rol: str, estudiantes: list[list[str]], reportes: list[list[str]], me_gusta: list[list[bool]]):
-    if rol == ROLES[0]:
-        gestionador_menu_principal_estudiante(usuario_id, estudiantes, reportes, me_gusta)
-    elif rol == ROLES[1]:
-        manejador_menu_principal_moderador(reportes, estudiantes)
+def mostrar_menu_usuario(usuario_id: int, rol: int, estudiantes: list[list[str]], reportes: list[list[str]], me_gusta: list[list[bool]], estados: list[bool]):
+    if rol == 0:
+        gestionador_menu_principal_estudiante(usuario_id, estudiantes, reportes, me_gusta, estados)
+    elif rol == 1:
+        manejador_menu_principal_moderador(reportes, estudiantes, estados)
 
 """
 opcion: string
@@ -1498,10 +1500,11 @@ def mostrar_menu_principal():
 estudiantes: Arreglo multi de 9x8 de string
 reportes: Arreglo multi 5x40 de string
 me_gusta: Arreglo multi de 8x8 de bool
+estados: Arreglo de 0 a 7 de bool
 est_id: int
 opc: string
 """
-def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[str]], reportes: list[list[str]], me_gusta: list[list[bool]]):
+def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[str]], reportes: list[list[str]], me_gusta: list[list[bool]], estados: list[bool]):
     opc = ""
 
     while opc != "0" and estudiantes[est_id - 1][10] == ESTADO_ESTUDIANTE[1]:
@@ -1527,7 +1530,7 @@ def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[st
                 huecos_edades()
 
             case "7":
-                matcheos_combinados(estudiantes[:])
+                matcheos_combinados(estudiantes[:], estados[:])
 
             case "0":
                 limpiar_consola()
@@ -1535,9 +1538,10 @@ def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[st
 """
 estudiantes: Arreglo multi de 9x8 de string
 reportes: Arreglo multi de 5x40 de string
+estados: Arreglo de 0 a 7 de bool
 opc: string
 """
-def manejador_menu_principal_moderador(reportes: list[list[str]], estudiantes: list[list[str]]):
+def manejador_menu_principal_moderador(reportes: list[list[str]], estudiantes: list[list[str]], estados: list[bool]):
     opc = "1"
 
     while opc != "0":
@@ -1545,7 +1549,7 @@ def manejador_menu_principal_moderador(reportes: list[list[str]], estudiantes: l
 
         match opc:
             case "1":
-                manejador_submenu_gestionar_usuarios(estudiantes)
+                manejador_submenu_gestionar_usuarios(estudiantes, estados)
 
             case "2":
                 manejador_submenu_gestionar_reportes(reportes, estudiantes)
@@ -1562,9 +1566,10 @@ estudiantes: Arreglo multi de 9x8 de string
 moderadores: Arreglo multi de 3x4 de string
 me_gusta: Arreglo multi de 8x8 de bool
 reportes: Arreglo multi de 5x40 de string
-usuario: Arreglo de 0 a 1 de string
+usuario: Arreglo de 0 a 1 de int
 estados: Arreglo de 0 a 7 de bool
-opc, rol, usuario_id: string
+opc: string
+rol, usuario_id: int
 """
 def main():
     estudiantes = [[""]*9 for n in range(8)]
@@ -1593,7 +1598,7 @@ def main():
                 if usuario_id != "":
                     rol = usuario[1]
 
-                    mostrar_menu_usuario(int(usuario_id), rol, estudiantes, reportes, me_gusta)
+                    mostrar_menu_usuario(usuario_id, rol, estudiantes, reportes, me_gusta, estados)
                 else:
                     opc = "0"
             case "2":
