@@ -23,6 +23,11 @@ ESTADO_ESTUDIANTE = ["INACTIVO", "ACTIVO"]
 ESTADO_REPORTE = ["0", "1", "2"]
 ROLES = ["ESTUDIANTE", "MODERADOR"]
 
+# TODO
+""" 
+Reportes[reportante_ind][reportado_ind]
+"""
+
 """
 estudiantes: Arreglo multi de 11x8 de string
 moderadores: Arreglo multi de 3x4 de string
@@ -173,12 +178,12 @@ edades: Arreglo de 0 a 5 de int
 aux, i, j: int
 """
 def ordenar_edades_creciente(edades: list[int]):
-    for i in range(6):
-        for j in range(5):
-            if edades[j] > edades[j+1]:
-                aux = edades[j+1]
-                edades[j+1] = edades[j]
-                edades[j] = aux
+    for i in range(5):
+        for j in range(i+1, 6):
+            if edades[i] > edades[j]:
+                aux = edades[j]
+                edades[j] = edades[i]
+                edades[i] = aux
 
 """
 fecha_nros: Arreglo de 0 a 2 de int
@@ -682,20 +687,14 @@ estudiantes: Arreglo multi de 11x8 de string
 estudiante: Arreglo de 0 a 7 de string
 est_id: string
 ind: int
-encontrado: bool
 """
 def obtener_estado_estudiante_por_id(est_id: str, estudiantes: list[list[str]]):
-    encontrado = False
     ind = 0
 
-    while ind < 8 and not encontrado:
-        if estudiantes[ind][0] == est_id:
-            encontrado = True
-        else:
-            ind = ind + 1
+    while ind < 8 and estudiantes[ind][0] != est_id:
+        ind = ind + 1
 
     return estudiantes[ind][10]
-
 
 """
 estudiantes: Arreglo multi de 11x8 de string
