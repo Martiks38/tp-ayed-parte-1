@@ -29,7 +29,7 @@ Reportes[reportante_ind][reportado_ind]
 """
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 moderadores: Arreglo multi de 3x4 de string
 me_gusta: Arreglo multi de 8x8 de bool
 reportes: Arreglo multi de 5x40 de string
@@ -276,62 +276,62 @@ def matcheos_combinados(estudiantes: list[list[str]]):
 ### Mocks ###
 
 """
-est: Arreglo multi de 8x8 de string
+estudiantes: Arreglo multi de 9x8 de string
+estados: Arreglo de 0 a 
 """
-def inicializar_estudiantes_mock(est: list[list[str]]):
-    est[0][0] = "1"
-    est[0][1] = "estudiante1@ayed.com"
-    est[0][2] = "111222"
-    est[0][3] = "2001-10-01"
-    est[0][4] = "Juan Peréz"
-    est[0][5] = "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
-    est[0][6] = "Lectura - Senderismo - Juegos de mesa"
-    est[0][7] = GENERO[1]
-    est[0][8] = "Rosario"
-    est[0][9] = "Argentina"
-    est[0][10] = ESTADO_ESTUDIANTE[1]
+def inicializar_estudiantes_mock(estudiantes: list[list[str]], estados: list[bool]):
+    estudiantes[0][0] = "estudiante1@ayed.com"
+    estudiantes[0][1] = "111222"
+    estudiantes[0][2] = "2001-10-01"
+    estudiantes[0][3] = "Juan Peréz"
+    estudiantes[0][4] = "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
+    estudiantes[0][5] = "Lectura - Senderismo - Juegos de mesa"
+    estudiantes[0][6] = GENERO[1]
+    estudiantes[0][7] = "Rosario"
+    estudiantes[0][8] = "Argentina"
+    estudiantes[0][9] = ESTADO_ESTUDIANTE[1]
+    estados[0] = True
 
-    est[1][0] = "2"
-    est[1][1] = "estudiante2@ayed.com"
-    est[1][2] = "333444"
-    est[1][3] = "1998-04-11"
-    est[1][4] = "María García"
-    est[1][5] = "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
-    est[1][6] = "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas"
-    est[1][7] = "España"
-    est[1][8] = GENERO[0]
-    est[1][9] = "Madrid"
-    est[1][10] = ESTADO_ESTUDIANTE[1]
+    estudiantes[1][0] = "estudiante2@ayed.com"
+    estudiantes[1][1] = "333444"
+    estudiantes[1][2] = "1998-04-11"
+    estudiantes[1][3] = "María García"
+    estudiantes[1][4] = "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
+    estudiantes[1][5] = "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas"
+    estudiantes[1][6] = "España"
+    estudiantes[1][7] = GENERO[0]
+    estudiantes[1][8] = "Madrid"
+    estudiantes[1][9] = ESTADO_ESTUDIANTE[1]
+    estados[1] = True
 
-    est[2][0] = "3"
-    est[2][1] = "estudiante3@ayed.com"
-    est[2][2] = "555666"
-    est[2][3] = "2005-06-30"
-    est[2][4] = "Carlos Martínez"
-    est[2][5] = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
-    est[2][6] = "Correr - Tocar la guitarra - Cocinar platos internacionales"
-    est[2][7] = "Bolivia"
-    est[2][8] = GENERO[1]
-    est[2][9] = "La Paz"
-    est[2][10] = ESTADO_ESTUDIANTE[1]
+    estudiantes[2][0] = "estudiante3@ayed.com"
+    estudiantes[2][1] = "555666"
+    estudiantes[2][2] = "2005-06-30"
+    estudiantes[2][3] = "Carlos Martínez"
+    estudiantes[2][4] = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
+    estudiantes[2][5] = "Correr - Tocar la guitarra - Cocinar platos internacionales"
+    estudiantes[2][6] = "Bolivia"
+    estudiantes[2][7] = GENERO[1]
+    estudiantes[2][8] = "La Paz"
+    estudiantes[2][9] = ESTADO_ESTUDIANTE[1]
+    estados[2] = True
 
-    est[3][0] = "4"
-    est[3][1] = "estudiante4@ayed.com"
-    est[3][2] = "789101"
-    est[3][3] = "2001-09-15"
-    est[3][4] = "Ana López"
-    est[3][5] = "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que mejoren la seguridad digital."
-    est[3][6] = "Leer ciencia ficción - Pintar - Practicar yoga"
-    est[3][7] = "Paraguay"
-    est[3][8] = GENERO[0]
-    est[3][9] = "Asuncion"
-    est[3][10] = ESTADO_ESTUDIANTE[1]
+    estudiantes[3][0] = "estudiante4@ayed.com"
+    estudiantes[3][1] = "789101"
+    estudiantes[3][2] = "2001-09-15"
+    estudiantes[3][3] = "Ana López"
+    estudiantes[3][4] = "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que mejoren la seguridad digital."
+    estudiantes[3][5] = "Leer ciencia ficción - Pintar - Practicar yoga"
+    estudiantes[3][6] = "Paraguay"
+    estudiantes[3][7] = GENERO[0]
+    estudiantes[3][8] = "Asuncion"
+    estudiantes[3][9] = ESTADO_ESTUDIANTE[1]
+    estados[3] = True
 
 """
 mod: Arreglo multi de 3x4 de string
 """
 def inicializar_moderadores_mock(mod):
-    mod[0][0] = "1"
     mod[0][1] = "moderador1@ayed.com"
     mod[0][2] = "111222"
 
@@ -351,7 +351,7 @@ def inicializar_reportes_mock(reportes: list[list[str]]):
     reportes[1][3] = "Motivo 2"
     reportes[1][4] = ESTADO_REPORTE[0]
 
-    reportes[2][0] = "2"
+    reportes[2][0] = "3"
     reportes[2][1] = "4"
     reportes[2][2] = "2"
     reportes[2][3] = "Motivo 3"
@@ -371,7 +371,7 @@ def ingresar_contrasenia():
     return password
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 moderadores: Arreglo multi de 3x4 de string
 email: string
 ind: int
@@ -399,14 +399,14 @@ def email_existente(email: str, estudiantes: list[list[str]], moderadores: list[
     return valido
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 moderadores: Arreglo multi de 3x4 de string
 acceso_valido: Arreglo de 0 a 1 de string
 intentos, ind: int
 email, password: string
 login_valido: bool
 """
-def validar_acceso(acceso_valido: list[str], estudiantes: list[list[str]], moderadores: list[list[str]]):
+def validar_acceso(acceso_valido: list[str], estudiantes: list[list[str]], moderadores: list[list[str]], estados: list[bool]):
     intentos = 3
 
     while intentos > 0 and acceso_valido[0] == "":
@@ -443,21 +443,53 @@ def validar_acceso(acceso_valido: list[str], estudiantes: list[list[str]], moder
     limpiar_consola()
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 moderadores: Arreglo multi de 3x4 de string
-acceso_valido: Arreglo de 0 a 1 de string
+acceso_valido: Arreglo de 0 a 1 de int
+estados: Arreglo de 0 a 7 de bool
 """
-def log_in(estudiantes: list[list[str]], moderadores: list[list[str]]):
-    acceso_valido = [""]*2
+def log_in(estudiantes: list[list[str]], moderadores: list[list[str]], estados: list[bool]):
+    acceso_valido = [-1]*2
+    intentos = 3
 
     limpiar_consola()
     print("\n........Ingreso........\n")
-    validar_acceso(acceso_valido, estudiantes, moderadores)
+
+    while intentos > 0 and acceso_valido[0] == "":
+        email = input("Ingrese su email: ")
+        password = getpass("Ingrese su contraseña: ")
+
+        ind = 0
+        cant_estudiantes = contar_estudiantes_activos(estudiantes[:], estados[:])
+        while ind < cant_estudiantes and (estudiantes[ind][1] != email or estudiantes[ind][2] != password):
+            ind = ind + 1
+
+        if ind < cant_estudiantes:
+            acceso_valido[0] = ind
+            acceso_valido[1] = 0
+        else:
+            ind = 0
+            cant_mod = contar_moderadores(moderadores)
+            while ind < 4 and (moderadores[ind][1] != email or moderadores[ind][2] != password):
+                ind = ind + 1
+
+            if ind < cant_mod:
+                acceso_valido[0] = ind
+                acceso_valido[1] = 1
+            else:
+                limpiar_consola()
+                intentos = intentos - 1
+                print("Datos incorrectos. Intentos restantes:", intentos, "\n")
+
+    if intentos == 0:
+        print("Ha superado el número máximo de intentos. El programa se cerrará.")
+        input("Presione Enter para continuar... ")
+    limpiar_consola()
 
     return acceso_valido
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 moderadores: Arreglo multi de 3x4 de string
 bio, decision, email, fecha, password, rol: string
 cant: int
@@ -496,7 +528,7 @@ def registrar(estudiantes, moderadores):
 ### Estudiante ###
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 ind: int
 """
 def contar_estudiantes(estudiantes: list[list[str]]):
@@ -524,7 +556,7 @@ def ingresar_propiedad(prop: str):
     return valor
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 moderadores: Arreglo multi de 3x4 de string
 email, password: string
 cant: int
@@ -556,7 +588,7 @@ def registrar_estudiante(email: str, password: str, cant: int, estudiantes: list
     return registrado
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 cant_estudiantes, ind: int
 est_id: string
 """
@@ -570,15 +602,16 @@ def validar_id_estudiante(est_id: str, estudiantes: list[list[str]]):
     return ind != cant_estudiantes
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
+estados: Arreglo de 0 a 7 de bool
 cant, ind: int
 """
-def contar_estudiantes_activos(estudiantes: list[list[str]]):
+def contar_estudiantes_activos(estudiantes: list[list[str]], estados: list[bool]):
     cant = 0
     ind = 0
 
     while ind < 8 and estudiantes[ind][0] != "":
-        if estudiantes[ind][10] == ESTADO_ESTUDIANTE[1]:
+        if estados[ind]:
             cant = cant + 1
 
         ind = ind + 1
@@ -587,7 +620,7 @@ def contar_estudiantes_activos(estudiantes: list[list[str]]):
 
 """
 me_gusta: Arreglo multi de 8x8 de bool
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 cant, est_id, ind: int
 """
 def contar_estudiantes_activos_no_matcheados(est_id: int, estudiantes: list[list[str]], me_gusta: list[list[bool]]):
@@ -603,7 +636,7 @@ def contar_estudiantes_activos_no_matcheados(est_id: int, estudiantes: list[list
     return cant
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 ind: int
 nombre: string
 """
@@ -616,7 +649,7 @@ def obtener_id_estudiante_por_nombre(nombre: str, estudiantes: list[list[str]]):
     return ind + 1
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 est_id: str
 ind: int
 """
@@ -629,7 +662,7 @@ def obtener_nombre_estudiante_por_id(est_id: str, estudiantes: list[list[str]]):
     return estudiantes[ind][4]
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 estudiante: Arreglo de 0 a 7 de string
 est_id: string
 ind: int
@@ -643,7 +676,7 @@ def obtener_estado_estudiante_por_id(est_id: str, estudiantes: list[list[str]]):
     return estudiantes[ind][10]
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 est_id: int
 eliminado: bool
 opc: string
@@ -665,7 +698,7 @@ def eliminar_perfil(est_id: int, estudiantes: list[list[str]]):
     return eliminado
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 est_id, ind: int
 prop, valor: str
 """
@@ -735,7 +768,7 @@ def mostrar_datos_estudiante(est_id: int, estudiantes: list[list[str]]):
         print(PROPS_ESTUDIANTE[ind - 3], ":", estudiantes[est_id - 1][ind])
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 eliminado: bool
 est_id: int
 opc: string
@@ -780,7 +813,7 @@ def validar_nombre(nombre: str, estudiantes: list[list[str]]):
     return nombre
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 me_gusta: Arreglo multi de 8x8 de bool
 estudiante: Arreglo de 0 a 7 de string
 formato_espaniol_nacimiento: string
@@ -813,7 +846,7 @@ def ver_perfil_estudiante(est_id: int, estudiantes: list[list[str]], me_gusta: l
         ind = ind + 1
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 me_gusta: Arreglo multi de 8x8 de bool
 est_id, match_id: int
 decision, nombre_estudiante: string
@@ -848,7 +881,7 @@ def marcar_match(est_id: int, realizo_matcheo: bool, estudiantes: list[list[str]
         input("Presione Enter para continuar... ")
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 me_gusta: Arreglo multi de 8x8 de bool
 est_id: int
 opc: string
@@ -872,7 +905,7 @@ def manejador_matcheo_estudiantes(est_id: int, estudiantes: list[list[str]], me_
             realizo_matcheo = True
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 me_gusta: Arreglo multi de 8x8 de bool
 reportes: Arreglo multi 5x40 de string
 opcion: string
@@ -923,7 +956,7 @@ def manejador_submenu_matcheos():
             en_construccion()
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 estudiante_id: int
 opc, valor: str   
 """
@@ -1095,7 +1128,7 @@ def buscar_candidato_mayor_valor(valores: list[int]):
     return pos
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 candidatos: Arreglo multi de 3x3 de string
 candidato_ind, cant_est_totales, est_id, usuario_id: int
 """
@@ -1127,7 +1160,7 @@ def matchear_candidato(usuario_id: int, valores: list[int], candidatos: list[lis
     print("\nTu match es la persona", nombre_match)
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 candidatos: Arreglo multi de 3x3 de string
 valores_eleccion_candidatos: Arreglo de 0 a 2 de int
 me_gusta: Arreglo multi de 8x8 de bool
@@ -1204,7 +1237,7 @@ def contar_reportes(reportes: list[list[str]]):
     return ind
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 reporte: Arreglo de 0 a 4 de string
 nombre_reportante, nombre_reportado: string
 """
@@ -1218,7 +1251,7 @@ def mostrar_reporte(estudiantes: list[list[str]], reporte: list[str]):
     print(f"Motivo:\n\t{reporte[3]}\n\n")
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 reportes: Arreglo multi de 5x40 de string
 reporte: Arreglo de 0 a 4 de string
 opc, reportado_id: string
@@ -1249,7 +1282,7 @@ def procesar_reporte(reporte: list[str], reportes: list[list[str]], estudiantes:
             ind = ind + 1
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 reportes: Arreglo multi de 5x40 de string
 reporte: Arreglo de 0 a 4 de string
 ind: int
@@ -1296,7 +1329,7 @@ def contar_moderadores(moderadores: list[list[str]]):
     return ind
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 moderadores: Arreglo multi de 3x4 de string
 email, password: string
 cant: int
@@ -1341,7 +1374,7 @@ def manejador_submenu_gestionar_usuarios(estudiantes: list[list[str]]):
             desactivar_usuario(estudiantes)
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 reportes: Arreglo multi de 5x40 de string
 opc: string
 """
@@ -1462,7 +1495,7 @@ def mostrar_menu_principal():
 ### Gestionar ###
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 reportes: Arreglo multi 5x40 de string
 me_gusta: Arreglo multi de 8x8 de bool
 est_id: int
@@ -1500,7 +1533,7 @@ def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[st
                 limpiar_consola()
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 reportes: Arreglo multi de 5x40 de string
 opc: string
 """
@@ -1525,20 +1558,22 @@ def manejador_menu_principal_moderador(reportes: list[list[str]], estudiantes: l
                 print("¡Hasta luego!")
 
 """
-estudiantes: Arreglo multi de 11x8 de string
+estudiantes: Arreglo multi de 9x8 de string
 moderadores: Arreglo multi de 3x4 de string
 me_gusta: Arreglo multi de 8x8 de bool
 reportes: Arreglo multi de 5x40 de string
 usuario: Arreglo de 0 a 1 de string
+estados: Arreglo de 0 a 7 de bool
 opc, rol, usuario_id: string
 """
 def main():
-    estudiantes = [[""]*11 for n in range(8)]
+    estudiantes = [[""]*9 for n in range(8)]
     moderadores = [[""]*3 for n in range(4)]
     me_gusta = [[False]*8 for n in range(8)]
     reportes = [[""]*5 for n in range(40)]
+    estados = [False]*8
 
-    inicializar_estudiantes_mock(estudiantes)
+    inicializar_estudiantes_mock(estudiantes, estados)
     inicializar_moderadores_mock(moderadores)
     inicializar_reportes_mock(reportes)
 
@@ -1552,7 +1587,7 @@ def main():
                 limpiar_consola()
                 print("¡Hasta luego!")
             case "1":
-                usuario = log_in(estudiantes[:], moderadores[:])
+                usuario = log_in(estudiantes[:], moderadores[:], estados[:])
                 usuario_id = usuario[0]
 
                 if usuario_id != "":
