@@ -508,60 +508,6 @@ def contar_estudiantes(estudiantes: list[list[str]]):
     return ind
 
 """
-estudiantes: Arreglo multi de 11x8 de string
-cant_estudiantes, prop: int
-continuar: bool
-opc: string
-"""
-def cargar_estudiantes(estudiantes: list[list[str]]):
-    cant_estudiantes = contar_estudiantes(estudiantes[:])
-    continuar = True
-
-    print("A continuación ingrese los datos iniciales de los estudiantes.\n\n")
-
-    while cant_estudiantes < 4 or (continuar and cant_estudiantes <= 7):
-        estudiantes[cant_estudiantes][0] = str(cant_estudiantes + 1)
-
-        for prop in range(1, 11):
-            match prop:
-                case 1:
-                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad("Email")
-                    limpiar_consola()
-                case 2:
-                    estudiantes[cant_estudiantes][prop] = ingresar_contrasenia()
-                    limpiar_consola()
-                case 3:
-                    print("Fecha de nacimiento")
-                    estudiantes[cant_estudiantes][prop] = solicitar_fecha_nacimiento()
-                    limpiar_consola()
-                case 4:
-                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad(PROPS_ESTUDIANTE[1])
-                    limpiar_consola()
-                case 5:
-                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad(PROPS_ESTUDIANTE[2])
-                    limpiar_consola()
-                case 6:
-                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad(PROPS_ESTUDIANTE[3])
-                    limpiar_consola()
-                case 7:
-                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad(PROPS_ESTUDIANTE[4])
-                    limpiar_consola()
-                case 8:
-                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad(PROPS_ESTUDIANTE[5])
-                    limpiar_consola()
-                case 9:
-                    estudiantes[cant_estudiantes][prop] = ingresar_propiedad(PROPS_ESTUDIANTE[6])
-                    limpiar_consola()
-                case 10:
-                    estudiantes[cant_estudiantes][prop] = True
-
-        opc = input("Añadir un nuevo estudiante (S/N) ").upper()
-        opc = validar_continuacion(opc)
-
-        continuar = opc == "S"
-        cant_estudiantes = cant_estudiantes + 1
-
-"""
 prop, valor: string
 """
 def ingresar_propiedad(prop: str):
@@ -1350,25 +1296,6 @@ def contar_moderadores(moderadores: list[list[str]]):
     return ind
 
 """
-mod: Arreglo multi de 3x4 de string
-opc: string
-cant_inicializados: int
-"""
-def cargar_moderador(mod: list[list[str]]):
-    cant_inicializados = contar_moderadores(mod)
-    opc = ""
-
-    while(cant_inicializados <= 4 and opc != "N"):
-        mod[cant_inicializados][0] = str(cant_inicializados + 1)
-        mod[cant_inicializados][1] = input("Ingrese el email: ")
-        mod[cant_inicializados][2] = getpass("Ingrese la contraseña: ")
-
-        cant_inicializados = cant_inicializados + 1
-
-        opc = input("Añadir un nuevo moderador (S/N) ").upper()
-        opc = validar_continuacion(opc)
-
-"""
 estudiantes: Arreglo multi de 11x8 de string
 moderadores: Arreglo multi de 3x4 de string
 email, password: string
@@ -1611,8 +1538,6 @@ def main():
     me_gusta = [[False]*8 for n in range(8)]
     reportes = [[""]*5 for n in range(40)]
 
-    # cargar_estudiantes(estudiantes)
-    # cargar_moderador(moderadores)
     inicializar_estudiantes_mock(estudiantes)
     inicializar_moderadores_mock(moderadores)
     inicializar_reportes_mock(reportes)
