@@ -277,8 +277,8 @@ estados: Arreglo de 0 a
 def inicializar_estudiantes_mock(estudiantes: list[list[str]], estados: list[bool]):
     estudiantes[0][0] = "estudiante1@ayed.com"
     estudiantes[0][1] = "111222"
-    estudiantes[0][2] = "2001-10-01"
-    estudiantes[0][3] = "Juan Peréz"
+    estudiantes[0][2] = "Juan Peréz"
+    estudiantes[0][3] = "2001-10-01"
     estudiantes[0][4] = "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
     estudiantes[0][5] = "Lectura - Senderismo - Juegos de mesa"
     estudiantes[0][6] = GENERO[1]
@@ -288,8 +288,8 @@ def inicializar_estudiantes_mock(estudiantes: list[list[str]], estados: list[boo
 
     estudiantes[1][0] = "estudiante2@ayed.com"
     estudiantes[1][1] = "333444"
-    estudiantes[1][2] = "1998-04-11"
-    estudiantes[1][3] = "María García"
+    estudiantes[1][2] = "María García"
+    estudiantes[1][3] = "1998-04-11"
     estudiantes[1][4] = "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
     estudiantes[1][5] = "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas"
     estudiantes[1][6] = "España"
@@ -299,8 +299,8 @@ def inicializar_estudiantes_mock(estudiantes: list[list[str]], estados: list[boo
 
     estudiantes[2][0] = "estudiante3@ayed.com"
     estudiantes[2][1] = "555666"
-    estudiantes[2][2] = "2005-06-30"
-    estudiantes[2][3] = "Carlos Martínez"
+    estudiantes[2][2] = "Carlos Martínez"
+    estudiantes[2][3] = "2005-06-30"
     estudiantes[2][4] = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
     estudiantes[2][5] = "Correr - Tocar la guitarra - Cocinar platos internacionales"
     estudiantes[2][6] = "Bolivia"
@@ -310,8 +310,8 @@ def inicializar_estudiantes_mock(estudiantes: list[list[str]], estados: list[boo
 
     estudiantes[3][0] = "estudiante4@ayed.com"
     estudiantes[3][1] = "789101"
-    estudiantes[3][2] = "2001-09-15"
-    estudiantes[3][3] = "Ana López"
+    estudiantes[3][2] = "Ana López"
+    estudiantes[3][3] = "2001-09-15"
     estudiantes[3][4] = "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que mejoren la seguridad digital."
     estudiantes[3][5] = "Leer ciencia ficción - Pintar - Practicar yoga"
     estudiantes[3][6] = "Paraguay"
@@ -444,13 +444,13 @@ def log_in(estudiantes: list[list[str]], moderadores: list[list[str]], estados: 
     limpiar_consola()
     print("\n........Ingreso........\n")
 
-    while intentos > 0 and acceso_valido[0] == "":
+    while intentos > 0 and acceso_valido[0] == -1:
         email = input("Ingrese su email: ")
         password = getpass("Ingrese su contraseña: ")
 
         ind = 0
         cant_estudiantes = contar_estudiantes_activos(estudiantes[:], estados[:])
-        while ind < cant_estudiantes and (estudiantes[ind][1] != email or estudiantes[ind][2] != password):
+        while ind < cant_estudiantes and (estudiantes[ind][0] != email or estudiantes[ind][1] != password):
             ind = ind + 1
 
         if ind < cant_estudiantes:
@@ -610,7 +610,7 @@ def contar_estudiantes_activos_no_matcheados(est_id: int, estudiantes: list[list
     ind = 0
 
     while ind < 8 and estudiantes[ind][0] != "":
-        if estudiantes[ind][0] != str(est_id) and estados[ind] and not me_gusta[est_id - 1][ind]:
+        if ind != est_id and estados[ind] and not me_gusta[est_id][ind]:
             cant = cant + 1
 
         ind = ind + 1
@@ -1092,7 +1092,7 @@ def obtener_candidatos(usuario_id: int, candidatos: list[list[int]], estudiantes
         est_id = random.randint(0, cant_est_totales - 1)
 
         while est_id == usuario_id or not comprobar_nuevo_candidato(candidatos[:], est_id):
-            est_id = random.randint(1, cant_est_totales)
+            est_id = random.randint(0, cant_est_totales - 1)
 
         candidatos[candidato_ind][0] = est_id
 
@@ -1165,6 +1165,7 @@ def ruleta(usuario_id: int, estudiantes: list[list[str]], me_gusta: list[list[bo
                     print("Vuelva a introducir los valores.\n")
 
             valores_eleccion_candidatos = [0]*3
+
             calcular_eleccion_candidatos(valores_eleccion_candidatos, candidatos[:])
             matchear_candidato(usuario_id, valores_eleccion_candidatos[:], candidatos[:], me_gusta, estudiantes[:])
 
