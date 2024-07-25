@@ -19,13 +19,7 @@ ROLES: Arreglo de 0 a 1 de string
 """
 GENERO = ["F", "M"]
 PROPS_ESTUDIANTE = ["Nombre", "Nacimiento", "Biografía", "Hobbies", "Género", "Ciudad", "País"]
-ESTADO_REPORTE = ["0", "1", "2"]
 ROLES = ["ESTUDIANTE", "MODERADOR"]
-
-# TODO
-""" 
-Reportes[reportante_ind][reportado_ind]
-"""
 
 """
 estudiantes: Arreglo multi de 9x8 de string
@@ -290,7 +284,6 @@ def inicializar_estudiantes_mock(estudiantes: list[list[str]], estados: list[boo
     estudiantes[0][6] = GENERO[1]
     estudiantes[0][7] = "Rosario"
     estudiantes[0][8] = "Argentina"
-    estudiantes[0][9] = ESTADO_ESTUDIANTE[1]
     estados[0] = True
 
     estudiantes[1][0] = "estudiante2@ayed.com"
@@ -302,7 +295,6 @@ def inicializar_estudiantes_mock(estudiantes: list[list[str]], estados: list[boo
     estudiantes[1][6] = "España"
     estudiantes[1][7] = GENERO[0]
     estudiantes[1][8] = "Madrid"
-    estudiantes[1][9] = ESTADO_ESTUDIANTE[1]
     estados[1] = True
 
     estudiantes[2][0] = "estudiante3@ayed.com"
@@ -314,7 +306,6 @@ def inicializar_estudiantes_mock(estudiantes: list[list[str]], estados: list[boo
     estudiantes[2][6] = "Bolivia"
     estudiantes[2][7] = GENERO[1]
     estudiantes[2][8] = "La Paz"
-    estudiantes[2][9] = ESTADO_ESTUDIANTE[1]
     estados[2] = True
 
     estudiantes[3][0] = "estudiante4@ayed.com"
@@ -326,7 +317,6 @@ def inicializar_estudiantes_mock(estudiantes: list[list[str]], estados: list[boo
     estudiantes[3][6] = "Paraguay"
     estudiantes[3][7] = GENERO[0]
     estudiantes[3][8] = "Asuncion"
-    estudiantes[3][9] = ESTADO_ESTUDIANTE[1]
     estados[3] = True
 
 """
@@ -337,26 +327,24 @@ def inicializar_moderadores_mock(mod):
     mod[0][2] = "111222"
 
 """
-reportes: Arreglo de 5x40 de string
+reportes: Arreglo de 3x40 de int
+motivo_reportes: Arreglo de 0 a 39
 """
-def inicializar_reportes_mock(reportes: list[list[str]]):
-    reportes[0][0] = "1"
-    reportes[0][1] = "1"
-    reportes[0][2] = "2"
-    reportes[0][3] = "Motivo 1"
-    reportes[0][4] = ESTADO_REPORTE[0]
+def inicializar_reportes_mock(reportes: list[list[int]], motivo_reportes: list[str]):
+    reportes[0][0] = 0
+    reportes[0][1] = 1
+    reportes[0][2] = 2
+    motivo_reportes[0] = "Motivo 1"
 
-    reportes[1][0] = "2"
-    reportes[1][1] = "2"
-    reportes[1][2] = "3"
-    reportes[1][3] = "Motivo 2"
-    reportes[1][4] = ESTADO_REPORTE[0]
+    reportes[1][0] = 0
+    reportes[1][1] = 2
+    reportes[1][2] = 3
+    motivo_reportes[1] = "Motivo 2"
 
-    reportes[2][0] = "3"
-    reportes[2][1] = "4"
-    reportes[2][2] = "2"
-    reportes[2][3] = "Motivo 3"
-    reportes[2][4] = ESTADO_REPORTE[0]
+    reportes[2][0] = 0
+    reportes[2][1] = 4
+    reportes[2][2] = 2
+    motivo_reportes[2] = "Motivo 3"
 
 ### Registro y Conexión ###
 
@@ -418,7 +406,7 @@ def validar_acceso(acceso_valido: list[str], estudiantes: list[list[str]], moder
         while ind < 8 and (estudiantes[ind][1] != email or estudiantes[ind][2] != password):
             ind = ind + 1
 
-        login_valido = ind < 8 and estudiantes[ind][10] != ESTADO_ESTUDIANTE[0]
+        login_valido = ind < 8 and estados[ind]
 
         if login_valido:
             acceso_valido[0] = str(ind + 1)
@@ -614,14 +602,15 @@ def contar_estudiantes_activos(estudiantes: list[list[str]], estados: list[bool]
 """
 me_gusta: Arreglo multi de 8x8 de bool
 estudiantes: Arreglo multi de 9x8 de string
+estados: Arreglo de 0 a 7 de bool
 cant, est_id, ind: int
 """
-def contar_estudiantes_activos_no_matcheados(est_id: int, estudiantes: list[list[str]], me_gusta: list[list[bool]]):
+def contar_estudiantes_activos_no_matcheados(est_id: int, estudiantes: list[list[str]], me_gusta: list[list[bool]], estados: list[bool]):
     cant = 0
     ind = 0
 
     while ind < 8 and estudiantes[ind][0] != "":
-        if estudiantes[ind][0] != str(est_id) and estudiantes[ind][10] == ESTADO_ESTUDIANTE[1] and not me_gusta[est_id - 1][ind]:
+        if estudiantes[ind][0] != str(est_id) and estados[ind] and not me_gusta[est_id - 1][ind]:
             cant = cant + 1
 
         ind = ind + 1
@@ -655,20 +644,6 @@ def obtener_nombre_estudiante_por_id(est_id: int, estudiantes: list[list[str]]):
 
 """
 estudiantes: Arreglo multi de 9x8 de string
-estudiante: Arreglo de 0 a 7 de string
-est_id: string
-ind: int
-"""
-def obtener_estado_estudiante_por_id(est_id: str, estudiantes: list[list[str]]):
-    ind = 0
-
-    while ind < 8 and estudiantes[ind][0] != est_id:
-        ind = ind + 1
-
-    return estudiantes[ind][10]
-
-"""
-estudiantes: Arreglo multi de 9x8 de string
 estados: Arreglo de 0 a 7 de bool
 est_id: int
 eliminado: bool
@@ -692,14 +667,15 @@ estados: Arreglo de 0 a 7 de bool
 est_id, reporte_id, reporte_ind, reportado_id: int
 decision, motivo, opc, reportado: string
 """
-def reportar_candidato(est_id: int, estudiantes: list[list[str]], reportes: list[list[str], estados: list[bool]]):
+def reportar_candidato(est_id: int, estudiantes: list[list[str]], reportes: list[list[int]], estados: list[bool]):
     decision = ""
+    reportado_id = -1
 
     while decision != "N":
         reportado = input("Ingrese el nombre o el id del candidato: ")
 
         if not reportado.isdigit():
-            reportado_id = str(obtener_id_estudiante_por_nombre(reportado, estudiantes))
+            reportado_id = obtener_id_estudiante_por_nombre(reportado, estudiantes)
         else :
             reportado_id = int(reportado)
 
@@ -879,7 +855,7 @@ reportes: Arreglo multi 5x40 de string
 opcion: string
 est_id: int
 """
-def manejador_submenu_gestionar_candidatos(est_id: int, reportes: list[list[str]], estudiantes: list[list[str]], me_gusta: list[list[bool]]):
+def manejador_submenu_gestionar_candidatos(est_id: int, reportes: list[list[int]], estudiantes: list[list[str]], me_gusta: list[list[bool]], estados: list[bool]):
     opc = ""
 
     while opc != "c":
@@ -899,7 +875,7 @@ def manejador_submenu_gestionar_candidatos(est_id: int, reportes: list[list[str]
             manejador_matcheo_estudiantes(est_id, estudiantes[:], me_gusta)
 
         if opc == "b":
-            reportar_candidato(est_id, estudiantes, reportes)
+            reportar_candidato(est_id, estudiantes, reportes, estados)
 
 """
 opc: string
@@ -1145,8 +1121,8 @@ me_gusta: Arreglo multi de 8x8 de bool
 continuar, person_name: string
 cant_est_posibles, probabilidad_ingresada, probabilidad_match_1, probabilidad_match_2, probabilidad_match_3, usuario_id, valor: int
 """
-def ruleta(usuario_id: int, estudiantes: list[list[str]], me_gusta: list[list[bool]]):
-    cant_est_posibles = contar_estudiantes_activos_no_matcheados(usuario_id, estudiantes[:], me_gusta[:])
+def ruleta(usuario_id: int, estudiantes: list[list[str]], me_gusta: list[list[bool]], estados: list[bool]):
+    cant_est_posibles = contar_estudiantes_activos_no_matcheados(usuario_id, estudiantes[:], me_gusta[:], estados[:])
 
     if cant_est_posibles < 3:
         print("No hay suficientes estudiantes activos para esta función.")
@@ -1195,7 +1171,7 @@ def ruleta(usuario_id: int, estudiantes: list[list[str]], me_gusta: list[list[bo
 
             continuar = input("Usar la ruleta nuevamente. S/N ").upper()
             continuar = validar_continuacion(continuar)
-            cant_est_posibles = contar_estudiantes_activos_no_matcheados(usuario_id, estudiantes[:], me_gusta[:])
+            cant_est_posibles = contar_estudiantes_activos_no_matcheados(usuario_id, estudiantes[:], me_gusta[:], estados[:])
 
         if cant_est_posibles < 3 and continuar == "S":
             print("No hay suficientes estudiantes activos para esta función.")
@@ -1204,39 +1180,41 @@ def ruleta(usuario_id: int, estudiantes: list[list[str]], me_gusta: list[list[bo
 ### Reporte ###
 
 """
-reportes: Arreglo multi de 5x40 de string
+reportes: Arreglo multi de 3x40 de int
 ind: int
 """
-def contar_reportes(reportes: list[list[str]]):
+def contar_reportes(reportes: list[list[int]]):
     ind = 0
 
-    while ind < 40 and reportes[ind][0] != "":
+    while ind < 40 and reportes[ind][0] != -1:
         ind = ind + 1
 
     return ind
 
 """
 estudiantes: Arreglo multi de 9x8 de string
-reporte: Arreglo de 0 a 4 de string
+reportes: Arreglo multi de 3x40 de int
+motivo_reportes: Arreglo de 0 a 39 de sring
 nombre_reportante, nombre_reportado: string
+reporte_id: int
 """
-def mostrar_reporte(estudiantes: list[list[str]], reporte: list[str]):
-    nombre_reportante = obtener_nombre_estudiante_por_id(reporte[1], estudiantes[:])
-    nombre_reportado = obtener_nombre_estudiante_por_id(reporte[2], estudiantes[:])
+def mostrar_reporte(reporte_id: int, reportes: list[list[int]], motivo_reportes: list[str], estudiantes: list[list[str]]):
+    nombre_reportante = obtener_nombre_estudiante_por_id(reportes[reporte_id][1], estudiantes[:])
+    nombre_reportado = obtener_nombre_estudiante_por_id(reportes[reporte_id][2], estudiantes[:])
 
-    print(f"........Reporte {reporte[0]}........\n")
+    print(f"........Reporte {reporte_id + 1}........\n")
     print("Reportante:", nombre_reportante)
     print("Reportado:", nombre_reportado)
-    print(f"Motivo:\n\t{reporte[3]}\n\n")
+    print(f"Motivo:\n\t{motivo_reportes[reporte_id]}\n\n")
 
 """
-estudiantes: Arreglo multi de 9x8 de string
 reportes: Arreglo multi de 5x40 de string
 reporte: Arreglo de 0 a 4 de string
+estados: Arreglo de 0 a 7 de bool
 opc, reportado_id: string
 ind: int
 """
-def procesar_reporte(reporte: list[str], reportes: list[list[str]], estudiantes: list[list[str]]):
+def procesar_reporte(reporte_id: int, reportes: list[list[int]], estados: list[bool]):
     print("Procesamiento de reporte\n")
     print("1. Ignorar reporte")
     print("2. Bloquear al reportado")
@@ -1248,41 +1226,42 @@ def procesar_reporte(reporte: list[str], reportes: list[list[str]], estudiantes:
         opc = input("Ingrese una opción válida: ")
 
     if opc == "1":
-        reporte[4] = ESTADO_REPORTE[2]
+        reportes[reporte_id][0] = 2
     elif opc == "2":
         ind = 0
-        reportado_id = reporte[2]
-        estudiantes[int(reportado_id) - 1][10] = ESTADO_ESTUDIANTE[0]
+        reportado_id = reportes[reporte_id][2]
+        estados[reportado_id] = False
 
-        while ind < 40 and reportes[ind][0] != "":
+        while ind < 40 and reportes[ind][0] != -1:
             if reportes[ind][2] == reportado_id:
-                reportes[ind][4] = ESTADO_REPORTE[1]
+                reportes[ind][0] = 1
 
             ind = ind + 1
 
 """
 estudiantes: Arreglo multi de 9x8 de string
-reportes: Arreglo multi de 5x40 de string
+reportes: Arreglo multi de 3x40 de int
+motivo_reportes: Arreglo de 0 a 39 de string
 reporte: Arreglo de 0 a 4 de string
+estados: Arreglo de 0 a 7 de bool
 ind: int
 estado_reportante, estado_reportado, estado_reporte, opc: string
 """
-def ver_reportes(reportes: list[list[str]], estudiantes: list[list[str]]):
+def ver_reportes(reportes: list[list[int]], motivo_reportes: list[str], estudiantes: list[list[str]], estados: list[bool]):
     ind = 0
     opc = ""
 
     cant_reportes = contar_reportes(reportes)
 
-    while ind < cant_reportes and opc != "N" and reportes[ind][0] != "":
-        reporte = reportes[ind]
+    while ind < cant_reportes and opc != "N" and reportes[ind][0] != -1:
 
         limpiar_consola()
-        estado_reportado = obtener_estado_estudiante_por_id(reporte[2], estudiantes[:])
-        estado_reporte = reporte[4]
+        estudiantes_activos = estados[reportes[ind][1]] and estados[reportes[ind][2]]
 
-        if estado_reportado == ESTADO_ESTUDIANTE[1] and estado_reporte == ESTADO_REPORTE[0]:
-            mostrar_reporte(estudiantes, reporte[:])
-            procesar_reporte(reporte, reportes, estudiantes)
+
+        if estudiantes_activos and reportes[ind][0]:
+            mostrar_reporte(ind, reportes[:], motivo_reportes[:], estudiantes[:])
+            procesar_reporte(ind, reportes, estados)
 
             opc = input("Continuar revisando reportes. (S/N) ").upper()
             opc = validar_continuacion(opc)
@@ -1356,10 +1335,11 @@ def manejador_submenu_gestionar_usuarios(estudiantes: list[list[str]], estados: 
 
 """
 estudiantes: Arreglo multi de 9x8 de string
-reportes: Arreglo multi de 5x4|0 de string
+reportes: Arreglo multi de 3x40 de int
+motivo_reportes: Arreglo de 0 a 39 de string
 opc: string|
 """
-def manejador_submenu_gestionar_reportes(reportes: list[list[str]], estudiantes: list[list[str]]):
+def manejador_submenu_gestionar_reportes(estudiantes: list[list[str]], reportes: list[list[int]], motivo_reportes: list[str], estados: list[bool]):
     opc = ""
 
     while opc != "b":
@@ -1375,7 +1355,7 @@ def manejador_submenu_gestionar_reportes(reportes: list[list[str]], estudiantes:
             opc = input("Ingrese una opción válida: ")
 
         if opc == "a":
-            ver_reportes(reportes, estudiantes)
+            ver_reportes(reportes, motivo_reportes, estudiantes, estados)
 
 ### Mostrar ###
 
@@ -1440,15 +1420,16 @@ def mostrar_menu_principal_moderadores():
 """
 estudiantes: Arreglo multi de 8x11 de string
 reportes: Arreglo multi de 5x40 de string
+motivo_reportes: Arreglo de 0 a 39 de string
 me_gusta: Arreglo multi de 8x8 de bool
 estados: Arreglo de 0 a 7 de bool
 rol, usuario_id: int
 """
-def mostrar_menu_usuario(usuario_id: int, rol: int, estudiantes: list[list[str]], reportes: list[list[str]], me_gusta: list[list[bool]], estados: list[bool]):
+def mostrar_menu_usuario(usuario_id: int, rol: int, estudiantes: list[list[str]], reportes: list[list[int]], motivo_reportes: list[str], me_gusta: list[list[bool]], estados: list[bool]):
     if rol == 0:
         gestionador_menu_principal_estudiante(usuario_id, estudiantes, reportes, me_gusta, estados)
     elif rol == 1:
-        manejador_menu_principal_moderador(reportes, estudiantes, estados)
+        manejador_menu_principal_moderador(reportes, motivo_reportes, estudiantes, estados)
 
 """
 opcion: string
@@ -1477,13 +1458,13 @@ def mostrar_menu_principal():
 
 """
 estudiantes: Arreglo multi de 9x8 de string
-reportes: Arreglo multi 5x40 de string
+reportes: Arreglo multi 3x40 de int
 me_gusta: Arreglo multi de 8x8 de bool
 estados: Arreglo de 0 a 7 de bool
 est_id: int
 opc: string
 """
-def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[str]], reportes: list[list[str]], me_gusta: list[list[bool]], estados: list[bool]):
+def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[str]], reportes: list[list[int]], me_gusta: list[list[bool]], estados: list[bool]):
     opc = ""
 
     while opc != "0" and estados[est_id]:
@@ -1494,7 +1475,7 @@ def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[st
                 manejador_submenu_gestionar_perfil(est_id, estudiantes, estados)
 
             case "2":
-                manejador_submenu_gestionar_candidatos(est_id, reportes, estudiantes, me_gusta)
+                manejador_submenu_gestionar_candidatos(est_id, reportes, estudiantes, me_gusta, estados)
 
             case "3":
                 manejador_submenu_matcheos()
@@ -1503,7 +1484,7 @@ def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[st
                 reportes_estadisticos_estudiante(est_id, estudiantes[:], me_gusta[:], estados)
 
             case "5":
-                ruleta(est_id, estudiantes[:], me_gusta)
+                ruleta(est_id, estudiantes[:], me_gusta, estados[:])
 
             case "6":
                 huecos_edades()
@@ -1516,11 +1497,12 @@ def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[st
 
 """
 estudiantes: Arreglo multi de 9x8 de string
-reportes: Arreglo multi de 5x40 de string
+reportes: Arreglo multi de 3x40 de int
+motivo_reportes: Arreglo de 0 a 39 de string
 estados: Arreglo de 0 a 7 de bool
 opc: string
 """
-def manejador_menu_principal_moderador(reportes: list[list[str]], estudiantes: list[list[str]], estados: list[bool]):
+def manejador_menu_principal_moderador(reportes: list[list[int]], motivo_reportes: list[str], estudiantes: list[list[str]], estados: list[bool]):
     opc = "1"
 
     while opc != "0":
@@ -1531,7 +1513,7 @@ def manejador_menu_principal_moderador(reportes: list[list[str]], estudiantes: l
                 manejador_submenu_gestionar_usuarios(estudiantes, estados)
 
             case "2":
-                manejador_submenu_gestionar_reportes(reportes, estudiantes)
+                manejador_submenu_gestionar_reportes(estudiantes, reportes, motivo_reportes, estados)
 
             case "3":
                 en_construccion()
@@ -1544,7 +1526,8 @@ def manejador_menu_principal_moderador(reportes: list[list[str]], estudiantes: l
 estudiantes: Arreglo multi de 9x8 de string
 moderadores: Arreglo multi de 3x4 de string
 me_gusta: Arreglo multi de 8x8 de bool
-reportes: Arreglo multi de 5x40 de string
+reportes: Arreglo multi de 3x40 de int
+motivo_reportes: Arreglo de 0 a 39 de string
 usuario: Arreglo de 0 a 1 de int
 estados: Arreglo de 0 a 7 de bool
 opc: string
@@ -1553,12 +1536,13 @@ def main():
     estudiantes = [[""]*9 for n in range(8)]
     moderadores = [[""]*3 for n in range(4)]
     me_gusta = [[False]*8 for n in range(8)]
-    reportes = [[""]*5 for n in range(40)]
+    reportes = [[-1]*3 for n in range(40)]
+    motivo_reportes = [""]*40
     estados = [False]*8
 
     inicializar_estudiantes_mock(estudiantes, estados)
     inicializar_moderadores_mock(moderadores)
-    inicializar_reportes_mock(reportes)
+    inicializar_reportes_mock(reportes, motivo_reportes)
 
     opc = ""
     usuario = [0]*2
@@ -1574,7 +1558,7 @@ def main():
                 usuario = log_in(estudiantes[:], moderadores[:], estados[:])
 
                 if usuario[0] != -1:
-                    mostrar_menu_usuario(usuario[0], usuario[1], estudiantes, reportes, me_gusta, estados)
+                    mostrar_menu_usuario(usuario[0], usuario[1], estudiantes, reportes, motivo_reportes, me_gusta, estados)
             case "2":
                 registrar(estudiantes, moderadores, estados)
 
