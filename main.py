@@ -395,7 +395,7 @@ intentos, ind: int
 email, password: string
 login_valido: bool
 """
-def validar_acceso(acceso_valido: list[str], estudiantes: list[list[str]], moderadores: list[list[str]], estados: list[bool]):
+def validar_acceso(acceso_valido: list[int], estudiantes: list[list[str]], moderadores: list[list[str]], estados: list[bool]):
     intentos = 3
 
     while intentos > 0 and acceso_valido[0] == "":
@@ -409,8 +409,8 @@ def validar_acceso(acceso_valido: list[str], estudiantes: list[list[str]], moder
         login_valido = ind < 8 and estados[ind]
 
         if login_valido:
-            acceso_valido[0] = str(ind + 1)
-            acceso_valido[1] = ROLES[0]
+            acceso_valido[0] = ind
+            acceso_valido[1] = 1
         else:
             ind = 0
             while ind < 4 and (moderadores[ind][1] != email or moderadores[ind][2] != password):
@@ -419,8 +419,8 @@ def validar_acceso(acceso_valido: list[str], estudiantes: list[list[str]], moder
             login_valido = ind < 4
 
             if login_valido:
-                acceso_valido[0] = str(ind + 1)
-                acceso_valido[1] = ROLES[1]
+                acceso_valido[0] = ind
+                acceso_valido[1] = 0
             else:
                 limpiar_consola()
                 intentos = intentos - 1
@@ -667,7 +667,7 @@ estados: Arreglo de 0 a 7 de bool
 est_id, reporte_id, reporte_ind, reportado_id: int
 decision, motivo, opc, reportado: string
 """
-def reportar_candidato(est_id: int, estudiantes: list[list[str]], reportes: list[list[int]], estados: list[bool]):
+def reportar_candidato(est_id: int, estudiantes: list[list[str]], reportes: list[list[int]], motivo_reportes: list[str], estados: list[bool]):
     decision = ""
     reportado_id = -1
 
@@ -679,7 +679,7 @@ def reportar_candidato(est_id: int, estudiantes: list[list[str]], reportes: list
         else :
             reportado_id = int(reportado)
 
-        if str(est_id) == reportado_id or not validar_id_estudiante(reportado, estudiantes, estados):
+        if est_id == reportado_id or not validar_id_estudiante(reportado_id, estudiantes[:], estados[:]):
             print("El usuario ha reportar no es válido.\n")
         else:
             limpiar_consola()
@@ -694,16 +694,15 @@ def reportar_candidato(est_id: int, estudiantes: list[list[str]], reportes: list
                     motivo = input("Por favor. Ingrese el motivo:\n\t")
 
                 reporte_ind = contar_reportes(reportes[:])
-                reporte_id = reporte_ind + 1
 
                 if reporte_ind == 40:
                     print("\nError al generar el reporte.")
                 else:
-                    reportes[reporte_ind][0] = str(reporte_id)
-                    reportes[reporte_ind][1] = str(est_id)
+                    reportes[reporte_ind][0] = 0
+                    reportes[reporte_ind][1] = est_id
                     reportes[reporte_ind][2] = reportado_id
-                    reportes[reporte_ind][3] = motivo
-                    reportes[reporte_ind][4] = ESTADO_REPORTE[0]
+
+                    motivo_reportes[reporte_ind][3] = motivo
 
                     print("Reporte generado con éxito.")
 
@@ -855,7 +854,7 @@ reportes: Arreglo multi 5x40 de string
 opcion: string
 est_id: int
 """
-def manejador_submenu_gestionar_candidatos(est_id: int, reportes: list[list[int]], estudiantes: list[list[str]], me_gusta: list[list[bool]], estados: list[bool]):
+def manejador_submenu_gestionar_candidatos(est_id: int, reportes: list[list[int]], motivo_reportes: list[str], estudiantes: list[list[str]], me_gusta: list[list[bool]], estados: list[bool]):
     opc = ""
 
     while opc != "c":
@@ -875,7 +874,7 @@ def manejador_submenu_gestionar_candidatos(est_id: int, reportes: list[list[int]
             manejador_matcheo_estudiantes(est_id, estudiantes[:], me_gusta)
 
         if opc == "b":
-            reportar_candidato(est_id, estudiantes, reportes, estados)
+            reportar_candidato(est_id, estudiantes, reportes, motivo_reportes, estados)
 
 """
 opc: string
@@ -1427,7 +1426,7 @@ rol, usuario_id: int
 """
 def mostrar_menu_usuario(usuario_id: int, rol: int, estudiantes: list[list[str]], reportes: list[list[int]], motivo_reportes: list[str], me_gusta: list[list[bool]], estados: list[bool]):
     if rol == 0:
-        gestionador_menu_principal_estudiante(usuario_id, estudiantes, reportes, me_gusta, estados)
+        gestionador_menu_principal_estudiante(usuario_id, estudiantes, reportes, motivo_reportes, me_gusta, estados)
     elif rol == 1:
         manejador_menu_principal_moderador(reportes, motivo_reportes, estudiantes, estados)
 
@@ -1464,7 +1463,7 @@ estados: Arreglo de 0 a 7 de bool
 est_id: int
 opc: string
 """
-def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[str]], reportes: list[list[int]], me_gusta: list[list[bool]], estados: list[bool]):
+def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[str]], reportes: list[list[int]], motivo_reportes: list[str], me_gusta: list[list[bool]], estados: list[bool]):
     opc = ""
 
     while opc != "0" and estados[est_id]:
@@ -1475,7 +1474,7 @@ def gestionador_menu_principal_estudiante(est_id: int, estudiantes: list[list[st
                 manejador_submenu_gestionar_perfil(est_id, estudiantes, estados)
 
             case "2":
-                manejador_submenu_gestionar_candidatos(est_id, reportes, estudiantes, me_gusta, estados)
+                manejador_submenu_gestionar_candidatos(est_id, reportes, motivo_reportes, estudiantes, me_gusta, estados)
 
             case "3":
                 manejador_submenu_matcheos()
