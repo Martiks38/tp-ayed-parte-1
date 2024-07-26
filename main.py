@@ -20,8 +20,8 @@ PROPS_ESTUDIANTE = ["Nombre", "Nacimiento", "Biografía", "Hobbies", "Género", 
 """
 estudiantes: Arreglo multi de 9x8 de string
 moderadores: Arreglo multi de 2x4 de string
+reportes: Arreglo multi de 3x40 de int
 me_gusta: Arreglo multi de 8x8 de bool
-reportes: Arreglo multi de 5x40 de string
 """
 
 ### Útiles ###
@@ -647,7 +647,7 @@ def eliminar_perfil(est_id: int, estados: list[bool]):
 
 """
 estudiantes: Arreglo multi de 9x8 de string
-reportes: Arreglo multi 5x40 de string
+reportes: Arreglo multi de 3x40 de int
 motivo_reportes: Arreglo de 0 a 39 de string
 estados: Arreglo de 0 a 7 de bool
 est_id, reporte_id, reporte_ind, reportado_id: int
@@ -836,7 +836,7 @@ def manejador_matcheo_estudiantes(est_id: int, estudiantes: list[list[str]], me_
 """
 estudiantes: Arreglo multi de 9x8 de string
 me_gusta: Arreglo multi de 8x8 de bool
-reportes: Arreglo multi 3x40 de int
+reportes: Arreglo multi de 3x40 de int
 motivo_reportes: Arreglo de 0 a 39 de string
 estados: Arreglo de 0 a 7 de bool
 opc: string
@@ -1453,7 +1453,7 @@ def mostrar_menu_principal() -> str:
 estudiantes: Arreglo multi de 9x8 de string
 estados: Arreglo de 0 a 7 de bool
 me_gusta: Arreglo multi de 8x8 de bool
-reportes: Arreglo multi 3x40 de int
+reportes: Arreglo multi de 3x40 de int
 motivo_reportes: Arreglo de 0 a 39 de string
 est_id: int
 opc: string
