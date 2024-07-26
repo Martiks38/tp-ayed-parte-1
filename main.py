@@ -1537,9 +1537,7 @@ def main():
 
     while opc != "0" and usuario[0] != -1:
         opc = mostrar_menu_principal()
-        print(estudiantes)
-        print(moderadores)
-        input("ab")
+
         match opc:
             case "0":
                 limpiar_consola()
