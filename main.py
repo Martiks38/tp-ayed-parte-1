@@ -17,13 +17,6 @@ PROPS_ESTUDIANTE: Arreglo de 0 a 6 de string
 GENERO = ["F", "M"]
 PROPS_ESTUDIANTE = ["Nombre", "Nacimiento", "Biografía", "Hobbies", "Género", "Ciudad", "País"]
 
-"""
-estudiantes: Arreglo multi de 9x8 de string
-moderadores: Arreglo multi de 2x4 de string
-reportes: Arreglo multi de 3x40 de int
-me_gusta: Arreglo multi de 8x8 de bool
-"""
-
 ### Útiles ###
 
 """
@@ -363,14 +356,14 @@ def email_existente(email: str, estudiantes: list[list[str]], moderadores: list[
     valido = True
 
     ind = 0
-    while ind < 8 and estudiantes[ind][1] != email:
+    while ind < 8 and estudiantes[ind][0] != email:
         ind = ind + 1
 
-    if ind != 8:
+    if ind < 8:
         valido = False
     else:
         ind = 0
-        while ind < 4 and moderadores[ind][1] != email:
+        while ind < 4 and moderadores[ind][0] != email:
             ind = ind + 1
 
         if ind != 4:
@@ -750,16 +743,17 @@ def validar_nombre(nombre: str, estudiantes: list[list[str]]) -> str:
 
 """
 estudiantes: Arreglo multi de 9x8 de string
+estados: Arreglo de 0 a 7 de bool
 me_gusta: Arreglo multi de 8x8 de bool
 formato_espaniol_nacimiento: string
 edad, est_id, ind: int
 """
-def ver_perfil_estudiante(est_id: int, estudiantes: list[list[str]], me_gusta: list[list[bool]]):
+def ver_perfil_estudiante(est_id: int, estudiantes: list[list[str]], estados: list[bool], me_gusta: list[list[bool]]):
     ind = 0
 
     limpiar_consola()
     while ind < 8 and estudiantes[ind][0] != "":
-        if ind != est_id:
+        if ind != est_id and estados[ind]:
             edad = calcular_edad(estudiantes[ind][3])
             formato_espaniol_nacimiento = formatear_fecha_espaniol(estudiantes[ind][3])
 
@@ -780,11 +774,12 @@ def ver_perfil_estudiante(est_id: int, estudiantes: list[list[str]], me_gusta: l
 
 """
 estudiantes: Arreglo multi de 9x8 de string
+estados: Arreglo de 0 a 7 de bool
 me_gusta: Arreglo multi de 8x8 de bool
 est_id, match_id: int
 decision, nombre_estudiante: string
 """
-def marcar_match(est_id: int, estudiantes: list[list[str]], me_gusta: list[list[bool]]):
+def marcar_match(est_id: int, estudiantes: list[list[str]], estados: list[bool], me_gusta: list[list[bool]]):
     decision = "S"
 
     if decision == "S":
@@ -801,31 +796,31 @@ def marcar_match(est_id: int, estudiantes: list[list[str]], me_gusta: list[list[
             me_gusta[est_id][match_id] = True
 
             limpiar_consola()
-            ver_perfil_estudiante(est_id, estudiantes[:], me_gusta[:])
+            ver_perfil_estudiante(est_id, estudiantes[:], estados[:], me_gusta[:])
             print("Se envío el match a", nombre_estudiante)
 
         input("Presione Enter para continuar... ")
 
 """
 estudiantes: Arreglo multi de 9x8 de string
+estados: Arreglo de 0 a 7 de bool
 me_gusta: Arreglo multi de 8x8 de bool
 est_id: int
 decision, opc: string
 realizo_matcheo: bool
 """
-def manejador_matcheo_estudiantes(est_id: int, estudiantes: list[list[str]], me_gusta: list[list[bool]]):
+def manejador_matcheo_estudiantes(est_id: int, estudiantes: list[list[str]], estados: list[bool], me_gusta: list[list[bool]]):
     opc = ""
 
-    # TODO refactorizar es rara la petición
-    ver_perfil_estudiante(est_id, estudiantes[:], me_gusta[:])
+    ver_perfil_estudiante(est_id, estudiantes[:], estados[:], me_gusta[:])
     decision = input("Le gustaría en un futuro hacer matcheo con algún estudiante. (S/N) ").upper()
 
     while decision != "S" and decision != "N":
         decision = input("Desea hacer matcheo con algún estudiante S o N: ").upper()
 
     while opc != "N" and decision != "N":
-        ver_perfil_estudiante(est_id, estudiantes[:], me_gusta[:])
-        marcar_match(est_id, estudiantes[:], me_gusta)
+        ver_perfil_estudiante(est_id, estudiantes[:], estados[:], me_gusta[:])
+        marcar_match(est_id, estudiantes[:], estados[:], me_gusta)
 
         opc = input("\nRealizar un nuevo match, S/N: ").upper()
 
@@ -859,7 +854,7 @@ def manejador_submenu_gestionar_candidatos(est_id: int, reportes: list[list[int]
             opc = input("\nSeleccione una opción: ")
 
         if opc == "a":
-            manejador_matcheo_estudiantes(est_id, estudiantes[:], me_gusta)
+            manejador_matcheo_estudiantes(est_id, estudiantes[:], estados[:], me_gusta)
 
         if opc == "b":
             reportar_candidato(est_id, estudiantes[:], estados[:], reportes, motivo_reportes)
@@ -1347,7 +1342,6 @@ def manejador_submenu_gestionar_reportes(estudiantes: list[list[str]], reportes:
             opc = input("Ingrese una opción válida: ")
 
         if opc == "a":
-            # TODO cambiar nombre de procedimiento
             ver_reportes(reportes, motivo_reportes, estudiantes, estados)
 
 ### Mostrar ###
@@ -1543,7 +1537,9 @@ def main():
 
     while opc != "0" and usuario[0] != -1:
         opc = mostrar_menu_principal()
-
+        print(estudiantes)
+        print(moderadores)
+        input("ab")
         match opc:
             case "0":
                 limpiar_consola()
@@ -1552,7 +1548,7 @@ def main():
                 usuario = log_in(estudiantes[:], moderadores[:], estados[:])
 
                 if usuario[0] != -1:
-                    mostrar_menu_usuario(usuario[0], usuario[1], estudiantes, reportes, motivo_reportes, me_gusta, estados)
+                    mostrar_menu_usuario(usuario[0], usuario[1], estudiantes, estados, me_gusta, reportes, motivo_reportes)
             case "2":
                 registrar(estudiantes, moderadores, estados)
 
