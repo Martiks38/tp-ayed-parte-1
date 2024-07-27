@@ -707,7 +707,10 @@ def mostrar_datos_estudiante(est_id: int, estudiantes: list[list[str]]):
     print("Datos de usuario\n")
 
     for ind in range(2, 9):
-        print(PROPS_ESTUDIANTE[ind - 2], ":", estudiantes[est_id][ind])
+        if ind - 2 == 1:
+            print(PROPS_ESTUDIANTE[ind - 2], ":", formatear_fecha_espaniol(estudiantes[est_id][ind]))
+        else:
+            print(PROPS_ESTUDIANTE[ind - 2], ":", estudiantes[est_id][ind])
 
 """
 estudiantes: Arreglo multi de 9x8 de string
@@ -772,6 +775,8 @@ def ver_perfil_estudiante(est_id: int, estudiantes: list[list[str]], estados: li
             print("Edad:", edad)
             print("Biografía:\n\t" + estudiantes[ind][4])
             print("Hobbies:\n\t", estudiantes[ind][5])
+            print("Ciudad: ", estudiantes[ind][7])
+            print("País: ", estudiantes[ind][8])
 
             if me_gusta[est_id][ind]:
                 print("Estado del Match: Tienes match ✔️")
