@@ -104,12 +104,7 @@ def validar_valores_fecha(dia: int, mes: int, anio: int) -> bool:
 fecha: Arreglo de 0 a 2 de string
 """
 def validar_fecha(fecha: list[str]):
-    while not (fecha[0].isdigit() and fecha[1].isdigit() and fecha[2].isdigit()):
-        print("Los datos ingresados no son válidos")
-        print("\n")
-        fecha = ingresar_fecha()
-
-    while not validar_valores_fecha(int(fecha[0]), int(fecha[1]), int(fecha[2])):
+    while not (fecha[0].isdigit() and fecha[1].isdigit() and fecha[2].isdigit()) or not validar_valores_fecha(int(fecha[0]), int(fecha[1]), int(fecha[2])):
         print("Los datos ingresados no son válidos")
         print("\n")
         fecha = ingresar_fecha()
@@ -387,7 +382,7 @@ def validar_acceso(acceso_valido: list[int], estudiantes: list[list[str]], moder
         password = getpass("Ingrese su contraseña: ")
 
         ind = 0
-        while ind < 8 and (estudiantes[ind][1] != email or estudiantes[ind][2] != password):
+        while ind < 8 and (estudiantes[ind][0] != email or estudiantes[ind][1] != password):
             ind = ind + 1
 
         if ind < 8 and estados[ind]:
@@ -395,7 +390,7 @@ def validar_acceso(acceso_valido: list[int], estudiantes: list[list[str]], moder
             acceso_valido[1] = 1
         else:
             ind = 0
-            while ind < 4 and (moderadores[ind][1] != email or moderadores[ind][2] != password):
+            while ind < 4 and (moderadores[ind][0] != email or moderadores[ind][1] != password):
                 ind = ind + 1
 
             if ind < 4:
@@ -439,7 +434,7 @@ def log_in(estudiantes: list[list[str]], moderadores: list[list[str]], estados: 
         else:
             ind = 0
             cant_mod = contar_moderadores(moderadores)
-            while ind < 4 and (moderadores[ind][1] != email or moderadores[ind][2] != password):
+            while ind < 4 and (moderadores[ind][0] != email or moderadores[ind][1] != password):
                 ind = ind + 1
 
             if ind < cant_mod:
