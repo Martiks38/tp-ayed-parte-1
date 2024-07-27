@@ -329,6 +329,14 @@ def inicializar_reportes_mock(reportes: list[list[int]], motivo_reportes: list[s
     reportes[2][2] = 2
     motivo_reportes[2] = "Motivo 3"
 
+"""
+me_gusta: Arreglo multi de 8x8 de bool
+"""
+def inicializar_me_gusta(me_gusta: list[list[bool]]):
+    me_gusta[1][0] = True
+    me_gusta[1][2] = True
+    me_gusta[2][1] = True
+
 ### Registro y Conexión ###
 
 """
@@ -1533,6 +1541,7 @@ def main():
     inicializar_estudiantes_mock(estudiantes, estados)
     inicializar_moderadores_mock(moderadores)
     inicializar_reportes_mock(reportes, motivo_reportes)
+    inicializar_me_gusta(me_gusta)
 
     opc = ""
     usuario = [0]*2
