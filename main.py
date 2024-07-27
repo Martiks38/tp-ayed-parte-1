@@ -303,11 +303,11 @@ def inicializar_estudiantes_mock(estudiantes: list[list[str]], estados: list[boo
     estados[3] = True
 
 """
-mod: Arreglo multi de 2x4 de string
+moderadores: Arreglo multi de 2x4 de string
 """
-def inicializar_moderadores_mock(mod):
-    mod[0][0] = "moderador1@ayed.com"
-    mod[0][1] = "111222"
+def inicializar_moderadores_mock(moderadores):
+    moderadores[0][0] = "moderador1@ayed.com"
+    moderadores[0][1] = "111222"
 
 """
 reportes: Arreglo de 3x40 de int
