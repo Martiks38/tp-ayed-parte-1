@@ -1,5 +1,7 @@
 """
   Integrantes:
+    - VERA, Ezequiel
+    - ROSELL, Ezequiel Jesus
     - CAPPA, Giuliano Martin
     - ROBLEDO, Camila Antonella
 """
@@ -424,13 +426,18 @@ def log_in(estudiantes: list[list[str]], moderadores: list[list[str]], estados: 
         password = getpass("Ingrese su contraseña: ")
 
         ind = 0
-        cant_estudiantes = contar_estudiantes_activos(estudiantes[:], estados[:])
+        cant_estudiantes = contar_estudiantes(estudiantes[:])
         while ind < cant_estudiantes and (estudiantes[ind][0] != email or estudiantes[ind][1] != password):
             ind = ind + 1
 
-        if ind < cant_estudiantes:
+        if ind < cant_estudiantes and estados[ind]:
             acceso_valido[0] = ind
             acceso_valido[1] = 0
+        elif ind < cant_estudiantes and not estados[ind]:
+            acceso_valido[0] = -2
+
+            print("El usuario ha sido borrado.")
+            input("Presione Enter para continuar... ")
         else:
             ind = 0
             cant_mod = contar_moderadores(moderadores)
@@ -1540,7 +1547,7 @@ def main():
             case "1":
                 usuario = log_in(estudiantes[:], moderadores[:], estados[:])
 
-                if usuario[0] != -1:
+                if usuario[0] != -1 or usuario[0] != -2:
                     mostrar_menu_usuario(usuario[0], usuario[1], estudiantes, estados, me_gusta, reportes, motivo_reportes)
             case "2":
                 registrar(estudiantes, moderadores, estados)
