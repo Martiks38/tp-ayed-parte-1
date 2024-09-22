@@ -6,11 +6,11 @@
     - ROBLEDO, Camila Antonella
 """
 
-from datetime import date, datetime
-from getpass import getpass
 import os
 import platform
 import random
+from datetime import date, datetime
+from getpass import getpass
 
 """
 GENERO: Arreglo de 0 a 1 de string
