@@ -98,38 +98,81 @@ ar_lo_administradores: io.BufferedRandom
 ar_lo_reportes: io.BufferedRandom
 
 
-def crear_archivos():
-    global ar_lo_estudiantes, ar_lo_likesEstudiantes, ar_lo_moderadores, ar_lo_administradores, ar_lo_reportes
+def inicializar_ar_estudiantes():
+    global ar_lo_estudiantes, ar_fi_estudiantes
 
-    os.mkdir(RUTA_ARCHIVOS)
-
-    ar_lo_estudiantes = open(
-        crear_ruta_archivo(RUTA_ARCHIVOS, "estudiantes.dat"), "w+b"
-    )
+    ar_lo_estudiantes = open(ar_fi_estudiantes, "w+b")
     inicializar_estudiantes()
 
-    ar_lo_likesEstudiantes = open(
-        crear_ruta_archivo(RUTA_ARCHIVOS, "likes_estudiantes.dat"), "w+b"
-    )
+
+def inicializar_ar_likes():
+    global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
+
+    ar_lo_likesEstudiantes = open(ar_fi_likesEstudiantes, "w+b")
     inicializar_likes()
 
-    ar_lo_moderadores = open(
-        crear_ruta_archivo(RUTA_ARCHIVOS, "moderadores.dat"), "w+b"
-    )
+
+def inicializar_ar_moderadores():
+    global ar_lo_moderadores, ar_fi_moderadores
+
+    ar_lo_moderadores = open(ar_fi_moderadores, "w+b")
     inicializar_moderadores()
 
-    ar_lo_administradores = open(
-        crear_ruta_archivo(RUTA_ARCHIVOS, "administradores.dat"), "w+b"
-    )
+
+def inicializar_ar_reportes():
+    global ar_lo_reportes, ar_fi_reportes
+
+    ar_lo_reportes = open(ar_fi_reportes, "w+b")
+    inicializar_reportes()
+
+
+def inicializar_ar_administradores():
+    global ar_lo_administradores, ar_fi_administradores
+
+    ar_lo_administradores = open(ar_fi_administradores, "w+b")
     inicializar_administradores()
 
     ar_lo_administradores.close()
-    ar_lo_administradores = open(
-        crear_ruta_archivo(RUTA_ARCHIVOS, "administradores.dat"), "rb"
-    )
+    ar_lo_administradores = open(ar_fi_administradores, "rb")
 
-    ar_lo_reportes = open(crear_ruta_archivo(RUTA_ARCHIVOS, "reportes.dat"), "w+b")
-    inicializar_reportes()
+
+def crear_archivos():
+    os.mkdir(RUTA_ARCHIVOS)
+
+    inicializar_ar_estudiantes()
+    inicializar_ar_likes()
+    inicializar_ar_moderadores()
+    inicializar_ar_reportes()
+    inicializar_ar_administradores()
+
+
+def comprobar_existencia_archivos():
+    global ar_lo_estudiantes, ar_lo_likesEstudiantes, ar_lo_moderadores, ar_lo_administradores, ar_lo_reportes, ar_fi_estudiantes, ar_fi_likesEstudiantes, ar_fi_moderadores, ar_fi_administradores, ar_fi_administradores, ar_fi_reportes
+
+    if not os.path.exists(ar_fi_estudiantes):
+        inicializar_ar_estudiantes()
+    else:
+        ar_lo_estudiantes = open(ar_fi_estudiantes, "r+b")
+
+    if not os.path.exists(ar_fi_likesEstudiantes):
+        inicializar_ar_likes()
+    else:
+        ar_lo_likesEstudiantes = open(ar_fi_likesEstudiantes, "r+b")
+
+    if not os.path.exists(ar_fi_moderadores):
+        inicializar_ar_moderadores()
+    else:
+        ar_lo_moderadores = open(ar_fi_moderadores, "r+b")
+
+    if not os.path.exists(ar_fi_administradores):
+        inicializar_ar_administradores()
+    else:
+        ar_lo_administradores = open(ar_fi_administradores, "rb")
+
+    if not os.path.exists(ar_fi_reportes):
+        inicializar_ar_reportes()
+    else:
+        ar_lo_reportes = open(ar_fi_reportes, "r+b")
 
 
 ### Archivos ###
@@ -137,8 +180,7 @@ def crear_archivos():
 
 def inicializar_archivos():
     if os.path.exists(RUTA_ARCHIVOS):
-        # abrir_archivos()
-        print("hi")
+        comprobar_existencia_archivos()
     else:
         crear_archivos()
 
