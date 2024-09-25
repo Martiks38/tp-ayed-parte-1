@@ -111,13 +111,25 @@ def crear_archivos():
     ar_lo_likesEstudiantes = open(
         crear_ruta_archivo(RUTA_ARCHIVOS, "likes_estudiantes.dat"), "w+b"
     )
+    inicializar_likes()
+
     ar_lo_moderadores = open(
         crear_ruta_archivo(RUTA_ARCHIVOS, "moderadores.dat"), "w+b"
     )
+    inicializar_moderadores()
+
     ar_lo_administradores = open(
         crear_ruta_archivo(RUTA_ARCHIVOS, "administradores.dat"), "w+b"
     )
+    inicializar_administradores()
+
+    ar_lo_administradores.close()
+    ar_lo_administradores = open(
+        crear_ruta_archivo(RUTA_ARCHIVOS, "administradores.dat"), "rb"
+    )
+
     ar_lo_reportes = open(crear_ruta_archivo(RUTA_ARCHIVOS, "reportes.dat"), "w+b")
+    inicializar_reportes()
 
 
 ### Archivos ###
@@ -142,7 +154,7 @@ def finalizar_archivos():
 ### Útiles ###
 
 
-def formatear_cadena(cad: str, largo: str) -> str:
+def formatear_cadena(cad: str, largo: int) -> str:
     return cad.ljust(largo)
 
 
@@ -541,21 +553,21 @@ def inicializar_reportes():
 
     re.id_reportante = 0
     re.id_reportado = 1
-    re.razon = "Motivo 1"
+    re.razon = formatear_cadena("Motivo 1", 255)
     re.estado = True
 
     pickle.dump(re, ar_lo_reportes)
 
     re.id_reportante = 0
     re.id_reportado = 2
-    re.razon = "Motivo 2"
+    re.razon = formatear_cadena("Motivo 2", 255)
     re.estado = True
 
     pickle.dump(re, ar_lo_reportes)
 
     re.id_reportante = 2
     re.id_reportado = 3
-    re.razon = "Motivo 3"
+    re.razon = formatear_cadena("Motivo 3", 255)
     re.estado = True
 
     pickle.dump(re, ar_lo_reportes)
@@ -604,7 +616,7 @@ def inicializar_likes():
     cant_est = contar_estudiantes_1()
 
     like = Likes()
-    print(cant_est)
+
     for id_remitente in range(cant_est):
         for id_destinatario in range(cant_est):
             if id_destinatario != id_remitente and randint(0, 100) > 60:
@@ -624,8 +636,8 @@ def inicializar_administradores():
     ad = Administrador()
 
     ad.id_admin = 0
-    ad.email = "administrador1@ayed.com"
-    ad.password = "111222"
+    ad.email = formatear_cadena("administrador1@ayed.com", 32)
+    ad.password = formatear_cadena("111222", 32)
 
     pickle.dump(ad, ar_lo_administradores)
 
