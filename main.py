@@ -20,14 +20,14 @@ from typing import cast
 
 class Administrador:
     def __init__(self):
-        self.id_admin = 0
+        self.id = 0
         self.email = ""
         self.password = ""
 
 
 class Estudiante:
     def __init__(self):
-        self.id_estudiante = 0
+        self.id = 0
         self.nombre = ""
         self.email = ""
         self.sexo = ""
@@ -43,7 +43,7 @@ class Estudiante:
 
 class Moderador:
     def __init__(self):
-        self.id_moderador = 0
+        self.id = 0
         self.email = ""
         self.password = ""
         self.estado = True
@@ -494,26 +494,32 @@ def inicializar_estudiantes():
     ar_lo_estudiantes.seek(0, 0)
     est = Estudiante()
 
-    est.id_estudiante = 0
+    est.id = 0
     est.email = formatear_cadena("estudiante1@ayed.com", 32)
     est.password = formatear_cadena("111222", 32)
-    est.nombre = "Juan Peréz"
+    est.nombre = formatear_cadena("Juan Peréz", 32)
     est.fecha_nac = "2001-10-01"
-    est.biografia = "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías."
+    est.biografia = formatear_cadena(
+        "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías.",
+        255,
+    )
     est.hobbies = formatear_cadena("Lectura - Senderismo - Juegos de mesa", 255)
     est.genero = GENERO[1]
-    est.ciudad = "Rosario"
-    est.pais = "Argentina"
+    est.ciudad = formatear_cadena("Rosario", 32)
+    est.pais = formatear_cadena("Argentina", 32)
     est.estado = True
 
     pickle.dump(est, ar_lo_estudiantes)
 
-    est.id_estudiante = 1
+    est.id = 1
     est.email = formatear_cadena("estudiante2@ayed.com", 32)
     est.password = formatear_cadena("333444", 32)
-    est.nombre = "María García"
+    est.nombre = formatear_cadena("María García", 32)
     est.fecha_nac = "1998-04-11"
-    est.biografia = "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística."
+    est.biografia = formatear_cadena(
+        "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística.",
+        255,
+    )
     est.hobbies = formatear_cadena(
         "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas", 255
     )
@@ -524,34 +530,37 @@ def inicializar_estudiantes():
 
     pickle.dump(est, ar_lo_estudiantes)
 
-    est.id_estudiante = 2
+    est.id = 2
     est.email = formatear_cadena("estudiante3@ayed.com", 32)
     est.password = formatear_cadena("555666", 32)
-    est.nombre = "Carlos Martínez"
+    est.nombre = formatear_cadena("Carlos Martínez", 32)
     est.fecha_nac = "2005-06-30"
     est.biografia = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
     est.hobbies = formatear_cadena(
         "Correr - Tocar la guitarra - Cocinar platos internacionales", 255
     )
     est.genero = GENERO[1]
-    est.ciudad = "La Paz"
-    est.pais = "Bolivia"
+    est.ciudad = formatear_cadena("La Paz", 32)
+    est.pais = formatear_cadena("Bolivia", 32)
     est.estado = True
 
     pickle.dump(est, ar_lo_estudiantes)
 
-    est.id_estudiante = 3
+    est.id = 3
     est.email = formatear_cadena("estudiante4@ayed.com", 32)
     est.password = formatear_cadena("789101", 32)
-    est.nombre = "Ana López"
+    est.nombre = formatear_cadena("Ana López", 32)
     est.fecha_nac = "2001-09-15"
-    est.biografia = "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que mejoren la seguridad digital."
+    est.biografia = formatear_cadena(
+        "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que mejoren la seguridad digital.",
+        255,
+    )
     est.hobbies = formatear_cadena(
         "Leer ciencia ficción - Pintar - Practicar yoga", 255
     )
     est.genero = GENERO[0]
-    est.ciudad = "Asunción"
-    est.pais = "Paraguay"
+    est.ciudad = formatear_cadena("Asunción", 32)
+    est.pais = formatear_cadena("Paraguay", 32)
     est.estado = True
 
     pickle.dump(est, ar_lo_estudiantes)
@@ -570,7 +579,7 @@ def inicializar_moderadores():
     ar_lo_moderadores.seek(0, 0)
     mod = Moderador()
 
-    mod.id_moderador = 0
+    mod.id = 0
     mod.email = formatear_cadena("moderador1@ayed.com", 32)
     mod.password = formatear_cadena("111222", 32)
     mod.estado = True
@@ -617,22 +626,6 @@ def inicializar_reportes():
     ar_lo_reportes.flush()
 
 
-def contar_estudiantes_1():
-    global ar_fi_estudiantes, ar_lo_estudiantes
-
-    cant = 0
-
-    ar_lo_estudiantes.seek(0, 0)
-    tam_ar = os.path.getsize(ar_fi_estudiantes)
-
-    while ar_lo_estudiantes.tell() < tam_ar:
-        est = cast(Estudiante, pickle.load(ar_lo_estudiantes))
-        if est.estado:
-            cant = cant + 1
-
-    return cant
-
-
 def mostrar_likes():
     global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
@@ -655,7 +648,7 @@ def inicializar_likes():
 
     ar_lo_likesEstudiantes.seek(0, 0)
 
-    cant_est = contar_estudiantes_1()
+    cant_est = contar_estudiantes()
 
     like = Likes()
 
@@ -677,7 +670,7 @@ def inicializar_administradores():
 
     ad = Administrador()
 
-    ad.id_admin = 0
+    ad.id = 0
     ad.email = formatear_cadena("administrador1@ayed.com", 32)
     ad.password = formatear_cadena("111222", 32)
 
@@ -785,6 +778,48 @@ def validar_acceso(
     limpiar_consola()
 
 
+def buscar_usuario_por_email(email: str, datos: io.BufferedRandom, archivo: str) -> int:
+    id_usua = -1
+
+    datos.seek(0, 0)
+    tam_ar = os.path.getsize(archivo)
+
+    while datos.tell() < tam_ar and id_usua == -1:
+        reg = pickle.load(datos)
+
+        print(reg.__dict__)
+        if reg.email.strip() == email:
+            id_usua = reg.id
+    return id_usua
+
+
+def validar_login(
+    id_user: str, email: str, password: str, tipo_user: str, archivo: io.BufferedRandom
+) -> bool:
+    es_valido = False
+
+    archivo.seek(0, 0)
+
+    reg = pickle.load(archivo)
+
+    tam_reg = archivo.tell()
+    print(tam_reg, id_user)
+    archivo.seek(tam_reg * id_user, 0)
+
+    reg = pickle.load(archivo)
+
+    if tipo_user != 2:
+        es_valido = (
+            reg.email.strip() == email
+            and reg.password.strip() == password
+            and reg.estado
+        )
+    else:
+        es_valido = reg.email.strip() == email and reg.password.strip() == password
+
+    return es_valido
+
+
 """
 estudiantes: Arreglo multi de 9x8 de string
 moderadores: Arreglo multi de 2x4 de string
@@ -793,49 +828,50 @@ acceso_valido: Arreglo de 0 a 1 de int
 """
 
 
-def log_in(
-    estudiantes: list[list[str]], moderadores: list[list[str]], estados: list[bool]
-) -> list[int]:
+def log_in() -> list[int]:
+    global ar_lo_estudiantes, ar_fi_estudiantes, ar_lo_moderadores, ar_fi_moderadores, ar_lo_administradores, ar_fi_administradores
+
     acceso_valido = [-1] * 2
     intentos = 3
 
     limpiar_consola()
     print("\n........Ingreso........\n")
 
+    """ 
+    crear tres funciones que busquen la posición del usuario
+    y tres funciones de queden sus datos
+    """
+    archivos = [
+        [ar_lo_estudiantes, ar_fi_estudiantes],
+        [ar_lo_moderadores, ar_fi_moderadores],
+        [ar_lo_administradores, ar_fi_administradores],
+    ]
+
     while intentos > 0 and acceso_valido[0] == -1:
         email = input("Ingrese su email: ")
         password = getpass("Ingrese su contraseña: ")
+        id_usua = -1
+        tipo_usua = 0
 
-        ind = 0
-        cant_estudiantes = contar_estudiantes(estudiantes[:])
-        while ind < cant_estudiantes and (
-            estudiantes[ind][0] != email or estudiantes[ind][1] != password
+        while id_usua == -1 and tipo_usua < 3:
+            id_usua = buscar_usuario_por_email(
+                email, archivos[tipo_usua][0], archivos[tipo_usua][1]
+            )
+
+            if id_usua != -1:
+                acceso_valido[0] = id_usua
+                acceso_valido[1] = tipo_usua
+
+            tipo_usua = tipo_usua + 1
+
+        if id_usua != -1 and validar_login(
+            id_usua, email, password, acceso_valido[1], archivos[id_usua][0]
         ):
-            ind = ind + 1
-
-        if ind < cant_estudiantes and estados[ind]:
-            acceso_valido[0] = ind
-            acceso_valido[1] = 0
-        elif ind < cant_estudiantes and not estados[ind]:
-            acceso_valido[0] = -2
-
-            print("El usuario ha sido borrado.")
-            input("Presione Enter para continuar... ")
+            acceso_valido[0] = id_usua
         else:
-            ind = 0
-            cant_mod = contar_moderadores(moderadores)
-            while ind < 4 and (
-                moderadores[ind][0] != email or moderadores[ind][1] != password
-            ):
-                ind = ind + 1
-
-            if ind < cant_mod:
-                acceso_valido[0] = ind
-                acceso_valido[1] = 1
-            else:
-                limpiar_consola()
-                intentos = intentos - 1
-                print("Datos incorrectos. Intentos restantes:", intentos, "\n")
+            limpiar_consola()
+            intentos = intentos - 1
+            print("Datos incorrectos. Intentos restantes:", intentos, "\n")
 
     if intentos == 0:
         print("Ha superado el número máximo de intentos. El programa se cerrará.")
@@ -854,52 +890,54 @@ registrado: bool
 """
 
 
-def registrar(estudiantes, moderadores, estados):
+def registrar():
     registrado = False
     decision = ""
 
-    limpiar_consola()
-    while not registrado and decision != "N":
-        print("\n........Registro........\n")
+    # limpiar_consola()
+    # while not registrado and decision != "N":
+    #     print("\n........Registro........\n")
 
-        email = ingresar_propiedad("email")
-        password = ingresar_contrasenia()
-        rol = input("Ingrese el rol estudiante(E) o moderador(M). (E/M): ").upper()
+    #     email = ingresar_propiedad("email")
+    #     password = ingresar_contrasenia()
+    #     rol = input("Ingrese el rol estudiante(E) o moderador(M). (E/M): ").upper()
 
-        while rol != "E" and rol != "M":
-            print("\nNo es un rol válido.")
-            rol = input("ingrese E (Estudiante) o M (Moderador): ")
+    #     while rol != "E" and rol != "M":
+    #         print("\nNo es un rol válido.")
+    #         rol = input("ingrese E (Estudiante) o M (Moderador): ")
 
-        if rol == "E":
-            registrado = registrar_estudiante(
-                email, password, estudiantes, moderadores, estados
-            )
+    #     if rol == "E":
+    #         registrado = registrar_estudiante(
+    #             email, password, estudiantes, moderadores, estados
+    #         )
 
-        elif rol == "M":
-            registrado = registrar_moderador(email, password, estudiantes, moderadores)
+    #     elif rol == "M":
+    #         registrado = registrar_moderador(email, password, estudiantes, moderadores)
 
-        if not registrado:
-            decision = input("\nIntentar registrarse nuevamente. S/N ").upper()
-            decision = validar_continuacion(decision)
+    #     if not registrado:
+    #         decision = input("\nIntentar registrarse nuevamente. S/N ").upper()
+    #         decision = validar_continuacion(decision)
 
     limpiar_consola()
 
 
 ### Estudiante ###
 
-"""
-estudiantes: Arreglo multi de 9x8 de string
-ind: int
-"""
 
+def contar_estudiantes():
+    global ar_fi_estudiantes, ar_lo_estudiantes
 
-def contar_estudiantes(estudiantes: list[list[str]]) -> int:
-    ind = 0
+    cant = 0
 
-    while ind < 8 and estudiantes[ind][0] != "":
-        ind = ind + 1
+    ar_lo_estudiantes.seek(0, 0)
+    tam_ar = os.path.getsize(ar_fi_estudiantes)
 
-    return ind
+    while ar_lo_estudiantes.tell() < tam_ar:
+        est = cast(Estudiante, pickle.load(ar_lo_estudiantes))
+        if est.estado:
+            cant = cant + 1
+
+    return cant
 
 
 """
@@ -942,24 +980,24 @@ def registrar_estudiante(
     estados: list[bool],
 ) -> bool:
     registrado = False
-    cant = contar_estudiantes(estudiantes[:])
+    # cant = contar_estudiantes(estudiantes[:])
 
-    if cant == 8:
-        print("Por el momento no se pueden registrar nuevos estudiantes.")
-    elif not email_existente(email, estudiantes[:], moderadores[:]):
-        print("El email ingresado ya está en uso.")
-    else:
-        estudiantes[cant][0] = email
-        estudiantes[cant][1] = password
-        estados[cant] = True
+    # if cant == 8:
+    #     print("Por el momento no se pueden registrar nuevos estudiantes.")
+    # elif not email_existente(email, estudiantes[:], moderadores[:]):
+    #     print("El email ingresado ya está en uso.")
+    # else:
+    #     estudiantes[cant][0] = email
+    #     estudiantes[cant][1] = password
+    #     estados[cant] = True
 
-        for ind in range(2, 9):
-            estudiantes[cant][ind] = ingresar_propiedad(PROPS_ESTUDIANTE[ind - 2])
+    #     for ind in range(2, 9):
+    #         estudiantes[cant][ind] = ingresar_propiedad(PROPS_ESTUDIANTE[ind - 2])
 
-        registrado = True
-        print("\nRegistro exitoso!!!")
+    #     registrado = True
+    #     print("\nRegistro exitoso!!!")
 
-    input("Presione Enter para continuar...")
+    # input("Presione Enter para continuar...")
 
     return registrado
 
@@ -971,7 +1009,7 @@ est_id: int
 
 
 def validar_id_estudiante(est_id: int, estudiantes: list[list[str]]) -> bool:
-    return 0 <= est_id and est_id <= contar_estudiantes(estudiantes[:])
+    return 0 <= est_id and est_id <= contar_estudiantes()
 
 
 """
@@ -1144,18 +1182,18 @@ est_id, ind: int
 """
 
 
-def mostrar_datos_estudiante(est_id: int, estudiantes: list[list[str]]):
+def mostrar_datos_estudiante(est_id: int):
     print("Datos de usuario\n")
 
-    for ind in range(2, 9):
-        if ind - 2 == 1:
-            print(
-                PROPS_ESTUDIANTE[ind - 2],
-                ":",
-                formatear_fecha_espaniol(estudiantes[est_id][ind]),
-            )
-        else:
-            print(PROPS_ESTUDIANTE[ind - 2], ":", estudiantes[est_id][ind])
+    # for ind in range(2, 9):
+    #     if ind - 2 == 1:
+    #         print(
+    #             PROPS_ESTUDIANTE[ind - 2],
+    #             ":",
+    #             formatear_fecha_espaniol(estudiantes[est_id][ind]),
+    #         )
+    #     else:
+    #         print(PROPS_ESTUDIANTE[ind - 2], ":", estudiantes[est_id][ind])
 
 
 """
@@ -1166,28 +1204,26 @@ opc: string
 """
 
 
-def manejador_submenu_gestionar_perfil(
-    est_id: int, estudiantes: list[list[str]], estados: list[bool]
-):
+def manejador_submenu_gestionar_perfil(est_id: int):
     opc = ""
 
-    while opc != "c" and estados[est_id]:
-        limpiar_consola()
-        print("........Gestionar Perfil........\n")
-        print("a. Editar mis datos personales")
-        print("b. Eliminar mi perfil")
-        print("c. Volver")
+    # while opc != "c" and estados[est_id]:
+    #     limpiar_consola()
+    #     print("........Gestionar Perfil........\n")
+    #     print("a. Editar mis datos personales")
+    #     print("b. Eliminar mi perfil")
+    #     print("c. Volver")
 
-        opc = input("\nSeleccione una opción: ")
+    #     opc = input("\nSeleccione una opción: ")
 
-        while opc != "a" and opc != "b" and opc != "c":
-            print("\nNo es una opción válida.")
-            opc = input("Ingrese una opción válida: ")
+    #     while opc != "a" and opc != "b" and opc != "c":
+    #         print("\nNo es una opción válida.")
+    #         opc = input("Ingrese una opción válida: ")
 
-        if opc == "a":
-            editar_datos_estudiante(est_id, estudiantes)
-        elif opc == "b":
-            eliminar_perfil(est_id, estados)
+    #     if opc == "a":
+    #         editar_datos_estudiante(est_id)
+    #     elif opc == "b":
+    #         eliminar_perfil(est_id)
 
 
 """
@@ -1398,56 +1434,56 @@ opc, valor: str
 """
 
 
-def editar_datos_estudiante(est_id: int, estudiantes: list[list[str]]):
+def editar_datos_estudiante(est_id: int):
     opc = ""
 
-    while opc != "n":
-        limpiar_consola()
-        mostrar_datos_estudiante(est_id, estudiantes)
+    # while opc != "n":
+    #     limpiar_consola()
+    #     mostrar_datos_estudiante(est_id)
 
-        print("\n\n........Actualizar perfil........\n")
-        print("a. Cambiar fecha de nacimiento")
-        print("b. Editar biografía")
-        print("c. Editar hobbies")
-        print("d. Cambiar género")
-        print("e. Cambiar ciudad")
-        print("f. Cambiar país")
-        print("n. Finalizar\n")
+    #     print("\n\n........Actualizar perfil........\n")
+    #     print("a. Cambiar fecha de nacimiento")
+    #     print("b. Editar biografía")
+    #     print("c. Editar hobbies")
+    #     print("d. Cambiar género")
+    #     print("e. Cambiar ciudad")
+    #     print("f. Cambiar país")
+    #     print("n. Finalizar\n")
 
-        opc = input("Seleccione una opción: ")
+    #     opc = input("Seleccione una opción: ")
 
-        print("\n")
-        while (
-            opc != "a"
-            and opc != "b"
-            and opc != "c"
-            and opc != "d"
-            and opc != "e"
-            and opc != "f"
-            and opc != "n"
-        ):
-            print("No es una opción válida.")
-            opc = input("Ingrese una opción válida: ")
+    #     print("\n")
+    #     while (
+    #         opc != "a"
+    #         and opc != "b"
+    #         and opc != "c"
+    #         and opc != "d"
+    #         and opc != "e"
+    #         and opc != "f"
+    #         and opc != "n"
+    #     ):
+    #         print("No es una opción válida.")
+    #         opc = input("Ingrese una opción válida: ")
 
-        match opc:
-            case "a":
-                valor = solicitar_fecha_nacimiento()
-                estudiantes[est_id][3] = valor
-            case "b":
-                valor = ingresar_propiedad(PROPS_ESTUDIANTE[2])
-                estudiantes[est_id][4] = valor
-            case "c":
-                valor = ingresar_propiedad(PROPS_ESTUDIANTE[3])
-                estudiantes[est_id][5] = valor
-            case "d":
-                valor = ingresar_propiedad(PROPS_ESTUDIANTE[4])
-                estudiantes[est_id][6] = valor
-            case "e":
-                valor = ingresar_propiedad(PROPS_ESTUDIANTE[5])
-                estudiantes[est_id][7] = valor
-            case "f":
-                valor = ingresar_propiedad(PROPS_ESTUDIANTE[6])
-                estudiantes[est_id][8] = valor
+    #     match opc:
+    #         case "a":
+    #             valor = solicitar_fecha_nacimiento()
+    #             estudiantes[est_id][3] = valor
+    #         case "b":
+    #             valor = ingresar_propiedad(PROPS_ESTUDIANTE[2])
+    #             estudiantes[est_id][4] = valor
+    #         case "c":
+    #             valor = ingresar_propiedad(PROPS_ESTUDIANTE[3])
+    #             estudiantes[est_id][5] = valor
+    #         case "d":
+    #             valor = ingresar_propiedad(PROPS_ESTUDIANTE[4])
+    #             estudiantes[est_id][6] = valor
+    #         case "e":
+    #             valor = ingresar_propiedad(PROPS_ESTUDIANTE[5])
+    #             estudiantes[est_id][7] = valor
+    #         case "f":
+    #             valor = ingresar_propiedad(PROPS_ESTUDIANTE[6])
+    #             estudiantes[est_id][8] = valor
 
 
 """
@@ -1627,7 +1663,7 @@ def obtener_candidatos(
     usuario_id: int, candidatos: list[list[int]], estudiantes: list[list[str]]
 ):
     for candidato_ind in range(3):
-        cant_est_totales = contar_estudiantes(estudiantes[:])
+        cant_est_totales = contar_estudiantes()
         est_id = randint(0, cant_est_totales - 1)
 
         while est_id == usuario_id or not comprobar_nuevo_candidato(
@@ -2095,23 +2131,11 @@ rol, usuario_id: int
 """
 
 
-def mostrar_menu_usuario(
-    usuario_id: int,
-    rol: int,
-    estudiantes: list[list[str]],
-    estados: list[bool],
-    me_gusta: list[list[bool]],
-    reportes: list[list[int]],
-    motivo_reportes: list[str],
-):
+def mostrar_menu_usuario(usuario_id: int, rol: int):
     if rol == 0:
-        manejador_menu_principal_estudiante(
-            usuario_id, estudiantes, estados, me_gusta, reportes, motivo_reportes
-        )
-    elif rol == 1:
-        manejador_menu_principal_moderador(
-            reportes, motivo_reportes, estudiantes, estados
-        )
+        manejador_menu_principal_estudiante(usuario_id)
+    # elif rol == 1:
+    #     manejador_menu_principal_moderador()
 
 
 """
@@ -2149,47 +2173,36 @@ opc: string
 """
 
 
-def manejador_menu_principal_estudiante(
-    est_id: int,
-    estudiantes: list[list[str]],
-    estados: list[bool],
-    me_gusta: list[list[bool]],
-    reportes: list[list[int]],
-    motivo_reportes: list[str],
-):
+def manejador_menu_principal_estudiante(est_id: int):
     opc = ""
 
-    while opc != "0" and estados[est_id]:
-        opc = mostrar_menu_principal_estudiante()
+    # while opc != "0" and estados[est_id]:
+    #     opc = mostrar_menu_principal_estudiante()
 
-        match opc:
-            case "1":
-                manejador_submenu_gestionar_perfil(est_id, estudiantes, estados)
+    #     match opc:
+    #         case "1":
+    #             manejador_submenu_gestionar_perfil(est_id)
 
-            case "2":
-                manejador_submenu_gestionar_candidatos(
-                    est_id, reportes, motivo_reportes, estudiantes, estados, me_gusta
-                )
+    #         case "2":
+    #             manejador_submenu_gestionar_candidatos(est_id)
 
-            case "3":
-                manejador_submenu_matcheos()
+    #         case "3":
+    #             manejador_submenu_matcheos()
 
-            case "4":
-                reportes_estadisticos_estudiante(
-                    est_id, estudiantes[:], estados[:], me_gusta[:]
-                )
+    #         case "4":
+    #             reportes_estadisticos_estudiante(est_id)
 
-            case "5":
-                ruleta(est_id, estudiantes[:], estados[:], me_gusta)
+    #         case "5":
+    #             ruleta(est_id)
 
-            case "6":
-                huecos_edades()
+    #         case "6":
+    #             huecos_edades()
 
-            case "7":
-                matcheos_combinados(estudiantes[:], estados[:])
+    #         case "7":
+    #             matcheos_combinados()
 
-            case "0":
-                limpiar_consola()
+    #         case "0":
+    #             limpiar_consola()
 
 
 """
@@ -2242,13 +2255,6 @@ opc: string
 
 
 def main():
-    estudiantes = [[""] * 9 for n in range(8)]
-    moderadores = [[""] * 2 for n in range(4)]
-    me_gusta = [[False] * 8 for n in range(8)]
-    reportes = [[-1] * 3 for n in range(40)]
-    motivo_reportes = [""] * 40
-    estados = [False] * 8
-
     inicializar_archivos()
 
     opc = ""
@@ -2262,20 +2268,12 @@ def main():
                 limpiar_consola()
                 print("¡Hasta luego!")
             case "1":
-                usuario = log_in(estudiantes[:], moderadores[:], estados[:])
+                usuario = log_in()
 
-                if usuario[0] != -1 or usuario[0] != -2:
-                    mostrar_menu_usuario(
-                        usuario[0],
-                        usuario[1],
-                        estudiantes,
-                        estados,
-                        me_gusta,
-                        reportes,
-                        motivo_reportes,
-                    )
+                # if usuario[0] != -1 or usuario[0] != -2:
+                #     mostrar_menu_usuario(usuario[0], usuario[1])
             case "2":
-                registrar(estudiantes, moderadores, estados)
+                registrar()
 
     finalizar_archivos()
 
