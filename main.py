@@ -704,24 +704,23 @@ valido: bool
 """
 
 
-def email_existente(
-    email: str, estudiantes: list[list[str]], moderadores: list[list[str]]
-) -> bool:
-    valido = True
+def email_existente(email: str) -> bool:
+    global ar_lo_estudiantes, ar_lo_moderadores, ar_lo_administradores, ar_fi_estudiantes, ar_fi_moderadores, ar_fi_administradores
 
-    ind = 0
-    while ind < 8 and estudiantes[ind][0] != email:
-        ind = ind + 1
+    valido = buscar_usuario_por_email(email, ar_lo_estudiantes, ar_fi_estudiantes) == -1
 
-    if ind < 8:
-        valido = False
-    else:
-        ind = 0
-        while ind < 4 and moderadores[ind][0] != email:
-            ind = ind + 1
+    if valido:
+        valido = (
+            buscar_usuario_por_email(email, ar_lo_moderadores, ar_fi_moderadores) == -1
+        )
 
-        if ind != 4:
-            valido = False
+    if valido:
+        valido = (
+            buscar_usuario_por_email(
+                email, ar_lo_administradores, ar_fi_administradores
+            )
+            == -1
+        )
 
     return valido
 
@@ -787,9 +786,9 @@ def buscar_usuario_por_email(email: str, datos: io.BufferedRandom, archivo: str)
     while datos.tell() < tam_ar and id_usua == -1:
         reg = pickle.load(datos)
 
-        print(reg.__dict__)
         if reg.email.strip() == email:
             id_usua = reg.id
+
     return id_usua
 
 
@@ -837,15 +836,8 @@ def log_in() -> list[int]:
     limpiar_consola()
     print("\n........Ingreso........\n")
 
-    """ 
-    crear tres funciones que busquen la posición del usuario
-    y tres funciones de queden sus datos
-    """
-    archivos = [
-        [ar_lo_estudiantes, ar_fi_estudiantes],
-        [ar_lo_moderadores, ar_fi_moderadores],
-        [ar_lo_administradores, ar_fi_administradores],
-    ]
+    datos = [ar_lo_estudiantes, ar_lo_moderadores, ar_lo_administradores]
+    archivos = [ar_fi_estudiantes, ar_fi_moderadores, ar_fi_administradores]
 
     while intentos > 0 and acceso_valido[0] == -1:
         email = input("Ingrese su email: ")
@@ -855,7 +847,7 @@ def log_in() -> list[int]:
 
         while id_usua == -1 and tipo_usua < 3:
             id_usua = buscar_usuario_por_email(
-                email, archivos[tipo_usua][0], archivos[tipo_usua][1]
+                email, datos[tipo_usua], archivos[tipo_usua]
             )
 
             if id_usua != -1:
@@ -865,7 +857,7 @@ def log_in() -> list[int]:
             tipo_usua = tipo_usua + 1
 
         if id_usua != -1 and validar_login(
-            id_usua, email, password, acceso_valido[1], archivos[id_usua][0]
+            id_usua, email, password, acceso_valido[1], datos[id_usua]
         ):
             acceso_valido[0] = id_usua
         else:
@@ -894,29 +886,27 @@ def registrar():
     registrado = False
     decision = ""
 
-    # limpiar_consola()
-    # while not registrado and decision != "N":
-    #     print("\n........Registro........\n")
+    limpiar_consola()
+    while not registrado and decision != "N":
+        print("\n........Registro........\n")
 
-    #     email = ingresar_propiedad("email")
-    #     password = ingresar_contrasenia()
-    #     rol = input("Ingrese el rol estudiante(E) o moderador(M). (E/M): ").upper()
+        email = ingresar_propiedad("email")
+        password = ingresar_contrasenia()
+        rol = input("Ingrese el rol estudiante(E) o moderador(M). (E/M): ").upper()
 
-    #     while rol != "E" and rol != "M":
-    #         print("\nNo es un rol válido.")
-    #         rol = input("ingrese E (Estudiante) o M (Moderador): ")
+        while rol != "E" and rol != "M":
+            print("\nNo es un rol válido.")
+            rol = input("ingrese E (Estudiante) o M (Moderador): ")
 
-    #     if rol == "E":
-    #         registrado = registrar_estudiante(
-    #             email, password, estudiantes, moderadores, estados
-    #         )
+        if rol == "E":
+            # registrado = registrar_estudiante(email, password)
+            en_construccion()
+        elif rol == "M":
+            registrado = registrar_moderador(email, password)
 
-    #     elif rol == "M":
-    #         registrado = registrar_moderador(email, password, estudiantes, moderadores)
-
-    #     if not registrado:
-    #         decision = input("\nIntentar registrarse nuevamente. S/N ").upper()
-    #         decision = validar_continuacion(decision)
+        if not registrado:
+            decision = input("\nIntentar registrarse nuevamente. S/N ").upper()
+            decision = validar_continuacion(decision)
 
     limpiar_consola()
 
@@ -1958,13 +1948,20 @@ ind: int
 """
 
 
-def contar_moderadores(moderadores: list[list[str]]) -> int:
-    ind = 0
+def contar_moderadores() -> int:
+    global ar_lo_moderadores, ar_fi_moderadores
 
-    while ind < 4 and moderadores[ind][0] != "":
-        ind = ind + 1
+    ar_lo_moderadores.seek(0, 0)
+    tam_ar = os.path.getsize(ar_fi_moderadores)
 
-    return ind
+    cant = 0
+    while ar_lo_moderadores.tell() < tam_ar:
+        mod = cast(Moderador, pickle.load(ar_lo_moderadores))
+
+        if mod.estado:
+            cant = cant + 1
+
+    return cant
 
 
 """
@@ -1976,22 +1973,34 @@ cant: int
 """
 
 
-def registrar_moderador(
-    email: str,
-    password: str,
-    estudiantes: list[list[str]],
-    moderadores: list[list[str]],
-) -> bool:
-    registrado = False
-    cant = contar_moderadores(moderadores[:])
+def registrar_moderador(email: str, password: str) -> bool:
+    global ar_lo_moderadores
 
-    if cant == 4:
-        print("Por el momento no se pueden registrar nuevos moderadores.")
-    elif not email_existente(email, estudiantes[:], moderadores[:]):
+    registrado = False
+
+    if not email_existente(email):
         print("El email ingresado ya está en uso.")
     else:
-        moderadores[cant][0] = email
-        moderadores[cant][1] = password
+        ar_lo_moderadores.seek(0, 0)
+
+        pickle.load(ar_lo_moderadores)
+        tam_reg = ar_lo_moderadores.tell()
+
+        ar_lo_moderadores.seek(-1 * tam_reg, 2)
+
+        mod = cast(Moderador, pickle.load(ar_lo_moderadores))
+
+        nuevo_mod = Moderador()
+
+        nuevo_mod.id = mod.id + 1
+        nuevo_mod.email = formatear_cadena(email, 32)
+        nuevo_mod.password = formatear_cadena(password, 32)
+        nuevo_mod.estado = True
+
+        pickle.dump(nuevo_mod, ar_lo_moderadores)
+
+        ar_lo_moderadores.flush()
+
         registrado = True
         print("\nRegistro exitoso!!!")
 
