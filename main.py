@@ -899,8 +899,7 @@ def registrar():
             rol = input("ingrese E (Estudiante) o M (Moderador): ")
 
         if rol == "E":
-            # registrado = registrar_estudiante(email, password)
-            en_construccion()
+            registrado = registrar_estudiante(email, password)
         elif rol == "M":
             registrado = registrar_moderador(email, password)
 
@@ -962,32 +961,45 @@ registrado: bool
 """
 
 
-def registrar_estudiante(
-    email: str,
-    password: str,
-    estudiantes: list[list[str]],
-    moderadores: list[list[str]],
-    estados: list[bool],
-) -> bool:
+def registrar_estudiante(email: str, password: str) -> bool:
+    global ar_lo_estudiantes
+
     registrado = False
-    # cant = contar_estudiantes(estudiantes[:])
 
-    # if cant == 8:
-    #     print("Por el momento no se pueden registrar nuevos estudiantes.")
-    # elif not email_existente(email, estudiantes[:], moderadores[:]):
-    #     print("El email ingresado ya está en uso.")
-    # else:
-    #     estudiantes[cant][0] = email
-    #     estudiantes[cant][1] = password
-    #     estados[cant] = True
+    if not email_existente(email):
+        print("El email ingresado ya está en uso.")
+    else:
+        ar_lo_estudiantes.seek(0, 0)
 
-    #     for ind in range(2, 9):
-    #         estudiantes[cant][ind] = ingresar_propiedad(PROPS_ESTUDIANTE[ind - 2])
+        pickle.load(ar_lo_estudiantes)
+        tam_reg = ar_lo_estudiantes.tell()
 
-    #     registrado = True
-    #     print("\nRegistro exitoso!!!")
+        ar_lo_estudiantes.seek(-1 * tam_reg, 2)
 
-    # input("Presione Enter para continuar...")
+        est = cast(Estudiante, pickle.load(ar_lo_estudiantes))
+
+        nuevo_est = Estudiante()
+
+        nuevo_est.id = est.id + 1
+        nuevo_est.email = formatear_cadena(email, 32)
+        nuevo_est.password = formatear_cadena(password, 32)
+        nuevo_est.nombre = ingresar_propiedad(PROPS_ESTUDIANTE[0])
+        nuevo_est.fecha_nac = ingresar_propiedad(PROPS_ESTUDIANTE[1])
+        nuevo_est.biografia = ingresar_propiedad(PROPS_ESTUDIANTE[2])
+        nuevo_est.hobbies = ingresar_propiedad(PROPS_ESTUDIANTE[3])
+        nuevo_est.hobbies = ingresar_propiedad(PROPS_ESTUDIANTE[4])
+        nuevo_est.hobbies = ingresar_propiedad(PROPS_ESTUDIANTE[5])
+        nuevo_est.hobbies = ingresar_propiedad(PROPS_ESTUDIANTE[6])
+        nuevo_est.estado = True
+
+        pickle.dump(nuevo_est, ar_lo_estudiantes)
+
+        ar_lo_estudiantes.flush()
+
+        registrado = True
+        print("\nRegistro exitoso!!!")
+
+    input("Presione Enter para continuar...")
 
     return registrado
 
