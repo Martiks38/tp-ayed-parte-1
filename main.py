@@ -50,10 +50,11 @@ class Moderador:
 
 class Reporte:
     def __init__(self):
+        self.id = 0
         self.id_reportante = 0
         self.id_reportado = 0
         self.razon = ""
-        self.estado = True
+        self.estado = 0
 
 
 class Like:
@@ -608,24 +609,27 @@ def inicializar_reportes():
 
     re = Reporte()
 
+    re.id = 0
     re.id_reportante = 0
     re.id_reportado = 1
     re.razon = formatear_cadena("Motivo 1", 255)
-    re.estado = True
+    re.estado = 0
 
     pickle.dump(re, ar_lo_reportes)
 
+    re.id = 1
     re.id_reportante = 0
     re.id_reportado = 2
     re.razon = formatear_cadena("Motivo 2", 255)
-    re.estado = True
+    re.estado = 0
 
     pickle.dump(re, ar_lo_reportes)
 
+    re.id = 2
     re.id_reportante = 2
     re.id_reportado = 3
     re.razon = formatear_cadena("Motivo 3", 255)
-    re.estado = True
+    re.estado = 0
 
     pickle.dump(re, ar_lo_reportes)
 
@@ -975,11 +979,7 @@ def registrar_estudiante(email: str, password: str) -> bool:
     if not email_existente(email):
         print("El email ingresado ya está en uso.")
     else:
-        ar_lo_estudiantes.seek(0, 0)
-
-        pickle.load(ar_lo_estudiantes)
-        tam_reg = ar_lo_estudiantes.tell()
-
+        tam_reg = obtener_largo_registro(ar_lo_estudiantes)
         ar_lo_estudiantes.seek(-1 * tam_reg, 2)
 
         est: Estudiante = pickle.load(ar_lo_estudiantes)
@@ -1091,13 +1091,15 @@ est_id, ind: int
 """
 
 
-def obtener_nombre_estudiante_por_id(est_id: int, estudiantes: list[list[str]]) -> str:
-    ind = 0
+def obtener_nombre_estudiante_por_id(est_id: int) -> str:
+    global ar_lo_estudiantes
 
-    while ind < 8 and ind != est_id:
-        ind = ind + 1
+    tam_reg = obtener_largo_registro(ar_lo_estudiantes)
 
-    return estudiantes[ind][2]
+    ar_lo_estudiantes.seek(tam_reg * est_id, 0)
+    est: Estudiante = pickle.load(ar_lo_estudiantes)
+
+    return est.nombre
 
 
 """
@@ -1168,7 +1170,7 @@ def reportar_candidato(
                     print("Debe ingresar el motivo del reporte.")
                     motivo = input("Por favor. Ingrese el motivo:\n\t")
 
-                reporte_ind = contar_reportes(reportes[:])
+                reporte_ind = contar_reportes()
 
                 if reporte_ind == 40:
                     print("\nError al generar el reporte.")
@@ -1569,7 +1571,7 @@ def obtener_estudiante_por_id(id_est: int) -> Estudiante:
 
     if 0 <= id_est and id_est < cant:
         tam_reg = obtener_largo_registro(ar_lo_estudiantes)
-        ar_lo_estudiantes.seek(id_est * tam_reg)
+        ar_lo_estudiantes.seek(id_est * tam_reg, 0)
 
         est: Estudiante = pickle.load(ar_lo_estudiantes)
     else:
@@ -1687,7 +1689,7 @@ def mostrar_candidatos(cand: list[list[int]], estudiantes: list[list[str]]):
     for ind in range(3):
         est_id = cand[ind][0]
 
-        print(f"{ind + 1}. {obtener_nombre_estudiante_por_id(est_id, estudiantes[:])}")
+        # print(f"{ind + 1}. {obtener_nombre_estudiante_por_id(est_id, estudiantes[:])}")
 
 
 """
@@ -1751,13 +1753,11 @@ def matchear_candidato(
 ):
     pos_elegido = buscar_candidato_mayor_valor(valores[:])
 
-    nombre_match = obtener_nombre_estudiante_por_id(
-        candidatos[pos_elegido][0], estudiantes[:]
-    )
+    # nombre_match = obtener_nombre_estudiante_por_id()
     pos_match = candidatos[pos_elegido][0]
     me_gusta[usuario_id][pos_match] = True
 
-    print("\nTu match es la persona", nombre_match)
+    # print("\nTu match es la persona", nombre_match)
 
 
 """
@@ -1855,13 +1855,13 @@ ind: int
 """
 
 
-def contar_reportes(reportes: list[list[int]]) -> int:
-    ind = 0
+def contar_reportes() -> int:
+    global ar_lo_reportes, ar_fi_reportes
 
-    while ind < 40 and reportes[ind][0] != -1:
-        ind = ind + 1
+    tam_reg = obtener_largo_registro(ar_lo_reportes)
+    tam_ar = os.path.getsize(ar_fi_reportes)
 
-    return ind
+    return tam_ar // tam_reg
 
 
 """
@@ -1873,23 +1873,24 @@ reporte_id: int
 """
 
 
-def mostrar_detalle_reporte(
-    reporte_id: int,
-    reportes: list[list[int]],
-    motivo_reportes: list[str],
-    estudiantes: list[list[str]],
-):
-    nombre_reportante = obtener_nombre_estudiante_por_id(
-        reportes[reporte_id][1], estudiantes[:]
-    )
-    nombre_reportado = obtener_nombre_estudiante_por_id(
-        reportes[reporte_id][2], estudiantes[:]
-    )
+def mostrar_detalle_reporte(rep: Reporte):
+    nombre_reportante = obtener_nombre_estudiante_por_id(rep.id_reportante)
+    nombre_reportado = obtener_nombre_estudiante_por_id(rep.id_reportado)
 
-    print(f"........Reporte {reporte_id + 1}........\n")
+    print(f"........Reporte {rep.id}........\n")
     print("Reportante:", nombre_reportante)
     print("Reportado:", nombre_reportado)
-    print(f"Motivo:\n\t{motivo_reportes[reporte_id]}\n\n")
+    print(f"Motivo:\n\t{rep.razon}\n\n")
+
+
+def actualizar_reporte(rep: Reporte):
+    global ar_lo_reportes
+
+    tam_reg = obtener_largo_registro(ar_lo_reportes)
+    ar_lo_reportes.seek(rep.id * tam_reg, 0)
+
+    pickle.dump(rep, ar_lo_reportes)
+    ar_lo_reportes.flush()
 
 
 """
@@ -1898,10 +1899,26 @@ reporte_id: int
 """
 
 
-def ignorar_reporte(reporte_id: int, reportes: list[list[int]]):
-    reportes[reporte_id][0] = 2
-    print("Procesado el reporte", (reporte_id + 1))
+def ignorar_reporte(re: Reporte):
+    re.estado = 2
+
+    actualizar_reporte(re)
+    print("Procesado el reporte", re.id)
     print("El reporte fue ignorado.")
+
+
+def actualizar_reportes(id_reportado: int):
+    global ar_lo_reportes, ar_fi_reportes
+
+    ar_lo_reportes.seek(0, 0)
+    tam_ar = os.path.getsize(ar_fi_reportes)
+
+    while ar_lo_reportes.tell() < tam_ar:
+        re: Reporte = pickle.load(ar_lo_reportes)
+
+        if re.id_reportado == id_reportado:
+            re.estado = 2
+            actualizar_reporte(re)
 
 
 """
@@ -1913,24 +1930,16 @@ nombre_reportado: string
 """
 
 
-def bloquear_reportado(
-    reporte_id: int,
-    reportes: list[list[int]],
-    estudiantes: list[list[str]],
-    estados: list[bool],
-):
-    cant_reportes = contar_reportes(reportes[:])
-    reportado_id = reportes[reporte_id][2]
-    estados[reportado_id] = False
-    nombre_reportado = obtener_nombre_estudiante_por_id(reportado_id, estudiantes)
+def bloquear_reportado(re: Reporte):
 
-    print("Procesado el reporte", (reporte_id + 1))
-    print(f"El reportado {nombre_reportado} fue bloqueado.")
+    est = obtener_estudiante_por_id(re.id_reportado)
+    est.estado = False
+    actualizar_estudiante(est)
 
-    ind = 0
-    for ind in range(0, cant_reportes):
-        if reportes[ind][2] == reportado_id:
-            reportes[ind][0] = 1
+    print("Procesado el reporte", re.id)
+    print(f"El reportado {est.nombre} fue bloqueado.")
+
+    actualizar_reportes(re.id_reportado)
 
 
 """
@@ -1942,12 +1951,7 @@ ind, reportado_id, reporte_id: int
 """
 
 
-def procesar_reporte(
-    reporte_id: int,
-    reportes: list[list[int]],
-    estudiantes: list[list[str]],
-    estados: list[bool],
-):
+def procesar_reporte(rep: Reporte):
     print("¿Cómo proceder?\n")
     print("1. Ignorar reporte")
     print("2. Bloquear al reportado")
@@ -1959,9 +1963,9 @@ def procesar_reporte(
         opc = input("Ingrese una opción válida: ")
 
     if opc == "1":
-        ignorar_reporte(reporte_id, reportes)
+        ignorar_reporte(rep)
     else:
-        bloquear_reportado(reporte_id, reportes, estudiantes, estados)
+        bloquear_reportado(rep)
 
 
 """
@@ -1976,34 +1980,31 @@ estudiantes_activos: bool
 """
 
 
-def ver_reportes(
-    reportes: list[list[int]],
-    motivo_reportes: list[str],
-    estudiantes: list[list[str]],
-    estados: list[bool],
-):
-    ind = 0
+def ver_reportes():
+    global ar_lo_reportes, ar_fi_reportes
+
     opc = ""
 
-    cant_reportes = contar_reportes(reportes)
+    ar_lo_reportes.seek(0, 0)
+    tam_ar = os.path.getsize(ar_fi_reportes)
 
-    while ind < cant_reportes and opc != "N" and reportes[ind][0] != -1:
+    while ar_lo_reportes.tell() < tam_ar and opc != "N":
+        rep: Reporte = pickle.load(ar_lo_reportes)
 
         limpiar_consola()
-        estudiantes_activos = estados[reportes[ind][1]] and estados[reportes[ind][2]]
+        est_reportado = obtener_estudiante_por_id(rep.id_reportado)
+        est_reportante = obtener_estudiante_por_id(rep.id_reportante)
 
-        if estudiantes_activos and reportes[ind][0] == 0:
-            mostrar_detalle_reporte(
-                ind, reportes[:], motivo_reportes[:], estudiantes[:]
-            )
-            procesar_reporte(ind, reportes, estudiantes, estados)
+        estudiantes_activos = est_reportante.estado and est_reportado.estado
+
+        if estudiantes_activos and rep.estado == 0:
+            mostrar_detalle_reporte(rep)
+            procesar_reporte(rep)
 
             opc = input("Continuar revisando reportes. (S/N) ").upper()
             opc = validar_continuacion(opc)
 
-        ind = ind + 1
-
-    if ind == cant_reportes:
+    if ar_lo_reportes.tell() == tam_ar:
         print("No quedan más reportes pendientes.")
         input("Presione Enter para continuar... ")
 
@@ -2111,12 +2112,7 @@ opc: string
 """
 
 
-def manejador_submenu_gestionar_reportes(
-    estudiantes: list[list[str]],
-    reportes: list[list[int]],
-    motivo_reportes: list[str],
-    estados: list[bool],
-):
+def manejador_submenu_gestionar_reportes():
     opc = ""
 
     while opc != "b":
@@ -2132,7 +2128,7 @@ def manejador_submenu_gestionar_reportes(
             opc = input("Ingrese una opción válida: ")
 
         if opc == "a":
-            ver_reportes(reportes, motivo_reportes, estudiantes, estados)
+            ver_reportes()
 
 
 ### Mostrar ###
@@ -2304,8 +2300,7 @@ def manejador_menu_principal_moderador():
                 manejador_submenu_gestionar_usuarios()
 
             case "2":
-                # manejador_submenu_gestionar_reportes()
-                en_construccion()
+                manejador_submenu_gestionar_reportes()
 
             case "3":
                 en_construccion()
