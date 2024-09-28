@@ -29,7 +29,6 @@ class Estudiante:
         self.id = 0
         self.nombre = ""
         self.email = ""
-        self.sexo = ""
         self.password = ""
         self.fecha_nac = ""
         self.biografia = ""
@@ -971,6 +970,10 @@ registrado: bool
 """
 
 
+def test():
+    input("test")
+
+
 def registrar_estudiante(email: str, password: str) -> bool:
     global ar_lo_estudiantes
 
@@ -979,23 +982,21 @@ def registrar_estudiante(email: str, password: str) -> bool:
     if not email_existente(email):
         print("El email ingresado ya está en uso.")
     else:
-        tam_reg = obtener_largo_registro(ar_lo_estudiantes)
-        ar_lo_estudiantes.seek(-1 * tam_reg, 2)
+        cant_est = contar_estudiantes()
 
-        est: Estudiante = pickle.load(ar_lo_estudiantes)
+        ar_lo_estudiantes.seek(0, 2)
 
         nuevo_est = Estudiante()
-
-        nuevo_est.id = est.id + 1
+        nuevo_est.id = cant_est
         nuevo_est.email = formatear_cadena(email, 32)
         nuevo_est.password = formatear_cadena(password, 32)
         nuevo_est.nombre = ingresar_propiedad(PROPS_ESTUDIANTE[0])
         nuevo_est.fecha_nac = ingresar_propiedad(PROPS_ESTUDIANTE[1])
         nuevo_est.biografia = ingresar_propiedad(PROPS_ESTUDIANTE[2])
         nuevo_est.hobbies = ingresar_propiedad(PROPS_ESTUDIANTE[3])
-        nuevo_est.hobbies = ingresar_propiedad(PROPS_ESTUDIANTE[4])
-        nuevo_est.hobbies = ingresar_propiedad(PROPS_ESTUDIANTE[5])
-        nuevo_est.hobbies = ingresar_propiedad(PROPS_ESTUDIANTE[6])
+        nuevo_est.genero = ingresar_propiedad(PROPS_ESTUDIANTE[4])
+        nuevo_est.ciudad = ingresar_propiedad(PROPS_ESTUDIANTE[5])
+        nuevo_est.pais = ingresar_propiedad(PROPS_ESTUDIANTE[6])
         nuevo_est.estado = True
 
         pickle.dump(nuevo_est, ar_lo_estudiantes)
