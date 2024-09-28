@@ -13,7 +13,6 @@ import platform
 from datetime import date, datetime
 from getpass import getpass
 from random import randint
-from typing import cast
 
 # Entidades
 
@@ -57,7 +56,7 @@ class Reporte:
         self.estado = True
 
 
-class Likes:
+class Like:
     def __init__(self):
         self.remitente = 0
         self.destinatario = 0
@@ -96,6 +95,13 @@ ar_lo_likesEstudiantes: io.BufferedRandom
 ar_lo_moderadores: io.BufferedRandom
 ar_lo_administradores: io.BufferedRandom
 ar_lo_reportes: io.BufferedRandom
+
+
+def obtener_largo_registro(datos: io.BufferedRandom):
+    datos.seek(0, 0)
+    pickle.load(datos)
+
+    return datos.tell()
 
 
 def inicializar_ar_estudiantes():
@@ -471,7 +477,7 @@ cant_est, cant_matcheos: int
 
 def matcheos_combinados(estudiantes: list[list[str]], estados: list[bool]):
     limpiar_consola()
-    cant_est = contar_estudiantes_activos(estudiantes[:], estados[:])
+    cant_est = contar_estudiantes_activos()
     cant_matcheos = cant_est * (cant_est - 1) // 2
 
     print(
@@ -629,12 +635,12 @@ def inicializar_reportes():
 def mostrar_likes():
     global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
-    like = Likes()
+    like = Like()
     ar_lo_likesEstudiantes.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
 
     while ar_lo_likesEstudiantes.tell() < tam_ar:
-        like = cast(Likes, pickle.load(ar_lo_likesEstudiantes))
+        like: Like = pickle.load(ar_lo_likesEstudiantes)
         print(f"Remitente {like.remitente}, Destinatario: {like.destinatario}")
 
 
@@ -650,7 +656,7 @@ def inicializar_likes():
 
     cant_est = contar_estudiantes()
 
-    like = Likes()
+    like = Like()
 
     for id_remitente in range(cant_est):
         for id_destinatario in range(cant_est):
@@ -922,7 +928,7 @@ def contar_estudiantes():
     tam_ar = os.path.getsize(ar_fi_estudiantes)
 
     while ar_lo_estudiantes.tell() < tam_ar:
-        est = cast(Estudiante, pickle.load(ar_lo_estudiantes))
+        est: Estudiante = pickle.load(ar_lo_estudiantes)
         if est.estado:
             cant = cant + 1
 
@@ -976,7 +982,7 @@ def registrar_estudiante(email: str, password: str) -> bool:
 
         ar_lo_estudiantes.seek(-1 * tam_reg, 2)
 
-        est = cast(Estudiante, pickle.load(ar_lo_estudiantes))
+        est: Estudiante = pickle.load(ar_lo_estudiantes)
 
         nuevo_est = Estudiante()
 
@@ -1021,16 +1027,18 @@ cant, ind: int
 """
 
 
-def contar_estudiantes_activos(
-    estudiantes: list[list[str]], estados: list[bool]
-) -> int:
-    cant = 0
-    ind = 0
+def contar_estudiantes_activos() -> int:
+    global ar_lo_estudiantes, ar_fi_estudiantes
 
-    while ind < 8 and estudiantes[ind][0] != "":
-        if estados[ind]:
+    cant = 0
+    ar_lo_estudiantes.seek(0, 0)
+    tam_ar = os.path.getsize(ar_fi_estudiantes)
+
+    while ar_lo_estudiantes.tell() < tam_ar:
+        est: Estudiante = pickle.load(ar_lo_estudiantes)
+
+        if est.estado:
             cant = cant + 1
-        ind = ind + 1
 
     return cant
 
@@ -1068,11 +1076,11 @@ nombre: string
 """
 
 
-def obtener_id_estudiante_por_nombre(nombre: str, estudiantes: list[list[str]]) -> int:
+def obtener_id_estudiante_por_nombre(nombre: str) -> int:
     ind = 0
 
-    while ind < 8 and estudiantes[ind][2] != nombre:
-        ind = ind + 1
+    # while ind < 8 and estudiantes[ind][2] != nombre:
+    #     ind = ind + 1
 
     return ind
 
@@ -1136,7 +1144,7 @@ def reportar_candidato(
         reportado = input("Ingrese el nombre o el id del candidato: ")
 
         if not reportado.isdigit():
-            reportado_id = obtener_id_estudiante_por_nombre(reportado, estudiantes)
+            reportado_id = obtener_id_estudiante_por_nombre(reportado)
         else:
             reportado_id = int(reportado) - 1
 
@@ -1236,12 +1244,12 @@ est_id: int
 
 
 def validar_nombre(nombre: str, estudiantes: list[list[str]]) -> str:
-    est_id = obtener_id_estudiante_por_nombre(nombre, estudiantes[:])
+    est_id = obtener_id_estudiante_por_nombre(nombre)
 
     while est_id == -1:
         print("No existe el estudiante", nombre)
         nombre = input("Ingrese un nombre de estudiante: ")
-        est_id = obtener_id_estudiante_por_nombre(nombre, estudiantes[:])
+        est_id = obtener_id_estudiante_por_nombre(nombre)
 
     return nombre
 
@@ -1310,7 +1318,7 @@ def marcar_match(
         )
 
         nombre_estudiante = validar_nombre(nombre_estudiante, estudiantes[:])
-        match_id = obtener_id_estudiante_por_nombre(nombre_estudiante, estudiantes[:])
+        match_id = obtener_id_estudiante_por_nombre(nombre_estudiante)
 
         if me_gusta[est_id][match_id]:
             print("\nYa tiene match con", nombre_estudiante)
@@ -1508,7 +1516,7 @@ def reportes_estadisticos_estudiante(
     likes_recibidos = 0
     matches = 0
 
-    cant_estudiantes = contar_estudiantes_activos(estudiantes[:], estados[:])
+    cant_estudiantes = contar_estudiantes_activos()
 
     for ind in range(cant_estudiantes):
         if est_id != ind and estados[ind]:
@@ -1534,6 +1542,52 @@ def reportes_estadisticos_estudiante(
     input("Presiona Enter para volver al menú... ")
 
 
+def obtener_estudiante_por_nombre(nom_est: str) -> Estudiante:
+    global ar_lo_estudiantes, ar_fi_estudiantes
+
+    est = Estudiante()
+    ar_lo_estudiantes.seek(0, 0)
+
+    est: Estudiante = pickle.load(ar_lo_estudiantes)
+    tam_ar = os.path.getsize(ar_fi_estudiantes)
+
+    while ar_lo_estudiantes.tell() < tam_ar and est.nombre.strip() != nom_est:
+        est: Estudiante = pickle.load(ar_lo_estudiantes)
+
+    if est.nombre.strip() != nom_est:
+        est = Estudiante()
+        est.id = -1
+
+    return est
+
+
+def obtener_estudiante_por_id(id_est: int) -> Estudiante:
+    global ar_lo_estudiantes
+
+    est = Estudiante()
+    cant = contar_estudiantes()
+
+    if 0 <= id_est and id_est < cant:
+        tam_reg = obtener_largo_registro(ar_lo_estudiantes)
+        ar_lo_estudiantes.seek(id_est * tam_reg)
+
+        est: Estudiante = pickle.load(ar_lo_estudiantes)
+    else:
+        est.id = -1
+
+    return est
+
+
+def actualizar_estudiante(est: Estudiante):
+    global ar_lo_estudiantes
+
+    tam_reg = obtener_largo_registro(ar_lo_estudiantes)
+    ar_lo_estudiantes.seek(tam_reg * est.id, 0)
+
+    pickle.dump(est, ar_lo_estudiantes)
+    ar_lo_estudiantes.flush()
+
+
 """
 estudiantes: Arreglo multi de 9x8 de string
 estados: Arreglo de 0 a 7 de bool
@@ -1542,22 +1596,23 @@ est_id: int
 """
 
 
-def desactivar_usuario(estudiantes: list[list[str]], estados: list[bool]):
+def desactivar_usuario():
+
     decision = ""
 
     while decision != "N":
         limpiar_consola()
         estudiante = input("Ingrese el ID o el nombre del usuario: ")
-        est_id = -1
+        est = Estudiante()
 
         if not estudiante.isdigit():
-            est_id = obtener_id_estudiante_por_nombre(estudiante, estudiantes[:])
+            est = obtener_estudiante_por_nombre(estudiante)
         else:
-            est_id = int(estudiante) - 1
+            est = obtener_estudiante_por_id(int(estudiante))
 
-        if not validar_id_estudiante(est_id, estudiantes[:]) or not estados[est_id]:
+        if est.id == -1:
             print("El usuario no existe.\n")
-        elif not estados[est_id]:
+        elif not est.estado:
             print("El usuario ya está desactivado.\n")
         else:
             limpiar_consola()
@@ -1567,7 +1622,8 @@ def desactivar_usuario(estudiantes: list[list[str]], estados: list[bool]):
             opc = validar_continuacion(opc)
 
             if opc == "S":
-                estados[est_id] = False
+                est.estado = False
+                actualizar_estudiante(est)
 
                 print("Perfil borrado con exito.")
 
@@ -1968,7 +2024,7 @@ def contar_moderadores() -> int:
 
     cant = 0
     while ar_lo_moderadores.tell() < tam_ar:
-        mod = cast(Moderador, pickle.load(ar_lo_moderadores))
+        mod: Moderador = pickle.load(ar_lo_moderadores)
 
         if mod.estado:
             cant = cant + 1
@@ -2000,7 +2056,7 @@ def registrar_moderador(email: str, password: str) -> bool:
 
         ar_lo_moderadores.seek(-1 * tam_reg, 2)
 
-        mod = cast(Moderador, pickle.load(ar_lo_moderadores))
+        mod: Moderador = pickle.load(ar_lo_moderadores)
 
         nuevo_mod = Moderador()
 
@@ -2028,9 +2084,7 @@ opc: string
 """
 
 
-def manejador_submenu_gestionar_usuarios(
-    estudiantes: list[list[str]], estados: list[bool]
-):
+def manejador_submenu_gestionar_usuarios():
     opc = ""
 
     while opc != "b":
@@ -2046,7 +2100,7 @@ def manejador_submenu_gestionar_usuarios(
             opc = input("Ingrese una opción válida: ")
 
         if opc == "a":
-            desactivar_usuario(estudiantes[:], estados)
+            desactivar_usuario()
 
 
 """
@@ -2154,9 +2208,13 @@ rol, usuario_id: int
 
 def mostrar_menu_usuario(usuario_id: int, rol: int):
     if rol == 0:
-        manejador_menu_principal_estudiante(usuario_id)
-    # elif rol == 1:
-    #     manejador_menu_principal_moderador()
+        # manejador_menu_principal_estudiante(usuario_id)
+        en_construccion()
+    elif rol == 1:
+        manejador_menu_principal_moderador()
+    elif rol == 2:
+        # manejador_menu_principal_administrador()
+        en_construccion()
 
 
 """
@@ -2235,12 +2293,7 @@ opc: string
 """
 
 
-def manejador_menu_principal_moderador(
-    reportes: list[list[int]],
-    motivo_reportes: list[str],
-    estudiantes: list[list[str]],
-    estados: list[bool],
-):
+def manejador_menu_principal_moderador():
     opc = "1"
 
     while opc != "0":
@@ -2248,12 +2301,11 @@ def manejador_menu_principal_moderador(
 
         match opc:
             case "1":
-                manejador_submenu_gestionar_usuarios(estudiantes, estados)
+                manejador_submenu_gestionar_usuarios()
 
             case "2":
-                manejador_submenu_gestionar_reportes(
-                    estudiantes, reportes, motivo_reportes, estados
-                )
+                # manejador_submenu_gestionar_reportes()
+                en_construccion()
 
             case "3":
                 en_construccion()
@@ -2291,8 +2343,8 @@ def main():
             case "1":
                 usuario = log_in()
 
-                # if usuario[0] != -1 or usuario[0] != -2:
-                #     mostrar_menu_usuario(usuario[0], usuario[1])
+                if usuario[0] != -1 or usuario[0] != -2:
+                    mostrar_menu_usuario(usuario[0], usuario[1])
             case "2":
                 registrar()
 
