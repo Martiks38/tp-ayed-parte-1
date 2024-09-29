@@ -22,6 +22,7 @@ class Administrador:
         self.id = 0
         self.email = ""
         self.password = ""
+        self.estado = True
 
 
 class Estudiante:
@@ -98,7 +99,7 @@ ar_lo_reportes: io.BufferedRandom
 
 
 def obtener_largo_registro(datos: io.BufferedRandom):
-    datos.seek(0, 0)
+    datos.seek(0)
     pickle.load(datos)
 
     return datos.tell()
@@ -497,10 +498,10 @@ estados: Arreglo de 0 a 7 de bool
 def inicializar_estudiantes():
     global ar_lo_estudiantes
 
-    ar_lo_estudiantes.seek(0, 0)
+    ar_lo_estudiantes.seek(0)
     est = Estudiante()
 
-    est.id = 0
+    est.id = str(0)
     est.email = formatear_cadena("estudiante1@ayed.com", 32)
     est.password = formatear_cadena("111222", 32)
     est.nombre = formatear_cadena("Juan Peréz", 32)
@@ -513,11 +514,11 @@ def inicializar_estudiantes():
     est.genero = GENERO[1]
     est.ciudad = formatear_cadena("Rosario", 32)
     est.pais = formatear_cadena("Argentina", 32)
-    est.estado = True
+    est.estado = str(True)
 
     pickle.dump(est, ar_lo_estudiantes)
 
-    est.id = 1
+    est.id = str(1)
     est.email = formatear_cadena("estudiante2@ayed.com", 32)
     est.password = formatear_cadena("333444", 32)
     est.nombre = formatear_cadena("María García", 32)
@@ -532,11 +533,11 @@ def inicializar_estudiantes():
     est.genero = GENERO[0]
     est.ciudad = "Madrid"
     est.pais = "España"
-    est.estado = True
+    est.estado = str(True)
 
     pickle.dump(est, ar_lo_estudiantes)
 
-    est.id = 2
+    est.id = str(2)
     est.email = formatear_cadena("estudiante3@ayed.com", 32)
     est.password = formatear_cadena("555666", 32)
     est.nombre = formatear_cadena("Carlos Martínez", 32)
@@ -548,11 +549,11 @@ def inicializar_estudiantes():
     est.genero = GENERO[1]
     est.ciudad = formatear_cadena("La Paz", 32)
     est.pais = formatear_cadena("Bolivia", 32)
-    est.estado = True
+    est.estado = str(True)
 
     pickle.dump(est, ar_lo_estudiantes)
 
-    est.id = 3
+    est.id = str(3)
     est.email = formatear_cadena("estudiante4@ayed.com", 32)
     est.password = formatear_cadena("789101", 32)
     est.nombre = formatear_cadena("Ana López", 32)
@@ -567,7 +568,7 @@ def inicializar_estudiantes():
     est.genero = GENERO[0]
     est.ciudad = formatear_cadena("Asunción", 32)
     est.pais = formatear_cadena("Paraguay", 32)
-    est.estado = True
+    est.estado = str(True)
 
     pickle.dump(est, ar_lo_estudiantes)
 
@@ -582,13 +583,13 @@ moderadores: Arreglo multi de 2x4 de string
 def inicializar_moderadores():
     global ar_lo_moderadores
 
-    ar_lo_moderadores.seek(0, 0)
+    ar_lo_moderadores.seek(0)
     mod = Moderador()
 
-    mod.id = 0
+    mod.id = str(0)
     mod.email = formatear_cadena("moderador1@ayed.com", 32)
     mod.password = formatear_cadena("111222", 32)
-    mod.estado = True
+    mod.estado = str(True)
 
     pickle.dump(mod, ar_lo_moderadores)
 
@@ -604,31 +605,31 @@ motivo_reportes: Arreglo de 0 a 39 de string
 def inicializar_reportes():
     global ar_lo_reportes
 
-    ar_lo_reportes.seek(0, 0)
+    ar_lo_reportes.seek(0)
 
     re = Reporte()
 
-    re.id = 0
-    re.id_reportante = 0
-    re.id_reportado = 1
+    re.id = str(0)
+    re.id_reportante = str(0)
+    re.id_reportado = str(1)
     re.razon = formatear_cadena("Motivo 1", 255)
-    re.estado = 0
+    re.estado = str(0)
 
     pickle.dump(re, ar_lo_reportes)
 
-    re.id = 1
-    re.id_reportante = 0
-    re.id_reportado = 2
+    re.id = str(1)
+    re.id_reportante = str(0)
+    re.id_reportado = str(2)
     re.razon = formatear_cadena("Motivo 2", 255)
-    re.estado = 0
+    re.estado = str(0)
 
     pickle.dump(re, ar_lo_reportes)
 
-    re.id = 2
-    re.id_reportante = 2
-    re.id_reportado = 3
+    re.id = str(2)
+    re.id_reportante = str(2)
+    re.id_reportado = str(3)
     re.razon = formatear_cadena("Motivo 3", 255)
-    re.estado = 0
+    re.estado = str(0)
 
     pickle.dump(re, ar_lo_reportes)
 
@@ -639,7 +640,7 @@ def mostrar_likes():
     global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
     like = Like()
-    ar_lo_likesEstudiantes.seek(0, 0)
+    ar_lo_likesEstudiantes.seek(0)
     tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
 
     while ar_lo_likesEstudiantes.tell() < tam_ar:
@@ -655,7 +656,7 @@ me_gusta: Arreglo multi de 8x8 de bool
 def inicializar_likes():
     global ar_lo_likesEstudiantes
 
-    ar_lo_likesEstudiantes.seek(0, 0)
+    ar_lo_likesEstudiantes.seek(0)
 
     cant_est = contar_estudiantes()
 
@@ -664,8 +665,8 @@ def inicializar_likes():
     for id_remitente in range(cant_est):
         for id_destinatario in range(cant_est):
             if id_destinatario != id_remitente and randint(0, 100) > 60:
-                like.destinatario = id_destinatario
-                like.remitente = id_remitente
+                like.destinatario = str(id_destinatario)
+                like.remitente = str(id_remitente)
 
                 pickle.dump(like, ar_lo_likesEstudiantes)
 
@@ -675,13 +676,14 @@ def inicializar_likes():
 def inicializar_administradores():
     global ar_lo_administradores
 
-    ar_lo_administradores.seek(0, 0)
+    ar_lo_administradores.seek(0)
 
     ad = Administrador()
 
-    ad.id = 0
+    ad.id = str(0)
     ad.email = formatear_cadena("administrador1@ayed.com", 32)
     ad.password = formatear_cadena("111222", 32)
+    ad.estado = str(True)
 
     pickle.dump(ad, ar_lo_administradores)
 
@@ -789,43 +791,37 @@ def validar_acceso(
 def buscar_usuario_por_email(email: str, datos: io.BufferedRandom, archivo: str) -> int:
     id_usua = -1
 
-    datos.seek(0, 0)
+    datos.seek(0)
     tam_ar = os.path.getsize(archivo)
 
     while datos.tell() < tam_ar and id_usua == -1:
         reg = pickle.load(datos)
 
         if reg.email.strip() == email:
-            id_usua = reg.id
+            id_usua = int(reg.id)
 
     return id_usua
 
 
 def validar_login(
-    id_user: str, email: str, password: str, tipo_user: str, archivo: io.BufferedRandom
+    id_user: int, email: str, password: str, archivo: io.BufferedRandom
 ) -> bool:
-    es_valido = False
+    tam_reg = obtener_largo_registro(archivo)
 
-    archivo.seek(0, 0)
-
-    reg = pickle.load(archivo)
-
-    tam_reg = archivo.tell()
-    print(tam_reg, id_user)
     archivo.seek(tam_reg * id_user, 0)
 
     reg = pickle.load(archivo)
+    print(reg.__dict__)
+    print(bool(reg.estado))
+    print(reg.email.strip(), email)
+    print(reg.password.strip(), password)
 
-    if tipo_user != 2:
-        es_valido = (
-            reg.email.strip() == email
-            and reg.password.strip() == password
-            and reg.estado
-        )
-    else:
-        es_valido = reg.email.strip() == email and reg.password.strip() == password
-
-    return es_valido
+    test()
+    return (
+        reg.email.strip() == email
+        and reg.password.strip() == password
+        and bool(reg.estado)
+    )
 
 
 """
@@ -859,20 +855,16 @@ def log_in() -> list[int]:
                 email, datos[tipo_usua], archivos[tipo_usua]
             )
 
-            if id_usua != -1:
-                acceso_valido[0] = id_usua
-                acceso_valido[1] = tipo_usua
+            if id_usua == -1:
+                tipo_usua = tipo_usua + 1
 
-            tipo_usua = tipo_usua + 1
-
-        if id_usua != -1 and validar_login(
-            id_usua, email, password, acceso_valido[1], datos[id_usua]
-        ):
+        if id_usua != -1 and validar_login(id_usua, email, password, datos[tipo_usua]):
             acceso_valido[0] = id_usua
+            acceso_valido[1] = tipo_usua
         else:
             limpiar_consola()
             intentos = intentos - 1
-            print("Datos incorrectos. Intentos restantes:", intentos, "\n")
+            print(f"Datos incorrectos. Intentos restantes: {intentos}\n")
 
     if intentos == 0:
         print("Ha superado el número máximo de intentos. El programa se cerrará.")
@@ -927,7 +919,7 @@ def contar_estudiantes():
 
     cant = 0
 
-    ar_lo_estudiantes.seek(0, 0)
+    ar_lo_estudiantes.seek(0)
     tam_ar = os.path.getsize(ar_fi_estudiantes)
 
     while ar_lo_estudiantes.tell() < tam_ar:
@@ -1032,7 +1024,7 @@ def contar_estudiantes_activos() -> int:
     global ar_lo_estudiantes, ar_fi_estudiantes
 
     cant = 0
-    ar_lo_estudiantes.seek(0, 0)
+    ar_lo_estudiantes.seek(0)
     tam_ar = os.path.getsize(ar_fi_estudiantes)
 
     while ar_lo_estudiantes.tell() < tam_ar:
@@ -1549,7 +1541,7 @@ def obtener_estudiante_por_nombre(nom_est: str) -> Estudiante:
     global ar_lo_estudiantes, ar_fi_estudiantes
 
     est = Estudiante()
-    ar_lo_estudiantes.seek(0, 0)
+    ar_lo_estudiantes.seek(0)
 
     est: Estudiante = pickle.load(ar_lo_estudiantes)
     tam_ar = os.path.getsize(ar_fi_estudiantes)
@@ -1911,7 +1903,7 @@ def ignorar_reporte(re: Reporte):
 def actualizar_reportes(id_reportado: int):
     global ar_lo_reportes, ar_fi_reportes
 
-    ar_lo_reportes.seek(0, 0)
+    ar_lo_reportes.seek(0)
     tam_ar = os.path.getsize(ar_fi_reportes)
 
     while ar_lo_reportes.tell() < tam_ar:
@@ -1986,7 +1978,7 @@ def ver_reportes():
 
     opc = ""
 
-    ar_lo_reportes.seek(0, 0)
+    ar_lo_reportes.seek(0)
     tam_ar = os.path.getsize(ar_fi_reportes)
 
     while ar_lo_reportes.tell() < tam_ar and opc != "N":
@@ -2021,7 +2013,7 @@ ind: int
 def contar_moderadores() -> int:
     global ar_lo_moderadores, ar_fi_moderadores
 
-    ar_lo_moderadores.seek(0, 0)
+    ar_lo_moderadores.seek(0)
     tam_ar = os.path.getsize(ar_fi_moderadores)
 
     cant = 0
@@ -2051,7 +2043,7 @@ def registrar_moderador(email: str, password: str) -> bool:
     if not email_existente(email):
         print("El email ingresado ya está en uso.")
     else:
-        ar_lo_moderadores.seek(0, 0)
+        ar_lo_moderadores.seek(0)
 
         pickle.load(ar_lo_moderadores)
         tam_reg = ar_lo_moderadores.tell()
