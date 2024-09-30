@@ -19,15 +19,15 @@ from random import randint
 
 class Administrador:
     def __init__(self):
-        self.id = 0
+        self.id = -1
         self.email = ""
         self.password = ""
-        self.estado = True
+        self.estado = False
 
 
 class Estudiante:
     def __init__(self):
-        self.id = 0
+        self.id = -1
         self.nombre = ""
         self.email = ""
         self.password = ""
@@ -37,12 +37,12 @@ class Estudiante:
         self.genero = ""
         self.ciudad = ""
         self.pais = ""
-        self.estado = True
+        self.estado = False
 
 
 class Moderador:
     def __init__(self):
-        self.id = 0
+        self.id = -1
         self.email = ""
         self.password = ""
         self.estado = True
@@ -50,17 +50,17 @@ class Moderador:
 
 class Reporte:
     def __init__(self):
-        self.id = 0
-        self.id_reportante = 0
-        self.id_reportado = 0
+        self.id = -1
+        self.id_reportante = -1
+        self.id_reportado = -1
         self.razon = ""
         self.estado = 0
 
 
 class Like:
     def __init__(self):
-        self.remitente = 0
-        self.destinatario = 0
+        self.remitente = -1
+        self.destinatario = -1
 
 
 """
@@ -77,6 +77,84 @@ PROPS_ESTUDIANTE = [
     "Ciudad",
     "País",
 ]
+
+
+def formatear_estudiante(est: Estudiante):
+    est.id = str(est.id)
+    est.email = formatear_cadena(est.email, 32)
+    est.password = formatear_cadena(est.password, 32)
+    est.nombre = formatear_cadena(est.nombre, 32)
+    est.biografia = formatear_cadena(est.biografia, 255)
+    est.fecha_nac = formatear_cadena(est.fecha_nac, 10)
+    est.hobbies = formatear_cadena(est.hobbies, 255)
+    est.ciudad = formatear_cadena(est.ciudad, 32)
+    est.pais = formatear_cadena(est.pais, 32)
+    est.estado = str(est.estado)
+
+
+def formatear_moderador(mod: Moderador):
+    mod.id = str(mod.id)
+    mod.email = formatear_cadena(mod.email, 32)
+    mod.password = formatear_cadena(mod.password, 32)
+    mod.estado = str(mod.estado)
+
+
+def formatear_administrador(ad: Administrador):
+    ad.id = str(ad.id)
+    ad.email = formatear_cadena(ad.email, 32)
+    ad.password = formatear_cadena(ad.password, 32)
+    ad.estado = str(ad.estado)
+
+
+def formatear_reporte(re: Reporte):
+    re.id = str(re.id)
+    re.id_reportante = str(re.id_reportante)
+    re.id_reportado = str(re.id_reportado)
+    re.razon = formatear_cadena(re.razon, 255)
+    re.estado = str(re.estado)
+
+
+def formatear_like(like: Like):
+    like.destinatario = str(like.destinatario)
+    like.remitente = str(like.remitente)
+
+
+def desformatear_estudiante(est: Estudiante):
+    est.id = int(est.id)
+    est.email = est.email.strip()
+    est.password = est.password.strip()
+    est.nombre = est.nombre.strip()
+    est.biografia = est.biografia.strip()
+    est.hobbies = est.hobbies.strip()
+    est.ciudad = est.ciudad.strip()
+    est.pais = est.pais.strip()
+    est.estado = bool(est.estado)
+
+
+def desformatear_moderador(mod: Moderador):
+    mod.id = int(mod.id)
+    mod.email = mod.email.strip()
+    mod.password = mod.password.strip()
+    mod.estado = bool(mod.estado)
+
+
+def desformatear_administrador(ad: Administrador):
+    ad.id = int(ad.id)
+    ad.email = ad.email.strip()
+    ad.password = ad.password.strip()
+    ad.estado = bool(ad.estado)
+
+
+def desformatear_reporte(re: Reporte):
+    re.id = int(re.id)
+    re.id_reportante = int(re.id_reportante)
+    re.id_reportado = int(re.id_reportado)
+    re.estado = int(re.estado)
+
+
+def desformatear_like(like: Like):
+    like.destinatario = int(like.destinatario)
+    like.remitente = int(like.remitente)
 
 
 def crear_ruta_archivo(ruta: str, ar_nombre: str) -> str:
@@ -105,79 +183,41 @@ def obtener_largo_registro(datos: io.BufferedRandom):
     return datos.tell()
 
 
-def inicializar_ar_estudiantes():
-    global ar_lo_estudiantes, ar_fi_estudiantes
-
-    ar_lo_estudiantes = open(ar_fi_estudiantes, "w+b")
-    inicializar_estudiantes()
-
-
-def inicializar_ar_likes():
-    global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
-
-    ar_lo_likesEstudiantes = open(ar_fi_likesEstudiantes, "w+b")
-    inicializar_likes()
-
-
-def inicializar_ar_moderadores():
-    global ar_lo_moderadores, ar_fi_moderadores
-
-    ar_lo_moderadores = open(ar_fi_moderadores, "w+b")
-    inicializar_moderadores()
-
-
-def inicializar_ar_reportes():
-    global ar_lo_reportes, ar_fi_reportes
-
-    ar_lo_reportes = open(ar_fi_reportes, "w+b")
-    inicializar_reportes()
-
-
-def inicializar_ar_administradores():
-    global ar_lo_administradores, ar_fi_administradores
-
-    ar_lo_administradores = open(ar_fi_administradores, "w+b")
-    inicializar_administradores()
-
-    ar_lo_administradores.close()
-    ar_lo_administradores = open(ar_fi_administradores, "rb")
-
-
 def crear_archivos():
     os.mkdir(RUTA_ARCHIVOS)
 
-    inicializar_ar_estudiantes()
-    inicializar_ar_likes()
-    inicializar_ar_moderadores()
-    inicializar_ar_reportes()
-    inicializar_ar_administradores()
+    inicializar_estudiantes()
+    inicializar_likes()
+    inicializar_moderadores()
+    inicializar_reportes()
+    inicializar_administradores()
 
 
 def comprobar_existencia_archivos():
     global ar_lo_estudiantes, ar_lo_likesEstudiantes, ar_lo_moderadores, ar_lo_administradores, ar_lo_reportes, ar_fi_estudiantes, ar_fi_likesEstudiantes, ar_fi_moderadores, ar_fi_administradores, ar_fi_administradores, ar_fi_reportes
 
     if not os.path.exists(ar_fi_estudiantes):
-        inicializar_ar_estudiantes()
+        inicializar_estudiantes()
     else:
         ar_lo_estudiantes = open(ar_fi_estudiantes, "r+b")
 
     if not os.path.exists(ar_fi_likesEstudiantes):
-        inicializar_ar_likes()
+        inicializar_likes()
     else:
         ar_lo_likesEstudiantes = open(ar_fi_likesEstudiantes, "r+b")
 
     if not os.path.exists(ar_fi_moderadores):
-        inicializar_ar_moderadores()
+        inicializar_moderadores()
     else:
         ar_lo_moderadores = open(ar_fi_moderadores, "r+b")
 
     if not os.path.exists(ar_fi_administradores):
-        inicializar_ar_administradores()
+        inicializar_administradores()
     else:
         ar_lo_administradores = open(ar_fi_administradores, "rb")
 
     if not os.path.exists(ar_fi_reportes):
-        inicializar_ar_reportes()
+        inicializar_reportes()
     else:
         ar_lo_reportes = open(ar_fi_reportes, "r+b")
 
@@ -496,81 +536,75 @@ estados: Arreglo de 0 a 7 de bool
 
 
 def inicializar_estudiantes():
-    global ar_lo_estudiantes
+    global ar_lo_estudiantes, ar_fi_estudiantes
 
+    ar_lo_estudiantes = open(ar_fi_estudiantes, "w+b")
     ar_lo_estudiantes.seek(0)
+
+    ESTUDIANTES = [
+        [
+            "estudiante1@ayed.com",
+            "111222",
+            "Juan Peréz",
+            "2001-10-01",
+            "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías.",
+            "Lectura - Senderismo - Juegos de mesa",
+            GENERO[1],
+            "Rosario",
+            "Argentina",
+        ],
+        [
+            "estudiante2@ayed.com",
+            "333444",
+            "María García",
+            "1998-04-11",
+            "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística.",
+            "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas",
+            GENERO[0],
+            "Madrid",
+            "España",
+        ],
+        [
+            "estudiante3@ayed.com",
+            "555666",
+            "Carlos Martínez",
+            "2005-06-30",
+            "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles.",
+            "Correr - Tocar la guitarra - Cocinar platos internacionales",
+            GENERO[1],
+            "La Paz",
+            "Bolivia",
+        ],
+        [
+            "estudiante4@ayed.com",
+            "777888",
+            "Ana López",
+            "2001-09-15",
+            "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que , en la seguridad digital.",
+            "Leer ciencia ficción - Pintar - Practicar yoga",
+            GENERO[0],
+            "Asunción",
+            "Paraguay",
+        ],
+    ]
+
     est = Estudiante()
+    est.estado = True
 
-    est.id = str(0)
-    est.email = formatear_cadena("estudiante1@ayed.com", 32)
-    est.password = formatear_cadena("111222", 32)
-    est.nombre = formatear_cadena("Juan Peréz", 32)
-    est.fecha_nac = "2001-10-01"
-    est.biografia = formatear_cadena(
-        "Juan Peréz es un estudiante de informática apasionado por la programación. Le encanta aprender nuevos lenguajes y tecnologías.",
-        255,
-    )
-    est.hobbies = formatear_cadena("Lectura - Senderismo - Juegos de mesa", 255)
-    est.genero = GENERO[1]
-    est.ciudad = formatear_cadena("Rosario", 32)
-    est.pais = formatear_cadena("Argentina", 32)
-    est.estado = str(True)
+    for ind in range(4):
+        est.id = ind
+        est.email = ESTUDIANTES[ind][0]
+        est.password = ESTUDIANTES[ind][1]
+        est.nombre = ESTUDIANTES[ind][2]
+        est.fecha_nac = ESTUDIANTES[ind][3]
+        est.biografia = ESTUDIANTES[ind][4]
+        est.hobbies = ESTUDIANTES[ind][5]
+        est.genero = ESTUDIANTES[ind][6]
+        est.ciudad = ESTUDIANTES[ind][7]
+        est.pais = ESTUDIANTES[ind][8]
 
-    pickle.dump(est, ar_lo_estudiantes)
-
-    est.id = str(1)
-    est.email = formatear_cadena("estudiante2@ayed.com", 32)
-    est.password = formatear_cadena("333444", 32)
-    est.nombre = formatear_cadena("María García", 32)
-    est.fecha_nac = "1998-04-11"
-    est.biografia = formatear_cadena(
-        "María García es una estudiante de arte con una pasión por la pintura y el dibujo desde una edad temprana. Actualmente está explorando nuevas formas de expresión artística.",
-        255,
-    )
-    est.hobbies = formatear_cadena(
-        "Pintura al óleo - Dibujo de retratos - Lectura de novelas históricas", 255
-    )
-    est.genero = GENERO[0]
-    est.ciudad = "Madrid"
-    est.pais = "España"
-    est.estado = str(True)
-
-    pickle.dump(est, ar_lo_estudiantes)
-
-    est.id = str(2)
-    est.email = formatear_cadena("estudiante3@ayed.com", 32)
-    est.password = formatear_cadena("555666", 32)
-    est.nombre = formatear_cadena("Carlos Martínez", 32)
-    est.fecha_nac = "2005-06-30"
-    est.biografia = "Carlos Martínez es un estudiante de medicina enfocado en la investigación de enfermedades infecciosas. Su objetivo es contribuir al desarrollo de tratamientos más efectivos y accesibles."
-    est.hobbies = formatear_cadena(
-        "Correr - Tocar la guitarra - Cocinar platos internacionales", 255
-    )
-    est.genero = GENERO[1]
-    est.ciudad = formatear_cadena("La Paz", 32)
-    est.pais = formatear_cadena("Bolivia", 32)
-    est.estado = str(True)
-
-    pickle.dump(est, ar_lo_estudiantes)
-
-    est.id = str(3)
-    est.email = formatear_cadena("estudiante4@ayed.com", 32)
-    est.password = formatear_cadena("789101", 32)
-    est.nombre = formatear_cadena("Ana López", 32)
-    est.fecha_nac = "2001-09-15"
-    est.biografia = formatear_cadena(
-        "Ana López es una estudiante de ingeniería informática interesada en la inteligencia artificial y la ciberseguridad. Aspira a desarrollar tecnologías innovadoras que mejoren la seguridad digital.",
-        255,
-    )
-    est.hobbies = formatear_cadena(
-        "Leer ciencia ficción - Pintar - Practicar yoga", 255
-    )
-    est.genero = GENERO[0]
-    est.ciudad = formatear_cadena("Asunción", 32)
-    est.pais = formatear_cadena("Paraguay", 32)
-    est.estado = str(True)
-
-    pickle.dump(est, ar_lo_estudiantes)
+        formatear_estudiante(est)
+        pickle.dump(est, ar_lo_estudiantes)
 
     ar_lo_estudiantes.flush()
 
@@ -581,17 +615,22 @@ moderadores: Arreglo multi de 2x4 de string
 
 
 def inicializar_moderadores():
-    global ar_lo_moderadores
+    global ar_lo_moderadores, ar_fi_moderadores
 
+    ar_lo_moderadores = open(ar_fi_moderadores, "w+b")
     ar_lo_moderadores.seek(0)
+
+    MODERADORES = [["moderador1@ayed.com", "111222"], ["m@test.com", "1"]]
+
     mod = Moderador()
+    mod.estado = True
 
-    mod.id = str(0)
-    mod.email = formatear_cadena("moderador1@ayed.com", 32)
-    mod.password = formatear_cadena("111222", 32)
-    mod.estado = str(True)
-
-    pickle.dump(mod, ar_lo_moderadores)
+    for ind in range(2):
+        mod.id = ind
+        mod.email = MODERADORES[ind][0]
+        mod.password = MODERADORES[ind][1]
+        formatear_moderador(mod)
+        pickle.dump(mod, ar_lo_moderadores)
 
     ar_lo_moderadores.flush()
 
@@ -603,34 +642,29 @@ motivo_reportes: Arreglo de 0 a 39 de string
 
 
 def inicializar_reportes():
-    global ar_lo_reportes
+    global ar_lo_reportes, ar_fi_reportes
 
+    ar_lo_reportes = open(ar_fi_reportes, "w+b")
     ar_lo_reportes.seek(0)
 
+    REPORTES = [
+        [0, 1, "Motivo 0"],
+        [0, 1, "Motivo 1"],
+        [0, 1, "Motivo 2"],
+    ]
+
     re = Reporte()
+    re.estado = 0
 
-    re.id = str(0)
-    re.id_reportante = str(0)
-    re.id_reportado = str(1)
-    re.razon = formatear_cadena("Motivo 1", 255)
-    re.estado = str(0)
+    for ind in range(3):
+        re.id = ind
+        re.id_reportante = REPORTES[ind][0]
+        re.id_reportado = REPORTES[ind][1]
+        re.razon = REPORTES[ind][2]
+        formatear_reporte(re)
+        pickle.dump(re, ar_lo_reportes)
 
-    pickle.dump(re, ar_lo_reportes)
-
-    re.id = str(1)
-    re.id_reportante = str(0)
-    re.id_reportado = str(2)
-    re.razon = formatear_cadena("Motivo 2", 255)
-    re.estado = str(0)
-
-    pickle.dump(re, ar_lo_reportes)
-
-    re.id = str(2)
-    re.id_reportante = str(2)
-    re.id_reportado = str(3)
-    re.razon = formatear_cadena("Motivo 3", 255)
-    re.estado = str(0)
-
+    formatear_reporte(re)
     pickle.dump(re, ar_lo_reportes)
 
     ar_lo_reportes.flush()
@@ -654,8 +688,9 @@ me_gusta: Arreglo multi de 8x8 de bool
 
 
 def inicializar_likes():
-    global ar_lo_likesEstudiantes
+    global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
+    ar_lo_likesEstudiantes = open(ar_fi_likesEstudiantes, "w+b")
     ar_lo_likesEstudiantes.seek(0)
 
     cant_est = contar_estudiantes()
@@ -665,29 +700,36 @@ def inicializar_likes():
     for id_remitente in range(cant_est):
         for id_destinatario in range(cant_est):
             if id_destinatario != id_remitente and randint(0, 100) > 60:
-                like.destinatario = str(id_destinatario)
-                like.remitente = str(id_remitente)
+                like.destinatario = id_destinatario
+                like.remitente = id_remitente
 
+                formatear_like(like)
                 pickle.dump(like, ar_lo_likesEstudiantes)
 
     ar_lo_likesEstudiantes.flush()
 
 
 def inicializar_administradores():
-    global ar_lo_administradores
+    global ar_lo_administradores, ar_fi_administradores
 
+    ar_lo_administradores = open(ar_fi_administradores, "w+b")
     ar_lo_administradores.seek(0)
 
+    ADMINISTRADORES = [["administrador1@ayed.com", "111222"]]
+
     ad = Administrador()
+    ad.estado = True
 
-    ad.id = str(0)
-    ad.email = formatear_cadena("administrador1@ayed.com", 32)
-    ad.password = formatear_cadena("111222", 32)
-    ad.estado = str(True)
+    for ind in range(1):
+        ad.id = ind
+        ad.email = ADMINISTRADORES[ind][0]
+        ad.password = ADMINISTRADORES[ind][1]
 
-    pickle.dump(ad, ar_lo_administradores)
+        formatear_administrador(ad)
+        pickle.dump(ad, ar_lo_administradores)
 
-    ar_lo_administradores.flush()
+    ar_lo_administradores.close()
+    ar_lo_administradores = open(ar_fi_administradores, "rb")
 
 
 ### Registro y Conexión ###
@@ -715,25 +757,20 @@ valido: bool
 """
 
 
-def email_existente(email: str) -> bool:
+def validar_email(email: str) -> bool:
     global ar_lo_estudiantes, ar_lo_moderadores, ar_lo_administradores, ar_fi_estudiantes, ar_fi_moderadores, ar_fi_administradores
 
-    valido = buscar_usuario_por_email(email, ar_lo_estudiantes, ar_fi_estudiantes) == -1
+    pos = buscar_usuario_por_email(email, ar_lo_estudiantes, ar_fi_estudiantes)
 
-    if valido:
-        valido = (
-            buscar_usuario_por_email(email, ar_lo_moderadores, ar_fi_moderadores) == -1
+    if pos == -1:
+        pos = buscar_usuario_por_email(email, ar_lo_moderadores, ar_fi_moderadores)
+
+    if pos == -1:
+        pos = buscar_usuario_por_email(
+            email, ar_lo_administradores, ar_fi_administradores
         )
 
-    if valido:
-        valido = (
-            buscar_usuario_por_email(
-                email, ar_lo_administradores, ar_fi_administradores
-            )
-            == -1
-        )
-
-    return valido
+    return pos == -1
 
 
 """
@@ -807,16 +844,10 @@ def validar_login(
     id_user: int, email: str, password: str, archivo: io.BufferedRandom
 ) -> bool:
     tam_reg = obtener_largo_registro(archivo)
-
     archivo.seek(tam_reg * id_user, 0)
 
     reg = pickle.load(archivo)
-    print(reg.__dict__)
-    print(bool(reg.estado))
-    print(reg.email.strip(), email)
-    print(reg.password.strip(), password)
 
-    test()
     return (
         reg.email.strip() == email
         and reg.password.strip() == password
@@ -923,9 +954,8 @@ def contar_estudiantes():
     tam_ar = os.path.getsize(ar_fi_estudiantes)
 
     while ar_lo_estudiantes.tell() < tam_ar:
-        est: Estudiante = pickle.load(ar_lo_estudiantes)
-        if est.estado:
-            cant = cant + 1
+        pickle.load(ar_lo_estudiantes)
+        cant = cant + 1
 
     return cant
 
@@ -971,7 +1001,7 @@ def registrar_estudiante(email: str, password: str) -> bool:
 
     registrado = False
 
-    if not email_existente(email):
+    if validar_email(email):
         print("El email ingresado ya está en uso.")
     else:
         cant_est = contar_estudiantes()
@@ -980,8 +1010,8 @@ def registrar_estudiante(email: str, password: str) -> bool:
 
         nuevo_est = Estudiante()
         nuevo_est.id = cant_est
-        nuevo_est.email = formatear_cadena(email, 32)
-        nuevo_est.password = formatear_cadena(password, 32)
+        nuevo_est.email = email
+        nuevo_est.password = password
         nuevo_est.nombre = ingresar_propiedad(PROPS_ESTUDIANTE[0])
         nuevo_est.fecha_nac = ingresar_propiedad(PROPS_ESTUDIANTE[1])
         nuevo_est.biografia = ingresar_propiedad(PROPS_ESTUDIANTE[2])
@@ -991,6 +1021,7 @@ def registrar_estudiante(email: str, password: str) -> bool:
         nuevo_est.pais = ingresar_propiedad(PROPS_ESTUDIANTE[6])
         nuevo_est.estado = True
 
+        formatear_estudiante(nuevo_est)
         pickle.dump(nuevo_est, ar_lo_estudiantes)
 
         ar_lo_estudiantes.flush()
@@ -1540,19 +1571,19 @@ def reportes_estadisticos_estudiante(
 def obtener_estudiante_por_nombre(nom_est: str) -> Estudiante:
     global ar_lo_estudiantes, ar_fi_estudiantes
 
-    est = Estudiante()
     ar_lo_estudiantes.seek(0)
-
-    est: Estudiante = pickle.load(ar_lo_estudiantes)
     tam_ar = os.path.getsize(ar_fi_estudiantes)
+
+    est = Estudiante()
+    est: Estudiante = pickle.load(ar_lo_estudiantes)
 
     while ar_lo_estudiantes.tell() < tam_ar and est.nombre.strip() != nom_est:
         est: Estudiante = pickle.load(ar_lo_estudiantes)
 
     if est.nombre.strip() != nom_est:
-        est = Estudiante()
         est.id = -1
 
+    desformatear_estudiante(est)
     return est
 
 
@@ -1560,15 +1591,20 @@ def obtener_estudiante_por_id(id_est: int) -> Estudiante:
     global ar_lo_estudiantes
 
     est = Estudiante()
-    cant = contar_estudiantes()
+    cant = contar_estudiantes() - 1
 
-    if 0 <= id_est and id_est < cant:
-        tam_reg = obtener_largo_registro(ar_lo_estudiantes)
-        ar_lo_estudiantes.seek(id_est * tam_reg, 0)
+    # inf = 0
+    # sup = contar_estudiantes()
 
-        est: Estudiante = pickle.load(ar_lo_estudiantes)
-    else:
-        est.id = -1
+    # if 0 <= id_est and id_est < cant:
+    #     tam_reg = obtener_largo_registro(ar_lo_estudiantes)
+    #     ar_lo_estudiantes.seek(id_est * tam_reg, 0)
+
+    #     est: Estudiante = pickle.load(ar_lo_estudiantes)
+    #     desformatear_estudiante(est)
+    # else:
+    #     est.id = -1
+    #     est.estado = False
 
     return est
 
@@ -1578,6 +1614,8 @@ def actualizar_estudiante(est: Estudiante):
 
     tam_reg = obtener_largo_registro(ar_lo_estudiantes)
     ar_lo_estudiantes.seek(tam_reg * est.id, 0)
+
+    formatear_estudiante(est)
 
     pickle.dump(est, ar_lo_estudiantes)
     ar_lo_estudiantes.flush()
@@ -1591,19 +1629,18 @@ est_id: int
 """
 
 
-def desactivar_usuario():
-
+def desactivar_estudiante():
     decision = ""
 
     while decision != "N":
         limpiar_consola()
-        estudiante = input("Ingrese el ID o el nombre del usuario: ")
+        dato_est = input("Ingrese el ID o el nombre del usuario: ")
         est = Estudiante()
 
-        if not estudiante.isdigit():
-            est = obtener_estudiante_por_nombre(estudiante)
+        if not dato_est.isdigit():
+            est = obtener_estudiante_por_nombre(dato_est)
         else:
-            est = obtener_estudiante_por_id(int(estudiante))
+            est = obtener_estudiante_por_id(int(dato_est))
 
         if est.id == -1:
             print("El usuario no existe.\n")
@@ -1870,6 +1907,8 @@ def mostrar_detalle_reporte(rep: Reporte):
     nombre_reportante = obtener_nombre_estudiante_por_id(rep.id_reportante)
     nombre_reportado = obtener_nombre_estudiante_por_id(rep.id_reportado)
 
+    print(type(rep.id))
+
     print(f"........Reporte {rep.id}........\n")
     print("Reportante:", nombre_reportante)
     print("Reportado:", nombre_reportado)
@@ -1882,8 +1921,13 @@ def actualizar_reporte(rep: Reporte):
     tam_reg = obtener_largo_registro(ar_lo_reportes)
     ar_lo_reportes.seek(rep.id * tam_reg, 0)
 
-    pickle.dump(rep, ar_lo_reportes)
-    ar_lo_reportes.flush()
+    formatear_reporte(rep)
+    print(rep.__dict__)
+    try:
+        pickle.dump(rep, ar_lo_reportes)
+        ar_lo_reportes.flush()
+    except ValueError:
+        print("Error grabar repo")
 
 
 """
@@ -1983,8 +2027,11 @@ def ver_reportes():
 
     while ar_lo_reportes.tell() < tam_ar and opc != "N":
         rep: Reporte = pickle.load(ar_lo_reportes)
+        desformatear_reporte(rep)
 
         limpiar_consola()
+        print(rep.__dict__)
+        test()
         est_reportado = obtener_estudiante_por_id(rep.id_reportado)
         est_reportante = obtener_estudiante_por_id(rep.id_reportante)
 
@@ -2040,13 +2087,10 @@ def registrar_moderador(email: str, password: str) -> bool:
 
     registrado = False
 
-    if not email_existente(email):
+    if validar_email(email):
         print("El email ingresado ya está en uso.")
     else:
-        ar_lo_moderadores.seek(0)
-
-        pickle.load(ar_lo_moderadores)
-        tam_reg = ar_lo_moderadores.tell()
+        tam_reg = obtener_largo_registro(ar_lo_moderadores)
 
         ar_lo_moderadores.seek(-1 * tam_reg, 2)
 
@@ -2055,10 +2099,11 @@ def registrar_moderador(email: str, password: str) -> bool:
         nuevo_mod = Moderador()
 
         nuevo_mod.id = mod.id + 1
-        nuevo_mod.email = formatear_cadena(email, 32)
-        nuevo_mod.password = formatear_cadena(password, 32)
+        nuevo_mod.email = email
+        nuevo_mod.password = password
         nuevo_mod.estado = True
 
+        formatear_moderador(nuevo_mod)
         pickle.dump(nuevo_mod, ar_lo_moderadores)
 
         ar_lo_moderadores.flush()
@@ -2094,7 +2139,7 @@ def manejador_submenu_gestionar_usuarios():
             opc = input("Ingrese una opción válida: ")
 
         if opc == "a":
-            desactivar_usuario()
+            desactivar_estudiante()
 
 
 """
@@ -2282,6 +2327,19 @@ opc: string
 """
 
 
+def mostrar_estudiantes():
+    global ar_lo_estudiantes, ar_fi_estudiantes
+
+    ar_lo_estudiantes.seek(0)
+    tam_ar = os.path.getsize(ar_fi_estudiantes)
+
+    while ar_lo_estudiantes.tell() < tam_ar:
+        pickle.load(ar_lo_estudiantes)
+        print(ar_lo_estudiantes.tell())
+
+    test()
+
+
 def manejador_menu_principal_moderador():
     opc = "1"
 
@@ -2291,7 +2349,6 @@ def manejador_menu_principal_moderador():
         match opc:
             case "1":
                 manejador_submenu_gestionar_usuarios()
-
             case "2":
                 manejador_submenu_gestionar_reportes()
 
