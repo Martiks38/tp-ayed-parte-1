@@ -45,7 +45,7 @@ class Moderador:
         self.id = -1
         self.email = ""
         self.password = ""
-        self.estado = True
+        self.estado = False
 
 
 class Reporte:
@@ -54,7 +54,7 @@ class Reporte:
         self.id_reportante = -1
         self.id_reportado = -1
         self.razon = ""
-        self.estado = 0
+        self.estado = -1
 
 
 class Like:
@@ -620,8 +620,8 @@ def inicializar_reportes():
 
     REPORTES = [
         [0, 1, "Motivo 0"],
-        [0, 1, "Motivo 1"],
-        [0, 1, "Motivo 2"],
+        [1, 2, "Motivo 1"],
+        [2, 3, "Motivo 2"],
     ]
 
     re = Reporte()
@@ -730,13 +730,13 @@ valido: bool
 def validar_email(email: str) -> bool:
     global ar_lo_estudiantes, ar_lo_moderadores, ar_lo_administradores, ar_fi_estudiantes, ar_fi_moderadores, ar_fi_administradores
 
-    pos = buscar_usuario_por_email(email, ar_lo_estudiantes, ar_fi_estudiantes)
+    pos = buscar_id_usuario_por_email(email, ar_lo_estudiantes, ar_fi_estudiantes)
 
     if pos == -1:
-        pos = buscar_usuario_por_email(email, ar_lo_moderadores, ar_fi_moderadores)
+        pos = buscar_id_usuario_por_email(email, ar_lo_moderadores, ar_fi_moderadores)
 
     if pos == -1:
-        pos = buscar_usuario_por_email(
+        pos = buscar_id_usuario_por_email(
             email, ar_lo_administradores, ar_fi_administradores
         )
 
@@ -795,7 +795,9 @@ def validar_acceso(
     limpiar_consola()
 
 
-def buscar_usuario_por_email(email: str, datos: io.BufferedRandom, archivo: str) -> int:
+def buscar_id_usuario_por_email(
+    email: str, datos: io.BufferedRandom, archivo: str
+) -> int:
     id_usua = -1
 
     datos.seek(0)
@@ -805,7 +807,7 @@ def buscar_usuario_por_email(email: str, datos: io.BufferedRandom, archivo: str)
         reg = pickle.load(datos)
 
         if reg.email.strip() == email:
-            id_usua = int(reg.id)
+            id_usua = reg.id
 
     return id_usua
 
@@ -852,7 +854,7 @@ def log_in() -> list[int]:
         tipo_usua = 0
 
         while id_usua == -1 and tipo_usua < 3:
-            id_usua = buscar_usuario_por_email(
+            id_usua = buscar_id_usuario_por_email(
                 email, datos[tipo_usua], archivos[tipo_usua]
             )
 
@@ -1875,15 +1877,10 @@ reporte_id: int
 """
 
 
-def mostrar_detalle_reporte(rep: Reporte):
-    nombre_reportante = obtener_nombre_estudiante_por_id(rep.id_reportante)
-    nombre_reportado = obtener_nombre_estudiante_por_id(rep.id_reportado)
-
-    print(type(rep.id))
-
+def mostrar_detalle_reporte(rep: Reporte, nom_reportante: str, nom_reportado: str):
     print(f"........Reporte {rep.id}........\n")
-    print("Reportante:", nombre_reportante)
-    print("Reportado:", nombre_reportado)
+    print("Reportante:", nom_reportante)
+    print("Reportado:", nom_reportado)
     print(f"Motivo:\n\t{rep.razon}\n\n")
 
 
@@ -1939,16 +1936,24 @@ nombre_reportado: string
 """
 
 
-def bloquear_reportado(re: Reporte):
+def bloquear_reportado(pos_re: int, est: Estudiante, re: Reporte):
+    global ar_lo_reportes, ar_fi_reportes
 
-    est = obtener_estudiante_por_id(re.id_reportado)
+    pos = pos_re
     est.estado = False
     actualizar_estudiante(est)
 
     print("Procesado el reporte", re.id)
     print(f"El reportado {est.nombre} fue bloqueado.")
 
-    actualizar_reportes(re.id_reportado)
+    tam_ar = os.path.getsize(ar_fi_reportes)
+    ar_lo_reportes.seek(pos_re, 0)
+    while pos < tam_ar:
+        r: Reporte = pickle.load(ar_lo_reportes)
+        pos = ar_lo_reportes.tell()
+        if r.id_reportado == re.id_reportado and r.estado == 0:
+            r.estado = 2
+            actualizar_reporte(r)
 
 
 """
@@ -1960,7 +1965,7 @@ ind, reportado_id, reporte_id: int
 """
 
 
-def procesar_reporte(rep: Reporte):
+def procesar_reporte(pos_re: int, est: Estudiante, rep: Reporte):
     print("¿Cómo proceder?\n")
     print("1. Ignorar reporte")
     print("2. Bloquear al reportado")
@@ -1974,7 +1979,7 @@ def procesar_reporte(rep: Reporte):
     if opc == "1":
         ignorar_reporte(rep)
     else:
-        bloquear_reportado(rep)
+        bloquear_reportado(pos_re, est, rep)
 
 
 """
@@ -1997,21 +2002,23 @@ def ver_reportes():
     ar_lo_reportes.seek(0)
     tam_ar = os.path.getsize(ar_fi_reportes)
 
-    while ar_lo_reportes.tell() < tam_ar and opc != "N":
+    pos = 0
+    while pos < tam_ar and opc != "N":
         rep: Reporte = pickle.load(ar_lo_reportes)
+        pos = ar_lo_reportes.tell()
+
         desformatear_reporte(rep)
 
         limpiar_consola()
-        print(rep.__dict__)
-        test()
+
         est_reportado = obtener_estudiante_por_id(rep.id_reportado)
         est_reportante = obtener_estudiante_por_id(rep.id_reportante)
 
         estudiantes_activos = est_reportante.estado and est_reportado.estado
 
         if estudiantes_activos and rep.estado == 0:
-            mostrar_detalle_reporte(rep)
-            procesar_reporte(rep)
+            mostrar_detalle_reporte(rep, est_reportante.nombre, est_reportado.nombre)
+            procesar_reporte(pos, est_reportado, rep)
 
             opc = input("Continuar revisando reportes. (S/N) ").upper()
             opc = validar_continuacion(opc)
@@ -2095,7 +2102,7 @@ opc: string
 """
 
 
-def manejador_submenu_gestionar_usuarios():
+def manejador_submenu_gestionar_estudiantes():
     opc = ""
 
     while opc != "b":
@@ -2314,23 +2321,33 @@ def mostrar_estudiantes():
 
 
 def manejador_menu_principal_moderador():
-    opc = "1"
+    opc = ""
 
     while opc != "0":
         opc = mostrar_menu_principal_moderadores()
 
         match opc:
             case "1":
-                manejador_submenu_gestionar_usuarios()
+                manejador_submenu_gestionar_estudiantes()
             case "2":
                 manejador_submenu_gestionar_reportes()
-
             case "3":
                 en_construccion()
 
-            case "0":
-                limpiar_consola()
-                print("¡Hasta luego!")
+
+def manejador_menu_principal_administrador():
+    opc = ""
+
+    while opc != "0":
+        opc = mostrar_menu_principal_moderadores()
+
+        match opc:
+            case "1":
+                manejador_submenu_gestionar_estudiantes()
+            case "2":
+                manejador_submenu_gestionar_reportes()
+            case "3":
+                en_construccion()
 
 
 """
@@ -2350,14 +2367,13 @@ def main():
 
     opc = ""
     usuario = [0] * 2
-
+    # mostrar_estudiantes()
     while opc != "0" and usuario[0] != -1:
         opc = mostrar_menu_principal()
 
         match opc:
             case "1":
                 usuario = log_in()
-                ar_lo_estudiantes.seek(0)
 
                 if usuario[0] != -1 or usuario[0] != -2:
                     mostrar_menu_usuario(usuario[0], usuario[1])
