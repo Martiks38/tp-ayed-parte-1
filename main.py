@@ -2102,13 +2102,38 @@ opc: string
 """
 
 
-def manejador_submenu_gestionar_estudiantes():
+def manejador_submenu_gestionar_usuarios():
     opc = ""
 
     while opc != "b":
         limpiar_consola()
         print("........Gestionar Usuarios........\n")
-        print("a. Desactivar usuario")
+        print("a. Eliminar usuario")
+        print("b. Dar de alta un moderador")
+        print("c. Desactivar usuario")
+        print("d. Volver")
+
+        opc = input("\nSeleccione una opción: ")
+
+        while "a" <= opc and opc <= "d":
+            print("\nNo es una opción válida.")
+            opc = input("Ingrese una opción válida: ")
+
+        if opc == "a":
+            desactivar_estudiante()
+        if opc == "a":
+            en_construccion()
+        if opc == "c":
+            en_construccion()
+
+
+def manejador_submenu_gestionar_estudiantes():
+    opc = ""
+
+    while opc != "b":
+        limpiar_consola()
+        print("........Gestionar Estudiantes........\n")
+        print("a. Desactivar estudiante")
         print("b. Volver")
 
         opc = input("\nSeleccione una opción: ")
@@ -2209,6 +2234,24 @@ def mostrar_menu_principal_moderadores() -> str:
     return opc
 
 
+def mostrar_menu_principal_administradores() -> str:
+    limpiar_consola()
+
+    print("\n........Home........")
+    print("1. Gestionar Usuarios")
+    print("2. Gestionar Reportes")
+    print("3. Reportes Estadísticos")
+    print("0. Salir")
+
+    opc = input("\nSeleccione una opción: ")
+
+    while opc != "1" and opc != "2" and opc != "3" and opc != "0":
+        print("\nLa opción introducida no es válida.")
+        opc = input("Por favor, introduzca una opción válida: ")
+
+    return opc
+
+
 """
 estudiantes: Arreglo multi de 9x8 de string
 reportes: Arreglo multi de 3x40 de int
@@ -2226,8 +2269,7 @@ def mostrar_menu_usuario(usuario_id: int, rol: int):
     elif rol == 1:
         manejador_menu_principal_moderador()
     elif rol == 2:
-        # manejador_menu_principal_administrador()
-        en_construccion()
+        manejador_menu_principal_administrador()
 
 
 """
@@ -2339,11 +2381,13 @@ def manejador_menu_principal_administrador():
     opc = ""
 
     while opc != "0":
-        opc = mostrar_menu_principal_moderadores()
+        opc = mostrar_menu_principal_administradores()
 
         match opc:
             case "1":
-                manejador_submenu_gestionar_estudiantes()
+                # TODO: Hacer
+                # manejador_submenu_gestionar_usuarios()
+                en_construccion()
             case "2":
                 manejador_submenu_gestionar_reportes()
             case "3":
