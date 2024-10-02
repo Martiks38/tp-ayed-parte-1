@@ -1192,18 +1192,22 @@ est_id, ind: int
 """
 
 
-def mostrar_datos_estudiante(est_id: int):
-    print("Datos de usuario\n")
+def mostrar_datos_estudiante(est: Estudiante):
+    fec = formatear_fecha_espaniol(est.fecha_nac)
 
-    # for ind in range(2, 9):
-    #     if ind - 2 == 1:
-    #         print(
-    #             PROPS_ESTUDIANTE[ind - 2],
-    #             ":",
-    #             formatear_fecha_espaniol(estudiantes[est_id][ind]),
-    #         )
-    #     else:
-    #         print(PROPS_ESTUDIANTE[ind - 2], ":", estudiantes[est_id][ind])
+    print("Datos\n")
+    print(f"Nombre: {est.nombre}")
+    print(f"Fecha de nacimiento: {fec}")
+    print(f"Biografía: {est.biografia}")
+    print(f"Hobbies: {est.hobbies}")
+
+    if est.genero == GENERO[0]:
+        genero = "Femenino"
+    else:
+        genero = "Masculino"
+    print(f"Género: {genero}")
+    print(f"Ciudad: {est.ciudad}")
+    print(f"País: {est.pais}")
 
 
 """
@@ -1216,9 +1220,9 @@ opc: string
 
 def manejador_submenu_gestionar_perfil(est_id: int):
     opc = ""
-    esta_borrada = False
+    esta_borrado = False
 
-    while opc != "c" and not esta_borrada:
+    while opc != "c" and not esta_borrado:
         limpiar_consola()
         print("........Gestionar Perfil........\n")
         print("a. Editar mis datos personales")
@@ -1232,11 +1236,10 @@ def manejador_submenu_gestionar_perfil(est_id: int):
             opc = input("Ingrese una opción válida: ")
 
         if opc == "a":
-            en_construccion()
-            # editar_datos_estudiante(est_id)
+            editar_datos_estudiante(est_id)
         elif opc == "b":
             eliminar_perfil(est_id)
-            esta_borrada = True
+            esta_borrado = True
 
 
 """
@@ -1440,6 +1443,10 @@ def manejador_submenu_matcheos():
             en_construccion()
 
 
+def verificar_longitud_cadena(cad: str, long: int) -> bool:
+    return len(cad) == long
+
+
 """
 estudiantes: Arreglo multi de 9x8 de string
 est_id: int
@@ -1448,55 +1455,56 @@ opc, valor: str
 
 
 def editar_datos_estudiante(est_id: int):
+    global ar_lo_estudiantes, ar_fi_estudiantes
+
     opc = ""
+    est = obtener_estudiante_por_id(est_id)
+    tam_reg = obtener_largo_registro(ar_lo_estudiantes)
 
-    # while opc != "n":
-    #     limpiar_consola()
-    #     mostrar_datos_estudiante(est_id)
+    while opc != "n":
+        ar_lo_estudiantes.seek(est_id * tam_reg, 0)
 
-    #     print("\n\n........Actualizar perfil........\n")
-    #     print("a. Cambiar fecha de nacimiento")
-    #     print("b. Editar biografía")
-    #     print("c. Editar hobbies")
-    #     print("d. Cambiar género")
-    #     print("e. Cambiar ciudad")
-    #     print("f. Cambiar país")
-    #     print("n. Finalizar\n")
+        limpiar_consola()
+        mostrar_datos_estudiante(est)
 
-    #     opc = input("Seleccione una opción: ")
+        print("\n\n........Actualizar perfil........\n")
+        print("a. Cambiar fecha de nacimiento")
+        print("b. Editar biografía")
+        print("c. Editar hobbies")
+        print("d. Cambiar género")
+        print("e. Cambiar ciudad")
+        print("f. Cambiar país")
+        print("n. Finalizar\n")
 
-    #     print("\n")
-    #     while (
-    #         opc != "a"
-    #         and opc != "b"
-    #         and opc != "c"
-    #         and opc != "d"
-    #         and opc != "e"
-    #         and opc != "f"
-    #         and opc != "n"
-    #     ):
-    #         print("No es una opción válida.")
-    #         opc = input("Ingrese una opción válida: ")
+        opc = input("Seleccione una opción: ")
 
-    #     match opc:
-    #         case "a":
-    #             valor = solicitar_fecha_nacimiento()
-    #             estudiantes[est_id][3] = valor
-    #         case "b":
-    #             valor = ingresar_propiedad(PROPS_ESTUDIANTE[2])
-    #             estudiantes[est_id][4] = valor
-    #         case "c":
-    #             valor = ingresar_propiedad(PROPS_ESTUDIANTE[3])
-    #             estudiantes[est_id][5] = valor
-    #         case "d":
-    #             valor = ingresar_propiedad(PROPS_ESTUDIANTE[4])
-    #             estudiantes[est_id][6] = valor
-    #         case "e":
-    #             valor = ingresar_propiedad(PROPS_ESTUDIANTE[5])
-    #             estudiantes[est_id][7] = valor
-    #         case "f":
-    #             valor = ingresar_propiedad(PROPS_ESTUDIANTE[6])
-    #             estudiantes[est_id][8] = valor
+        print("\n")
+        while opc < "a" and "f" < opc and opc != "n":
+            print("No es una opción válida.")
+            opc = input("Ingrese una opción válida: ")
+
+        match opc:
+            case "a":
+                valor = solicitar_fecha_nacimiento()
+                est.fecha_nac = valor
+            case "b":
+                valor = ingresar_propiedad(PROPS_ESTUDIANTE[2])
+                est.biografia = valor
+            case "c":
+                valor = ingresar_propiedad(PROPS_ESTUDIANTE[3])
+                est.hobbies = valor
+            case "d":
+                valor = ingresar_propiedad(PROPS_ESTUDIANTE[4])
+                est.genero = valor
+            case "e":
+                valor = ingresar_propiedad(PROPS_ESTUDIANTE[5])
+                est.ciudad = valor
+            case "f":
+                valor = ingresar_propiedad(PROPS_ESTUDIANTE[6])
+                est.pais = valor
+
+        pickle.dump(est, ar_lo_estudiantes)
+        ar_lo_estudiantes.flush()
 
 
 """
