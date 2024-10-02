@@ -1105,14 +1105,16 @@ opc: string
 """
 
 
-def eliminar_perfil(est_id: int, estados: list[bool]):
+def eliminar_perfil(est_id: int):
     print("\n")
     opc = input("¿Desea eliminar su perfil? (S/N) ").upper()
     opc = validar_continuacion(opc)
 
     if opc == "S":
-        estados[est_id] = False
+        est = obtener_estudiante_por_id(est_id)
+        est.estado = False
 
+        actualizar_estudiante(est)
         print("Perfil borrado con exito.")
         input("Presione Enter para continuar ")
 
@@ -1214,24 +1216,27 @@ opc: string
 
 def manejador_submenu_gestionar_perfil(est_id: int):
     opc = ""
+    esta_borrada = False
 
-    # while opc != "c" and estados[est_id]:
-    #     limpiar_consola()
-    #     print("........Gestionar Perfil........\n")
-    #     print("a. Editar mis datos personales")
-    #     print("b. Eliminar mi perfil")
-    #     print("c. Volver")
+    while opc != "c" and not esta_borrada:
+        limpiar_consola()
+        print("........Gestionar Perfil........\n")
+        print("a. Editar mis datos personales")
+        print("b. Eliminar mi perfil")
+        print("c. Volver")
 
-    #     opc = input("\nSeleccione una opción: ")
+        opc = input("\nSeleccione una opción: ")
 
-    #     while opc != "a" and opc != "b" and opc != "c":
-    #         print("\nNo es una opción válida.")
-    #         opc = input("Ingrese una opción válida: ")
+        while opc != "a" and opc != "b" and opc != "c":
+            print("\nNo es una opción válida.")
+            opc = input("Ingrese una opción válida: ")
 
-    #     if opc == "a":
-    #         editar_datos_estudiante(est_id)
-    #     elif opc == "b":
-    #         eliminar_perfil(est_id)
+        if opc == "a":
+            en_construccion()
+            # editar_datos_estudiante(est_id)
+        elif opc == "b":
+            eliminar_perfil(est_id)
+            esta_borrada = True
 
 
 """
@@ -2264,8 +2269,7 @@ rol, usuario_id: int
 
 def mostrar_menu_usuario(usuario_id: int, rol: int):
     if rol == 0:
-        # manejador_menu_principal_estudiante(usuario_id)
-        en_construccion()
+        manejador_menu_principal_estudiante(usuario_id)
     elif rol == 1:
         manejador_menu_principal_moderador()
     elif rol == 2:
@@ -2310,33 +2314,41 @@ opc: string
 def manejador_menu_principal_estudiante(est_id: int):
     opc = ""
 
-    # while opc != "0" and estados[est_id]:
-    #     opc = mostrar_menu_principal_estudiante()
+    est = obtener_estudiante_por_id(est_id)
 
-    #     match opc:
-    #         case "1":
-    #             manejador_submenu_gestionar_perfil(est_id)
+    while opc != "0" and est.estado:
+        opc = mostrar_menu_principal_estudiante()
 
-    #         case "2":
-    #             manejador_submenu_gestionar_candidatos(est_id)
+        match opc:
+            case "1":
+                manejador_submenu_gestionar_perfil(est_id)
 
-    #         case "3":
-    #             manejador_submenu_matcheos()
+            case "2":
+                # manejador_submenu_gestionar_candidatos(est_id)
+                en_construccion()
 
-    #         case "4":
-    #             reportes_estadisticos_estudiante(est_id)
+            case "3":
+                manejador_submenu_matcheos()
 
-    #         case "5":
-    #             ruleta(est_id)
+            case "4":
+                # reportes_estadisticos_estudiante(est_id)
+                en_construccion()
 
-    #         case "6":
-    #             huecos_edades()
+            case "5":
+                # ruleta(est_id)
+                en_construccion()
 
-    #         case "7":
-    #             matcheos_combinados()
+            case "6":
+                huecos_edades()
 
-    #         case "0":
-    #             limpiar_consola()
+            case "7":
+                # matcheos_combinados()
+                en_construccion()
+
+            case "0":
+                limpiar_consola()
+
+        est = obtener_estudiante_por_id(est_id)
 
 
 """
@@ -2356,8 +2368,8 @@ def mostrar_estudiantes():
 
     while ar_lo_estudiantes.tell() < tam_ar:
         est: Estudiante = pickle.load(ar_lo_estudiantes)
-        # print(est.__dict__)
-        print(ar_lo_estudiantes.tell())
+        print(est.__dict__)
+        # print(ar_lo_estudiantes.tell())
 
     test()
 
@@ -2411,7 +2423,7 @@ def main():
 
     opc = ""
     usuario = [0] * 2
-    # mostrar_estudiantes()
+
     while opc != "0" and usuario[0] != -1:
         opc = mostrar_menu_principal()
 
