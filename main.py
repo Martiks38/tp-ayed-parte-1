@@ -487,13 +487,13 @@ cant_est, cant_matcheos: int
 """
 
 
-def matcheos_combinados(estudiantes: list[list[str]], estados: list[bool]):
+def matcheos_combinados():
     limpiar_consola()
     cant_est = contar_estudiantes_activos()
     cant_matcheos = cant_est * (cant_est - 1) // 2
 
     print(
-        f"La cantidad de matcheos posibles entre los {cant_est} estudiantes actuales es igual a {cant_matcheos}."
+        f"La cantidad de matcheos posibles entre los {cant_est} estudiantes activos es igual a {cant_matcheos}."
     )
     input("\nPresiona Enter para volver al inicio...")
 
@@ -1503,6 +1503,7 @@ def editar_datos_estudiante(est_id: int):
                 valor = ingresar_propiedad(PROPS_ESTUDIANTE[6])
                 est.pais = valor
 
+        formatear_estudiante(est)
         pickle.dump(est, ar_lo_estudiantes)
         ar_lo_estudiantes.flush()
 
@@ -1610,8 +1611,9 @@ est_id: int
 
 
 def desactivar_estudiante():
-    decision = ""
+    global ar_lo_estudiantes
 
+    decision = ""
     while decision != "N":
         limpiar_consola()
         dato_est = input("Ingrese el ID o el nombre del usuario: ")
@@ -1638,12 +1640,9 @@ def desactivar_estudiante():
 
                 actualizar_estudiante(est)
 
-                global ar_lo_estudiantes
-
                 ar_lo_estudiantes.seek(0)
                 est: Estudiante = pickle.load(ar_lo_estudiantes)
-                print(ar_lo_estudiantes.tell())
-                test()
+
                 print("Perfil borrado con exito.")
 
         input("Presione Enter para continuar ")
@@ -2330,29 +2329,21 @@ def manejador_menu_principal_estudiante(est_id: int):
         match opc:
             case "1":
                 manejador_submenu_gestionar_perfil(est_id)
-
             case "2":
                 # manejador_submenu_gestionar_candidatos(est_id)
                 en_construccion()
-
             case "3":
                 manejador_submenu_matcheos()
-
             case "4":
                 # reportes_estadisticos_estudiante(est_id)
                 en_construccion()
-
             case "5":
                 # ruleta(est_id)
                 en_construccion()
-
             case "6":
                 huecos_edades()
-
             case "7":
-                # matcheos_combinados()
-                en_construccion()
-
+                matcheos_combinados()
             case "0":
                 limpiar_consola()
 
