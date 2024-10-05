@@ -592,7 +592,7 @@ def inicializar_moderadores():
     ar_lo_moderadores = open(ar_fi_moderadores, "w+b")
     ar_lo_moderadores.seek(0)
 
-    MODERADORES = [["moderador1@ayed.com", "111222"]]
+    MODERADORES = [["moderador1@ayed.com", "111222"], ["moderador2@ayed.com", "333444"]]
 
     mod = Moderador()
     mod.estado = True
@@ -1694,14 +1694,18 @@ def obtener_estudiante_por_nombre(nom_est: str) -> Estudiante:
 
 
 def obtener_estudiante_por_id(id_est: int) -> Estudiante:
-    global ar_lo_estudiantes
+    global ar_lo_estudiantes, ar_fi_estudiantes
 
+    tam_ar = os.path.getsize(ar_fi_estudiantes)
     tam_reg = obtener_largo_registro(ar_lo_estudiantes)
-    ar_lo_estudiantes.seek(id_est * tam_reg, 0)
-
     est = Estudiante()
-    est: Estudiante = pickle.load(ar_lo_estudiantes)
-    desformatear_estudiante(est)
+
+    if 0 <= id_est and id_est <= tam_ar // tam_reg:
+        ar_lo_estudiantes.seek(id_est * tam_reg, 0)
+        est: Estudiante = pickle.load(ar_lo_estudiantes)
+        desformatear_estudiante(est)
+    else:
+        est.id = -1
 
     return est
 
@@ -1718,6 +1722,18 @@ def actualizar_estudiante(est: Estudiante):
     ar_lo_estudiantes.flush()
 
 
+def actualizar_moderador(mod: Moderador):
+    global ar_lo_moderadores, ar_fi_moderadores
+
+    tam_reg = obtener_largo_registro(ar_lo_moderadores)
+    ar_lo_moderadores.seek(tam_reg * mod.id, 0)
+
+    formatear_moderador(mod)
+
+    pickle.dump(mod, ar_lo_moderadores)
+    ar_lo_moderadores.flush()
+
+
 """
 estudiantes: Arreglo multi de 9x8 de string
 estados: Arreglo de 0 a 7 de bool
@@ -1729,43 +1745,63 @@ est_id: int
 def desactivar_estudiante():
     global ar_lo_estudiantes
 
-    decision = ""
-    while decision != "N":
+    est = Estudiante()
+    dato_est = input("Ingrese el ID o el nombre del estudiante: ")
+
+    if not dato_est.isdigit():
+        est = obtener_estudiante_por_nombre(dato_est)
+    else:
+        est = obtener_estudiante_por_id(int(dato_est))
+
+    if est.id == -1:
+        print("El estudiante no existe.\n")
+    elif not est.estado:
+        print("El estudiante ya está desactivado.\n")
+    else:
         limpiar_consola()
-        dato_est = input("Ingrese el ID o el nombre del usuario: ")
-        est = Estudiante()
+        opc = input(
+            "Seguro que desea continuar con la desactivación del estudiante. S/N "
+        ).upper()
+        opc = validar_continuacion(opc)
 
-        if not dato_est.isdigit():
-            est = obtener_estudiante_por_nombre(dato_est)
-        else:
-            est = obtener_estudiante_por_id(int(dato_est))
+        if opc == "S":
+            est.estado = False
 
-        if est.id == -1:
-            print("El usuario no existe.\n")
-        elif not est.estado:
-            print("El usuario ya está desactivado.\n")
-        else:
-            limpiar_consola()
-            opc = input(
-                "Seguro que desea continuar con la desactivación del usuario. S/N "
-            ).upper()
-            opc = validar_continuacion(opc)
+            actualizar_estudiante(est)
 
-            if opc == "S":
-                est.estado = False
+            print("Perfil borrado con exito.")
 
-                actualizar_estudiante(est)
 
-                ar_lo_estudiantes.seek(0)
-                est: Estudiante = pickle.load(ar_lo_estudiantes)
+def desactivar_moderador():
+    global ar_lo_moderadores
 
-                print("Perfil borrado con exito.")
+    mod = Moderador()
+    dato_mod = input("Ingrese el ID del moderador: ")
 
-        input("Presione Enter para continuar ")
+    while not dato_mod.isdigit():
+        dato_mod = input("Ingrese el ID del moderador: ")
 
+    mod = obtener_moderador_por_id(dato_mod)
+
+    if mod.id == -1:
+        print("El moderador no existe.\n")
+    elif not mod.estado:
+        print("El moderador ya está desactivado.\n")
+    else:
         limpiar_consola()
-        decision = input("Desactivar otra cuenta. S/N: ").upper()
-        decision = validar_continuacion(decision)
+        opc = input(
+            "Seguro que desea continuar con la desactivación del moderador. S/N "
+        ).upper()
+        opc = validar_continuacion(opc)
+
+        if opc == "S":
+            mod.estado = False
+
+            actualizar_moderador(mod)
+
+            print("Perfil borrado con exito.")
+
+    input("Presione Enter para continuar ")
 
 
 """
@@ -2084,11 +2120,18 @@ ind, reportado_id, reporte_id: int
 
 
 def obtener_moderador_por_id(mod_id: int):
-    global ar_lo_moderadores
+    global ar_lo_moderadores, ar_fi_moderadores
 
+    mod = Moderador()
+
+    tam_ar = os.path.getsize(ar_fi_moderadores)
     tam_re = obtener_largo_registro(ar_lo_moderadores)
-    ar_lo_moderadores.seek(mod_id * tam_re, 0)
-    mod: Moderador = pickle.load(ar_lo_moderadores)
+
+    if 0 <= mod_id and mod_id <= tam_ar // tam_re:
+        ar_lo_moderadores.seek(mod_id * tam_re, 0)
+        mod: Moderador = pickle.load(ar_lo_moderadores)
+    else:
+        mod.id = -1
 
     return mod
 
@@ -2248,40 +2291,24 @@ opc: string
 """
 
 
-# TODO: identificar si es estudiante o moderador
 def eliminar_usuario():
-    global ar_lo_estudiantes
-
     decision = ""
     while decision != "N":
         limpiar_consola()
-        dato_est = input("Ingrese el ID o el nombre del usuario: ")
-        est = Estudiante()
 
-        if not dato_est.isdigit():
-            est = obtener_estudiante_por_nombre(dato_est)
+        tipo_usua = input(
+            "Tipo de usuario a eliminar estudiante o moderador (E/M): "
+        ).lower()
+
+        while tipo_usua != "e" or tipo_usua != "m":
+            tipo_usua = input(
+                "Tipo de usuario a eliminar estudiante o moderador (E/M): "
+            ).lower()
+
+        if tipo_usua == "e":
+            desactivar_estudiante()
         else:
-            est = obtener_estudiante_por_id(int(dato_est))
-
-        if est.id == -1:
-            print("El usuario no existe.\n")
-        elif not est.estado:
-            print("El usuario ya está desactivado.\n")
-        else:
-            limpiar_consola()
-            opc = input(
-                "Seguro que desea continuar con la desactivación del usuario. S/N "
-            ).upper()
-            opc = validar_continuacion(opc)
-
-            if opc == "S":
-                est.estado = False
-
-                actualizar_estudiante(est)
-
-                print("Perfil borrado con exito.")
-
-        input("Presione Enter para continuar ")
+            desactivar_moderador()
 
         limpiar_consola()
         decision = input("Desactivar otra cuenta. S/N: ").upper()
@@ -2338,7 +2365,17 @@ def manejador_submenu_gestionar_estudiantes():
             opc = input("Ingrese una opción válida: ")
 
         if opc == "a":
-            desactivar_estudiante()
+            global ar_lo_estudiantes
+
+            decision = ""
+            while decision != "N":
+                limpiar_consola()
+
+                desactivar_estudiante()
+
+                limpiar_consola()
+                decision = input("Desactivar otra cuenta. S/N: ").upper()
+                decision = validar_continuacion(decision)
 
 
 """
