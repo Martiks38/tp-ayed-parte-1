@@ -1,9 +1,7 @@
 """
   Integrantes:
-    - VERA, Ezequiel
-    - ROSELL, Ezequiel Jesus
     - CAPPA, Giuliano Martin
-    - ROBLEDO, Camila Antonella
+    - CARRIZO, Adrián Osvaldo
 """
 
 import io
@@ -38,6 +36,7 @@ class Estudiante:
         self.ciudad = ""
         self.pais = ""
         self.estado = False
+        self.cant_reportes = 0
 
 
 class Moderador:
@@ -46,6 +45,8 @@ class Moderador:
         self.email = ""
         self.password = ""
         self.estado = False
+        self.cant_ignorados = 0
+        self.cant_aceptados = 0
 
 
 class Reporte:
@@ -561,6 +562,7 @@ def inicializar_estudiantes():
 
     est = Estudiante()
     est.estado = True
+    est.cant_reportes = 0
 
     for ind in range(4):
         est.id = ind
@@ -594,6 +596,8 @@ def inicializar_moderadores():
 
     mod = Moderador()
     mod.estado = True
+    mod.cant_aceptados = 0
+    mod.cant_ignorados = 0
 
     for ind in range(1):
         mod.id = ind
@@ -635,9 +639,6 @@ def inicializar_reportes():
         formatear_reporte(re)
         pickle.dump(re, ar_lo_reportes)
 
-    formatear_reporte(re)
-    pickle.dump(re, ar_lo_reportes)
-
     ar_lo_reportes.flush()
 
 
@@ -651,6 +652,7 @@ def mostrar_likes():
     while ar_lo_likesEstudiantes.tell() < tam_ar:
         like: Like = pickle.load(ar_lo_likesEstudiantes)
         print(f"Remitente {like.remitente}, Destinatario: {like.destinatario}")
+    test()
 
 
 """
@@ -1153,6 +1155,7 @@ def crear_reporte(reportante_id: int, reportado_id: int):
 
     formatear_reporte(r)
 
+    ar_lo_reportes.seek(0, 2)
     pickle.dump(r, ar_lo_reportes)
     ar_lo_reportes.flush()
 
@@ -1334,12 +1337,15 @@ decision, nombre_estudiante: string
 def crear_like(remitente_id, destinatario_id):
     global ar_lo_likesEstudiantes
 
+    ar_lo_likesEstudiantes.seek(0, 2)
+
     l = Like()
     l.remitente = remitente_id
     l.destinatario = destinatario_id
 
     pickle.dump(l, ar_lo_likesEstudiantes)
     ar_lo_likesEstudiantes.flush()
+    ordenar_likes()
 
 
 def marcar_match(est_id: int):
@@ -1533,39 +1539,138 @@ porcentaje: float
 """
 
 
-def reportes_estadisticos_estudiante(
-    est_id: int,
-    estudiantes: list[list[str]],
-    estados: list[bool],
-    me_gusta: list[list[bool]],
-):
-    likes_dados = 0
-    likes_recibidos = 0
+def buscar_like(like: Like) -> int:
+    global ar_lo_likesEstudiantes, ar_fi_estudiantes
+
+    tam_re = obtener_largo_registro(ar_lo_likesEstudiantes)
+    tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
+    inf = 0
+    sup = tam_ar // tam_re
+    med = (inf + sup) // 2
+
+    pos = med
+    ar_lo_likesEstudiantes.seek(med * tam_re, 0)
+    l: Like = pickle.load(ar_lo_likesEstudiantes)
+
+    while inf < sup and (
+        l.destinatario != like.destinatario or l.remitente != like.remitente
+    ):
+        if l.remitente > like.remitente or (
+            l.remitente == like.remitente and l.destinatario > like.destinatario
+        ):
+            sup = med - 1
+        elif l.remitente < like.remitente or (
+            l.remitente == like.remitente and l.destinatario < like.destinatario
+        ):
+            inf = med + 1
+
+        med = (inf + sup) // 2
+        pos = med
+        ar_lo_likesEstudiantes.seek(med * tam_re, 0)
+        l = pickle.load(ar_lo_likesEstudiantes)
+
+    if l.destinatario != like.destinatario or l.remitente != like.remitente:
+        pos = -1
+
+    return pos
+
+
+def buscar_primer_like(est_id: int) -> int:
+    global ar_lo_likesEstudiantes, ar_fi_estudiantes
+
+    like = Like()
+    tam_re = obtener_largo_registro(ar_lo_likesEstudiantes)
+    ar_lo_likesEstudiantes.seek(0)
+    tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
+    like: Like = pickle.load(ar_lo_likesEstudiantes)
+    pos = ar_lo_likesEstudiantes.tell()
+
+    while ar_lo_likesEstudiantes.tell() < tam_ar and like.remitente != est_id:
+        like: Like = pickle.load(ar_lo_likesEstudiantes)
+        pos = ar_lo_likesEstudiantes.tell()
+
+    if like.remitente != est_id:
+        pos = -1
+    else:
+        pos = pos - tam_re
+
+    return pos
+
+
+def ordenar_likes():
+    global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
+
+    tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
+    tam_re = obtener_largo_registro(ar_lo_likesEstudiantes)
+    cant_re = tam_ar // tam_re
+
+    for i in range(cant_re - 2):
+        for j in range(i + 1, cant_re - 1):
+            ar_lo_likesEstudiantes.seek(i * tam_re, 0)
+            like_1: Like = pickle.load(ar_lo_likesEstudiantes)
+
+            ar_lo_likesEstudiantes.seek(j * tam_re, 0)
+            like_2: Like = pickle.load(ar_lo_likesEstudiantes)
+
+            if (
+                like_1.remitente > like_2.remitente
+                or like_1.destinatario > like_2.destinatario
+            ):
+                ar_lo_likesEstudiantes.seek(i * tam_re)
+                pickle.dump(like_2, ar_lo_likesEstudiantes)
+                ar_lo_likesEstudiantes.seek(j * tam_re, 0)
+                pickle.dump(like_1, ar_lo_likesEstudiantes)
+
+    ar_lo_likesEstudiantes.flush()
+
+
+def reportes_estadisticos_estudiante(est_id: int):
+    global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
+
+    like_dados = 0
+    like_recibidos = 0
     matches = 0
 
-    cant_estudiantes = contar_estudiantes_activos()
+    pri_l_est = buscar_primer_like(est_id)
 
-    for ind in range(cant_estudiantes):
-        if est_id != ind and estados[ind]:
-            like_dado = me_gusta[est_id][ind]
-            like_recibido = me_gusta[ind][est_id]
+    if pri_l_est != -1:
+        ar_lo_likesEstudiantes.seek(pri_l_est, 0)
+        like: Like = pickle.load(ar_lo_likesEstudiantes)
+        pos = ar_lo_likesEstudiantes.tell()
 
-            if like_dado and like_recibido:
-                matches = matches + 1
-            elif like_dado and not like_recibido:
-                likes_dados = likes_dados + 1
-            elif not like_dado and like_recibido:
-                likes_recibidos = likes_recibidos + 1
+        while like.remitente == est_id:
+            est_destinatario = obtener_estudiante_por_id(like.destinatario)
 
-    porcentaje = 0.0
+            if est_destinatario.estado:
+                if tiene_like(like.destinatario, est_id):
+                    matches = matches + 1
+                else:
+                    like_dados = like_dados + 1
 
-    if likes_dados != 0 or likes_recibidos != 0 or matches != 0:
-        porcentaje = matches / (likes_recibidos + likes_dados + matches) * 100
+            ar_lo_likesEstudiantes.seek(pos)
+            pos = ar_lo_likesEstudiantes.tell()
+            like: Like = pickle.load(ar_lo_likesEstudiantes)
+
+        ar_lo_likesEstudiantes.seek(0)
+        tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
+
+        while ar_lo_likesEstudiantes.tell() < tam_ar:
+            like: Like = pickle.load(ar_lo_likesEstudiantes)
+            pos = ar_lo_likesEstudiantes.tell()
+
+            if like.destinatario == est_id and not tiene_like(like.remitente, est_id):
+                like_recibido = like_recibido + 1
+
+            ar_lo_likesEstudiantes.seek(pos)
+            like: Like = pickle.load(ar_lo_likesEstudiantes)
+
+    cant_est_act = contar_estudiantes_activos()
+    porcentaje = matches / (cant_est_act - 1) * 100
 
     limpiar_consola()
     print(f"Matcheados sobre el % posible: {porcentaje:.1f}%")
-    print("Likes dados y no recibidos:", likes_dados)
-    print("Likes recibidos y no respondidos:", likes_recibidos)
+    print("Likes dados y no recibidos:", like_dados)
+    print("Likes recibidos y no respondidos:", like_recibidos)
     input("Presiona Enter para volver al menú... ")
 
 
@@ -1907,12 +2012,9 @@ def actualizar_reporte(rep: Reporte):
     ar_lo_reportes.seek(rep.id * tam_reg, 0)
 
     formatear_reporte(rep)
-    print(rep.__dict__)
-    try:
-        pickle.dump(rep, ar_lo_reportes)
-        ar_lo_reportes.flush()
-    except ValueError:
-        print("Error grabar repo")
+
+    pickle.dump(rep, ar_lo_reportes)
+    ar_lo_reportes.flush()
 
 
 """
@@ -1925,8 +2027,8 @@ def ignorar_reporte(re: Reporte):
     re.estado = 2
 
     actualizar_reporte(re)
-    print("Procesado el reporte", re.id)
-    print("El reporte fue ignorado.")
+    print("\nProcesado el reporte", re.id)
+    print("El reporte fue ignorado.\n")
 
 
 def actualizar_reportes(id_reportado: int):
@@ -1981,7 +2083,33 @@ ind, reportado_id, reporte_id: int
 """
 
 
-def procesar_reporte(pos_re: int, est: Estudiante, rep: Reporte):
+def obtener_moderador_por_id(mod_id: int):
+    global ar_lo_moderadores
+
+    tam_re = obtener_largo_registro(ar_lo_moderadores)
+    ar_lo_moderadores.seek(mod_id * tam_re, 0)
+    mod: Moderador = pickle.load(ar_lo_moderadores)
+
+    return mod
+
+
+def incrementar_reporte_ignorado(usua_id: int):
+    mod = obtener_moderador_por_id(usua_id)
+    mod.cant_ignorados = mod.cant_ignorados + 1
+
+    pickle.dump(mod, ar_lo_moderadores)
+    ar_lo_moderadores.flush()
+
+
+def incrementar_reporte_aceptado(usua_id: int):
+    mod = obtener_moderador_por_id(usua_id)
+    mod.cant_aceptados = mod.cant_aceptados + 1
+
+    pickle.dump(mod, ar_lo_moderadores)
+    ar_lo_moderadores.flush()
+
+
+def procesar_reporte(pos_re: int, est: Estudiante, usua: list[int], rep: Reporte):
     print("¿Cómo proceder?\n")
     print("1. Ignorar reporte")
     print("2. Bloquear al reportado")
@@ -1994,8 +2122,12 @@ def procesar_reporte(pos_re: int, est: Estudiante, rep: Reporte):
 
     if opc == "1":
         ignorar_reporte(rep)
+        if usua[1] == 1:
+            incrementar_reporte_ignorado(usua[0])
     else:
         bloquear_reportado(pos_re, est, rep)
+        if usua[1] == 1:
+            incrementar_reporte_aceptado(usua[0])
 
 
 """
@@ -2010,7 +2142,7 @@ estudiantes_activos: bool
 """
 
 
-def ver_reportes():
+def ver_reportes(usua: list[int]):
     global ar_lo_reportes, ar_fi_reportes
 
     opc = ""
@@ -2034,7 +2166,7 @@ def ver_reportes():
 
         if estudiantes_activos and rep.estado == 0:
             mostrar_detalle_reporte(rep, est_reportante.nombre, est_reportado.nombre)
-            procesar_reporte(pos, est_reportado, rep)
+            procesar_reporte(pos, est_reportado, usua, rep)
 
             opc = input("Continuar revisando reportes. (S/N) ").upper()
             opc = validar_continuacion(opc)
@@ -2085,9 +2217,7 @@ def registrar_moderador(email: str, password: str) -> bool:
     if validar_email(email):
         print("El email ingresado ya está en uso.")
     else:
-        tam_reg = obtener_largo_registro(ar_lo_moderadores)
-
-        ar_lo_moderadores.seek(-1 * tam_reg, 2)
+        ar_lo_moderadores.seek(0, 2)
 
         mod: Moderador = pickle.load(ar_lo_moderadores)
 
@@ -2118,6 +2248,55 @@ opc: string
 """
 
 
+# TODO: identificar si es estudiante o moderador
+def eliminar_usuario():
+    global ar_lo_estudiantes
+
+    decision = ""
+    while decision != "N":
+        limpiar_consola()
+        dato_est = input("Ingrese el ID o el nombre del usuario: ")
+        est = Estudiante()
+
+        if not dato_est.isdigit():
+            est = obtener_estudiante_por_nombre(dato_est)
+        else:
+            est = obtener_estudiante_por_id(int(dato_est))
+
+        if est.id == -1:
+            print("El usuario no existe.\n")
+        elif not est.estado:
+            print("El usuario ya está desactivado.\n")
+        else:
+            limpiar_consola()
+            opc = input(
+                "Seguro que desea continuar con la desactivación del usuario. S/N "
+            ).upper()
+            opc = validar_continuacion(opc)
+
+            if opc == "S":
+                est.estado = False
+
+                actualizar_estudiante(est)
+
+                print("Perfil borrado con exito.")
+
+        input("Presione Enter para continuar ")
+
+        limpiar_consola()
+        decision = input("Desactivar otra cuenta. S/N: ").upper()
+        decision = validar_continuacion(decision)
+
+
+def dar_alta_moderador():
+    limpiar_consola()
+    print("\n........Registro moderador........\n")
+
+    email = ingresar_propiedad("email")
+    password = ingresar_contrasenia()
+    registrar_moderador(email, password)
+
+
 def manejador_submenu_gestionar_usuarios():
     opc = ""
 
@@ -2136,9 +2315,9 @@ def manejador_submenu_gestionar_usuarios():
             opc = input("Ingrese una opción válida: ")
 
         if opc == "a":
-            desactivar_estudiante()
-        if opc == "a":
-            en_construccion()
+            eliminar_usuario()
+        if opc == "b":
+            dar_alta_moderador()
         if opc == "c":
             en_construccion()
 
@@ -2170,7 +2349,7 @@ opc: string
 """
 
 
-def manejador_submenu_gestionar_reportes():
+def manejador_submenu_gestionar_reportes(usua: list[int]):
     opc = ""
 
     while opc != "b":
@@ -2186,7 +2365,7 @@ def manejador_submenu_gestionar_reportes():
             opc = input("Ingrese una opción válida: ")
 
         if opc == "a":
-            ver_reportes()
+            ver_reportes(usua)
 
 
 ### Mostrar ###
@@ -2257,11 +2436,12 @@ def mostrar_menu_principal_administradores() -> str:
     print("1. Gestionar Usuarios")
     print("2. Gestionar Reportes")
     print("3. Reportes Estadísticos")
+    print("4. Puntuar candidatos")
     print("0. Salir")
 
     opc = input("\nSeleccione una opción: ")
 
-    while opc != "1" and opc != "2" and opc != "3" and opc != "0":
+    while opc != "1" and opc != "2" and opc != "3" and opc != "4" and opc != "0":
         print("\nLa opción introducida no es válida.")
         opc = input("Por favor, introduzca una opción válida: ")
 
@@ -2278,13 +2458,13 @@ rol, usuario_id: int
 """
 
 
-def mostrar_menu_usuario(usuario_id: int, rol: int):
-    if rol == 0:
-        manejador_menu_principal_estudiante(usuario_id)
-    elif rol == 1:
-        manejador_menu_principal_moderador()
-    elif rol == 2:
-        manejador_menu_principal_administrador()
+def mostrar_menu_usuario(usuario: list[int]):
+    if usuario[1] == 0:
+        manejador_menu_principal_estudiante(usuario[0])
+    elif usuario[1] == 1:
+        manejador_menu_principal_moderador(usuario)
+    elif usuario[1] == 2:
+        manejador_menu_principal_administrador(usuario)
 
 
 """
@@ -2335,13 +2515,10 @@ def manejador_menu_principal_estudiante(est_id: int):
                 manejador_submenu_gestionar_perfil(est_id)
             case "2":
                 manejador_submenu_gestionar_candidatos(est_id)
-                en_construccion()
             case "3":
-                # manejador_submenu_matcheos()
-                en_construccion()
+                manejador_submenu_matcheos()
             case "4":
-                # reportes_estadisticos_estudiante(est_id)
-                en_construccion()
+                reportes_estadisticos_estudiante(est_id)
             case "5":
                 # ruleta(est_id)
                 en_construccion()
@@ -2378,7 +2555,7 @@ def mostrar_estudiantes():
     test()
 
 
-def manejador_menu_principal_moderador():
+def manejador_menu_principal_moderador(usuario: list[int]):
     opc = ""
 
     while opc != "0":
@@ -2388,12 +2565,71 @@ def manejador_menu_principal_moderador():
             case "1":
                 manejador_submenu_gestionar_estudiantes()
             case "2":
-                manejador_submenu_gestionar_reportes()
+                manejador_submenu_gestionar_reportes(usuario)
             case "3":
                 en_construccion()
 
 
-def manejador_menu_principal_administrador():
+def mostrar_puntuacion(est_id: int, score: list[int]):
+    est: Estudiante = obtener_estudiante_por_id(est_id)
+
+    print(f"El estudiante {est.nombre}")
+    print(f"Puntuaje: {score[0]}")
+    print(f"Mayor racha: {score[2]}\n")
+
+
+def actualizar_puntuacion(score: list[int], like: Like):
+    tiene_match = tiene_like(like.destinatario, like.remitente)
+
+    if tiene_match and score[1] < 3:
+        score[0] = score[0] + 1
+        score[1] = score[1] + 1
+    elif tiene_match:
+        score[0] = score[0] + 2
+        score[1] = score[1] + 1
+
+        if score[1] > score[2]:
+            score[2] = score[1]
+    else:
+        score[0] = score[0] - 1
+        score[1] = 0
+
+
+def puntuar_candidatos():
+    global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
+
+    ar_lo_likesEstudiantes.seek(0)
+    tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
+
+    est_id = -1
+    score = [0, 0, 0]
+
+    limpiar_consola()
+    print("........Puntuación de candidatos........\n\n")
+
+    while ar_lo_likesEstudiantes.tell() < tam_ar:
+        like: Like = pickle.load(ar_lo_likesEstudiantes)
+        pos = ar_lo_likesEstudiantes.tell()
+
+        if est_id == -1:
+            est_id = like.remitente
+
+        if est_id != like.remitente:
+            mostrar_puntuacion(est_id, score)
+            est_id = like.remitente
+            score = [0, 0, 0]
+
+            actualizar_puntuacion(score, like)
+        else:
+            actualizar_puntuacion(score, like)
+
+        ar_lo_likesEstudiantes.seek(pos, 0)
+
+    mostrar_puntuacion(est_id, score)
+    input("\nPresiona Enter para continuar...")
+
+
+def manejador_menu_principal_administrador(usuario: list[int]):
     opc = ""
 
     while opc != "0":
@@ -2402,12 +2638,13 @@ def manejador_menu_principal_administrador():
         match opc:
             case "1":
                 # TODO: Hacer
-                # manejador_submenu_gestionar_usuarios()
-                en_construccion()
+                manejador_submenu_gestionar_usuarios()
             case "2":
-                manejador_submenu_gestionar_reportes()
+                manejador_submenu_gestionar_reportes(usuario)
             case "3":
                 en_construccion()
+            case "4":
+                puntuar_candidatos()
 
 
 """
@@ -2435,8 +2672,8 @@ def main():
             case "1":
                 usuario = log_in()
 
-                if usuario[0] != -1 or usuario[0] != -2:
-                    mostrar_menu_usuario(usuario[0], usuario[1])
+                if usuario[0] != -1:
+                    mostrar_menu_usuario(usuario)
             case "2":
                 registrar()
 
