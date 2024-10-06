@@ -36,7 +36,8 @@ class Estudiante:
         self.ciudad = ""
         self.pais = ""
         self.estado = False
-        self.cant_reportes = 0
+        self.super_like = False
+        self.creditos_revelar = 0
 
 
 class Moderador:
@@ -562,7 +563,8 @@ def inicializar_estudiantes():
 
     est = Estudiante()
     est.estado = True
-    est.cant_reportes = 0
+    est.super_like = True
+    est.creditos_revelar = 1
 
     for ind in range(4):
         est.id = ind
@@ -672,7 +674,7 @@ def inicializar_likes():
 
     for id_remitente in range(cant_est):
         for id_destinatario in range(cant_est):
-            if id_destinatario != id_remitente and randint(0, 100) > 60:
+            if id_destinatario != id_remitente and randint(0, 100) > 40:
                 like.destinatario = id_destinatario
                 like.remitente = id_remitente
 
@@ -1416,19 +1418,66 @@ est_id: int
 """
 
 
+def revelar_candidatos(est_id: int):
+    global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
+
+    limpiar_consola()
+
+    cant_mostrado = 0
+    tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
+    ar_lo_likesEstudiantes.seek(0)
+    est = Estudiante()
+
+    while ar_lo_likesEstudiantes.tell() < tam_ar and cant_mostrado < 3:
+        like: Like = pickle.load(ar_lo_likesEstudiantes)
+        pos = ar_lo_likesEstudiantes.tell()
+
+        if like.destinatario == est_id and tiene_like(est_id, like.remitente):
+            cant_mostrado = cant_mostrado + 1
+            est = obtener_estudiante_por_id(like.remitente)
+
+            print(f"Candidato {cant_mostrado}: {est.nombre}")
+
+        ar_lo_likesEstudiantes.seek(pos, 0)
+
+    if est.id == -1:
+        print("No hay candidatos que te hayan dado like.")
+
+    usua: Estudiante = obtener_estudiante_por_id(est_id)
+    usua.creditos_revelar = usua.creditos_revelar - 1
+    actualizar_estudiante(usua)
+    input("\nPresiona Enter para continuar...")
+
+
 def manejador_submenu_gestionar_candidatos(est_id: int):
+    global ar_lo_estudiantes
+
     opc = ""
 
-    while opc != "c":
+    tam_re = obtener_largo_registro(ar_lo_estudiantes)
+    ar_lo_estudiantes.seek(est_id * tam_re, 0)
+    est: Estudiante = pickle.load(ar_lo_estudiantes)
+
+    while opc != "f":
         limpiar_consola()
         print("........Gestionar Candidatos........\n")
         print("a. Ver candidatos")
         print("b. Reportar un candidato")
-        print("c. Volver")
+
+        if est.creditos_revelar > 0:
+            print("c. Revelar candidato")
+
+        print("f. Volver")
 
         opc = input("\nSeleccione una opción: ")
 
-        while opc != "a" and opc != "b" and opc != "c":
+        while (
+            opc != "a"
+            and opc != "b"
+            and opc == "c"
+            and opc != "f"
+            and not (opc == "c" and est.creditos_revelar == 0)
+        ):
             print("\nNo es una opción válida.")
             opc = input("\nSeleccione una opción: ")
 
@@ -1437,6 +1486,11 @@ def manejador_submenu_gestionar_candidatos(est_id: int):
 
         if opc == "b":
             reportar_candidato(est_id)
+
+        if opc == "c":
+            revelar_candidatos(est_id)
+
+        est = obtener_estudiante_por_id(est_id)
 
 
 """
@@ -2666,6 +2720,61 @@ def puntuar_candidatos():
     input("\nPresiona Enter para continuar...")
 
 
+def reportes_estadisticos_administrador():
+    global ar_lo_reportes, ar_fi_reportes, ar_lo_moderadores, ar_fi_moderadores
+
+    cant_repo = contar_reportes()
+    cant_repo_ign = -1
+    cant_repo_acep = -1
+    mayor_cant_repo_ign = -1
+    mayor_cant_repo_acep = -1
+    mod_repo_ign = Moderador()
+    mod_repo_acep = Moderador()
+
+    mayor_cant_repo_procesados = -1
+    mod_mas_repo_procesados = Moderador()
+
+    ar_lo_moderadores.seek(0)
+    tam_ar = os.path.getsize(ar_fi_moderadores)
+
+    while ar_lo_moderadores.tell() < tam_ar:
+        mod: Moderador = pickle.load(ar_lo_moderadores)
+
+        if mayor_cant_repo_ign < mod.cant_ignorados:
+            cant_repo_ign = cant_repo_ign + mod.cant_aceptados
+            mayor_cant_repo_ign = mod.cant_ignorados
+            mod_repo_ign = mod
+
+        if mayor_cant_repo_acep < mod.cant_aceptados:
+            cant_repo_acep = cant_repo_acep + mod.cant_aceptados
+            mayor_cant_repo_acep = mod.cant_aceptados
+            mod_repo_acep = mod
+
+        cant_repo_procesados = mod.cant_aceptados + mod.cant_ignorados
+
+        if mayor_cant_repo_procesados < cant_repo_procesados:
+            mayor_cant_repo_procesados = cant_repo_procesados
+            mod_mas_repo_procesados = mod
+
+    porc_repo_ign = cant_repo_ign / cant_repo * 100
+    porc_repo_acep = cant_repo_acep / cant_repo * 100
+
+    print(f"Los estudiantes realizaron un total de {cant_repo} reportes.")
+    print(f"El porcentaje de reportes ignorados es de : {porc_repo_ign:.2f}%")
+    print(f"El porcentaje de reportes aceptados es de : {porc_repo_acep:.2f}%")
+    print(
+        f"El moderador que mayor cantidad de reportes ha ignorado:\tId: {mod_repo_ign.id}\tEmail: {mod_repo_ign.email}"
+    )
+    print(
+        f"El moderador que mayor cantidad de reportes ha aceptado:\tId: {mod_repo_acep.id}\tEmail: {mod_repo_acep.email}"
+    )
+    print(
+        f"El moderador que mayor cantidad de reportes ha procesado:\tId: {mod_mas_repo_procesados.id}\t Email:{mod_mas_repo_procesados.email}"
+    )
+
+    input("\n\nPresione Enter para continuar...")
+
+
 def manejador_menu_principal_administrador(usuario: list[int]):
     opc = ""
 
@@ -2674,12 +2783,11 @@ def manejador_menu_principal_administrador(usuario: list[int]):
 
         match opc:
             case "1":
-                # TODO: Hacer
                 manejador_submenu_gestionar_usuarios()
             case "2":
                 manejador_submenu_gestionar_reportes(usuario)
             case "3":
-                en_construccion()
+                reportes_estadisticos_administrador()
             case "4":
                 puntuar_candidatos()
 
@@ -2701,6 +2809,9 @@ def main():
 
     opc = ""
     usuario = [0] * 2
+
+    mostrar_likes()
+    test()
 
     while opc != "0" and usuario[0] != -1:
         opc = mostrar_menu_principal()
