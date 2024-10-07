@@ -1052,26 +1052,24 @@ cant, est_id, ind: int
 
 
 def contar_estudiantes_activos_no_matcheados(est_id: int) -> int:
-    global ar_lo_estudiantes, ar_lo_likesEstudiantes, ar_fi_estudiantes, ar_fi_likesEstudiantes
+    global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
-    cant = 0
-    tam_ar_est = os.path.getsize(ar_fi_estudiantes)
-    tam_ar_likes = os.path.getsize(ar_fi_likesEstudiantes)
+    tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
+    cant_est_act = contar_estudiantes_activos() - 1
+    cant_likes = 0
+    pos = buscar_primer_like(est_id)
+    cambio_est = False
 
-    ar_lo_estudiantes.seek(0)
-    ar_lo_likesEstudiantes.seek(0)
+    ar_lo_likesEstudiantes.seek(pos)
+    while ar_lo_likesEstudiantes.tell() < tam_ar and not cambio_est:
+        like: Like = pickle.load(ar_lo_likesEstudiantes)
 
-    pos_est = ar_lo_estudiantes.tell()
-    pos_like = ar_lo_likesEstudiantes.tell()
+        if like.remitente != est_id:
+            cambio_est = True
+        elif tiene_like(like.destinatario, est_id):
+            cant_likes = cant_likes + 1
 
-    # while pos_est < tam_ar_est:
-    # while pos_like < tam_ar_likes:
-    #     if ind != est_id and estados[ind] and not me_gusta[est_id][ind]:
-    #     cant = cant + 1
-
-    # ind = ind + 1
-
-    return cant
+    return cant_est_act - cant_likes
 
 
 """
@@ -1907,11 +1905,11 @@ est_id, ind: int
 """
 
 
-def mostrar_candidatos(cand: list[list[int]], estudiantes: list[list[str]]):
+def mostrar_candidatos(cand: list[int]):
     for ind in range(3):
-        est_id = cand[ind][0]
+        nom = obtener_nombre_estudiante_por_id(cand[ind])
 
-        # print(f"{ind + 1}. {obtener_nombre_estudiante_por_id(est_id, estudiantes[:])}")
+        print(f"{ind + 1}. {nom}")
 
 
 """
@@ -1941,19 +1939,32 @@ candidato_ind, cant_est_totales, est_id, usuario_id: int
 """
 
 
-def obtener_candidatos(
-    usuario_id: int, candidatos: list[list[int]], estudiantes: list[list[str]]
-):
-    for candidato_ind in range(3):
-        cant_est_totales = contar_estudiantes()
-        est_id = randint(0, cant_est_totales - 1)
+def pertenece_array(valor: int, lista: list[int]):
+    pertenece = False
 
-        while est_id == usuario_id or not comprobar_nuevo_candidato(
-            est_id, candidatos[:]
+    for ind in range(3):
+        if lista[ind] == valor:
+            pertenece = True
+
+    return pertenece
+
+
+def obtener_candidatos(est_id: int, candidatos: list[int]):
+    cant_est = contar_estudiantes()
+    elegidos = 0
+    est = Estudiante()
+
+    while elegidos < 3:
+        rand_id = randint(0, cant_est - 1)
+        est = obtener_estudiante_por_id(rand_id)
+
+        if (
+            est.estado
+            and not tiene_like(est_id, rand_id)
+            and not pertenece_array(rand_id, candidatos[:])
         ):
-            est_id = randint(0, cant_est_totales - 1)
-
-        candidatos[candidato_ind][0] = est_id
+            rand_id = randint(0, cant_est - 1)
+            elegidos = elegidos + 1
 
 
 """
@@ -1967,19 +1978,24 @@ nombre_match: string
 
 
 def matchear_candidato(
-    usuario_id: int,
+    usua_id: int,
+    candidatos: list[int],
     valores: list[int],
-    candidatos: list[list[int]],
-    me_gusta: list[list[bool]],
-    estudiantes: list[list[str]],
 ):
+    global ar_lo_likesEstudiantes
+
+    ar_lo_likesEstudiantes.seek(0, 2)
+
     pos_elegido = buscar_candidato_mayor_valor(valores[:])
+    elegido_id = candidatos[pos_elegido]
+    nombre_match = obtener_nombre_estudiante_por_id(elegido_id)
 
-    # nombre_match = obtener_nombre_estudiante_por_id()
-    pos_match = candidatos[pos_elegido][0]
-    me_gusta[usuario_id][pos_match] = True
+    like = Like()
+    like.remitente = usua_id
+    like.destinatario = elegido_id
+    pickle.dump(ar_lo_likesEstudiantes)
 
-    # print("\nTu match es la persona", nombre_match)
+    print("\nTu match es la persona", nombre_match)
 
 
 """
@@ -1996,70 +2012,67 @@ cant_est_posibles, probabilidad_ingresada, probabilidad_match_1, probabilidad_ma
 def ruleta(est_id: int):
     cant_est_posibles = contar_estudiantes_activos_no_matcheados(est_id)
 
-    # if cant_est_posibles < 3:
-    #     print("No hay suficientes estudiantes activos para esta función.")
-    # else:
-    #     continuar = ""
+    if cant_est_posibles < 3:
+        print("No hay suficientes estudiantes activos para esta función.")
+    else:
+        continuar = ""
 
-    #     while continuar != "N" and cant_est_posibles >= 3:
-    #         limpiar_consola()
+        while continuar != "N" and cant_est_posibles >= 3:
+            limpiar_consola()
 
-    #         candidatos = [[-1] * 2 for n in range(3)]
-    #         candidatos = obtener_candidatos(est_id)
+            puntuaciones = [0] * 3
+            candidatos = [0] * 3
+            obtener_candidatos(est_id, candidatos)
 
-    #         print("........RULETA........")
-    #         print(
-    #             "A continuación, se le pedirá ingresar la probabilidad de matcheo con tres estudiantes."
-    #         )
-    #         print("Los valores ingresados deben ser enteros y su suma igual a 100.\n")
+            print("........RULETA........")
+            print(
+                "A continuación, se le pedirá ingresar la probabilidad de matcheo con tres estudiantes."
+            )
+            print("Los valores ingresados deben ser enteros y su suma igual a 100.\n")
 
-    #         while calcular_probabilidad_total_candidatos(candidatos[:]) != 100:
-    #             mostrar_candidatos(candidatos[:], estudiantes[:])
+            while calcular_probabilidad_total_candidatos(puntuaciones[:]) != 100:
+                mostrar_candidatos(candidatos[:])
 
-    #             print("\n")
-    #             for probabilidad_ingresada in range(3):
-    #                 valor = input(
-    #                     f"Ingresar la probabilidad del estudiante {probabilidad_ingresada + 1}: "
-    #                 )
+                print("\n")
+                for prob_ingresada in range(3):
+                    valor = input(
+                        f"Ingresar la probabilidad del estudiante {prob_ingresada + 1}: "
+                    )
 
-    #                 while not valor.isnumeric():
-    #                     valor = input("Por favor ingrese un valor numérico entero: ")
+                    while not valor.isnumeric():
+                        valor = input("Por favor ingrese un valor numérico entero: ")
 
-    #                 candidatos[probabilidad_ingresada][1] = int(valor)
+                    puntuaciones[prob_ingresada] = int(valor)
 
-    #             probabilidad_total = calcular_probabilidad_total_candidatos(
-    #                 candidatos[:]
-    #             )
+                probabilidad_total = calcular_probabilidad_total_candidatos(
+                    puntuaciones[:]
+                )
 
-    #             if probabilidad_total != 100:
-    #                 limpiar_consola()
-    #                 print(
-    #                     "La probabilidad total debe ser igual a 100 y el introducido es",
-    #                     probabilidad_total,
-    #                     ".",
-    #                 )
-    #                 print("Vuelva a introducir los valores.\n")
+                if probabilidad_total != 100:
+                    limpiar_consola()
+                    print(
+                        "La probabilidad total debe ser igual a 100 y el introducido es",
+                        probabilidad_total,
+                        ".",
+                    )
+                    print("Vuelva a introducir los valores.\n")
 
-    #         valores_eleccion_candidatos = [0] * 3
+            valores_eleccion_candidatos = [0] * 3
 
-    #         calcular_eleccion_candidatos(valores_eleccion_candidatos, candidatos[:])
-    #         matchear_candidato(
-    #             est_id,
-    #             valores_eleccion_candidatos[:],
-    #             candidatos[:],
-    #             me_gusta,
-    #             estudiantes[:],
-    #         )
+            calcular_eleccion_candidatos(valores_eleccion_candidatos, candidatos[:])
+            matchear_candidato(
+                est_id,
+                candidatos[:],
+                valores_eleccion_candidatos[:],
+            )
 
-    #         continuar = input("Usar la ruleta nuevamente. S/N ").upper()
-    #         continuar = validar_continuacion(continuar)
-    #         cant_est_posibles = contar_estudiantes_activos_no_matcheados(
-    #             est_id, estudiantes[:], estados[:], me_gusta[:]
-    #         )
+            continuar = input("Usar la ruleta nuevamente. S/N ").upper()
+            continuar = validar_continuacion(continuar)
+            cant_est_posibles = contar_estudiantes_activos_no_matcheados(est_id)
 
-    #     if cant_est_posibles < 3 and continuar == "S":
-    #         print("No hay suficientes estudiantes activos para esta función.")
-    #         input("Presione Enter para volver al inicio... ")
+        if cant_est_posibles < 3 and continuar == "S":
+            print("No hay suficientes estudiantes activos para esta función.")
+            input("Presione Enter para volver al inicio... ")
 
 
 ### Reporte ###
@@ -2611,8 +2624,7 @@ def manejador_menu_principal_estudiante(est_id: int):
             case "4":
                 reportes_estadisticos_estudiante(est_id)
             case "5":
-                # ruleta(est_id)
-                en_construccion()
+                ruleta(est_id)
             case "6":
                 huecos_edades()
             case "7":
