@@ -81,6 +81,11 @@ PROPS_ESTUDIANTE = [
 ]
 
 
+"""
+est: Estudiante
+"""
+
+
 def formatear_estudiante(est: Estudiante):
     est.email = formatear_cadena(est.email, 32)
     est.password = formatear_cadena(est.password, 32)
@@ -92,9 +97,19 @@ def formatear_estudiante(est: Estudiante):
     est.pais = formatear_cadena(est.pais, 32)
 
 
+"""
+mod: Moderador
+"""
+
+
 def formatear_moderador(mod: Moderador):
     mod.email = formatear_cadena(mod.email, 32)
     mod.password = formatear_cadena(mod.password, 32)
+
+
+"""
+ad: Administrador
+"""
 
 
 def formatear_administrador(ad: Administrador):
@@ -102,8 +117,18 @@ def formatear_administrador(ad: Administrador):
     ad.password = formatear_cadena(ad.password, 32)
 
 
+"""
+re: Reporte
+"""
+
+
 def formatear_reporte(re: Reporte):
     re.razon = formatear_cadena(re.razon, 255)
+
+
+"""
+est: Estudiante
+"""
 
 
 def desformatear_estudiante(est: Estudiante):
@@ -116,9 +141,19 @@ def desformatear_estudiante(est: Estudiante):
     est.pais = est.pais.strip()
 
 
+"""
+mod: Moderador
+"""
+
+
 def desformatear_moderador(mod: Moderador):
     mod.email = mod.email.strip()
     mod.password = mod.password.strip()
+
+
+"""
+ad: Administrador
+"""
 
 
 def desformatear_administrador(ad: Administrador):
@@ -126,16 +161,33 @@ def desformatear_administrador(ad: Administrador):
     ad.password = ad.password.strip()
 
 
+"""
+re: Reporte
+"""
+
+
 def desformatear_reporte(re: Reporte):
     re.razon = re.razon.strip()
+
+
+"""
+ar_nombre, ruta: str
+"""
 
 
 def crear_ruta_archivo(ruta: str, ar_nombre: str) -> str:
     return os.path.join(ruta, ar_nombre)
 
 
+"""
+RUTA_ARCHIVOS: str
+"""
 RUTA_ARCHIVOS = os.path.join(".", "archivos")
 
+
+"""
+ar_fi_administradores, ar_fi_estudiantes, ar_fi_likesEstudiantes, ar_fi_moderadores, ar_fi_reportes: str
+"""
 ar_fi_estudiantes = crear_ruta_archivo(RUTA_ARCHIVOS, "estudiantes.dat")
 ar_fi_likesEstudiantes = crear_ruta_archivo(RUTA_ARCHIVOS, "likes_estudiantes.dat")
 ar_fi_moderadores = crear_ruta_archivo(RUTA_ARCHIVOS, "moderadores.dat")
@@ -159,38 +211,38 @@ def obtener_largo_registro(datos: io.BufferedRandom):
 def crear_archivos():
     os.mkdir(RUTA_ARCHIVOS)
 
-    inicializar_estudiantes()
-    inicializar_likes()
-    inicializar_moderadores()
-    inicializar_reportes()
-    inicializar_administradores()
+    mockear_estudiantes()
+    mockear_likes()
+    mockear_moderadores()
+    mockear_reportes()
+    mockear_administradores()
 
 
 def comprobar_existencia_archivos():
     global ar_lo_estudiantes, ar_lo_likesEstudiantes, ar_lo_moderadores, ar_lo_administradores, ar_lo_reportes, ar_fi_estudiantes, ar_fi_likesEstudiantes, ar_fi_moderadores, ar_fi_administradores, ar_fi_administradores, ar_fi_reportes
 
     if not os.path.exists(ar_fi_estudiantes):
-        inicializar_estudiantes()
+        mockear_estudiantes()
     else:
         ar_lo_estudiantes = open(ar_fi_estudiantes, "r+b")
 
     if not os.path.exists(ar_fi_likesEstudiantes):
-        inicializar_likes()
+        mockear_likes()
     else:
         ar_lo_likesEstudiantes = open(ar_fi_likesEstudiantes, "r+b")
 
     if not os.path.exists(ar_fi_moderadores):
-        inicializar_moderadores()
+        mockear_moderadores()
     else:
         ar_lo_moderadores = open(ar_fi_moderadores, "r+b")
 
     if not os.path.exists(ar_fi_administradores):
-        inicializar_administradores()
+        mockear_administradores()
     else:
         ar_lo_administradores = open(ar_fi_administradores, "rb")
 
     if not os.path.exists(ar_fi_reportes):
-        inicializar_reportes()
+        mockear_reportes()
     else:
         ar_lo_reportes = open(ar_fi_reportes, "r+b")
 
@@ -214,6 +266,12 @@ def finalizar_archivos():
 
 
 ### Útiles ###
+
+
+"""
+cad: str
+largo: int
+"""
 
 
 def formatear_cadena(cad: str, largo: int) -> str:
@@ -483,8 +541,6 @@ def solicitar_fecha_nacimiento() -> str:
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
 cant_est, cant_matcheos: int
 """
 
@@ -503,12 +559,13 @@ def matcheos_combinados():
 ### Mocks ###
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
+est: Estudiante
+ESTUDIANTES: Arreglo multi de 4x9 de string
+ind: int
 """
 
 
-def inicializar_estudiantes():
+def mockear_estudiantes():
     global ar_lo_estudiantes, ar_fi_estudiantes
 
     ar_lo_estudiantes = open(ar_fi_estudiantes, "w+b")
@@ -584,11 +641,13 @@ def inicializar_estudiantes():
 
 
 """
-moderadores: Arreglo multi de 2x4 de string
+mod: Moderador
+MODERADORES: Arreglo multi de 2x2 de string
+ind: int
 """
 
 
-def inicializar_moderadores():
+def mockear_moderadores():
     global ar_lo_moderadores, ar_fi_moderadores
 
     ar_lo_moderadores = open(ar_fi_moderadores, "w+b")
@@ -613,22 +672,25 @@ def inicializar_moderadores():
 
 
 """
-reportes: Arreglo de 3x40 de int
-motivo_reportes: Arreglo de 0 a 39 de string
+re: Reporte
+REPORTES: Arreglo multi de 3x2 de int
+MOTIVOS: Arreglo de 0 a 2 de string
+ind: int
 """
 
 
-def inicializar_reportes():
+def mockear_reportes():
     global ar_lo_reportes, ar_fi_reportes
 
     ar_lo_reportes = open(ar_fi_reportes, "w+b")
     ar_lo_reportes.seek(0)
 
     REPORTES = [
-        [0, 1, "Motivo 0"],
-        [1, 2, "Motivo 1"],
-        [2, 3, "Motivo 2"],
+        [0, 1],
+        [1, 2],
+        [2, 3],
     ]
+    MOTIVOS = ["Motivo 0", "Motivo 1", "Motivo 2"]
 
     re = Reporte()
     re.estado = 0
@@ -637,11 +699,17 @@ def inicializar_reportes():
         re.id = ind
         re.id_reportante = REPORTES[ind][0]
         re.id_reportado = REPORTES[ind][1]
-        re.razon = REPORTES[ind][2]
+        re.razon = MOTIVOS[ind]
         formatear_reporte(re)
         pickle.dump(re, ar_lo_reportes)
 
     ar_lo_reportes.flush()
+
+
+"""
+like: Like
+tam_ar: int
+"""
 
 
 def mostrar_likes():
@@ -658,11 +726,12 @@ def mostrar_likes():
 
 
 """
-me_gusta: Arreglo multi de 8x8 de bool
+like: Like
+cant_est, id_destinatario, id_remitente: int
 """
 
 
-def inicializar_likes():
+def mockear_likes():
     global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
     ar_lo_likesEstudiantes = open(ar_fi_likesEstudiantes, "w+b")
@@ -683,7 +752,14 @@ def inicializar_likes():
     ar_lo_likesEstudiantes.flush()
 
 
-def inicializar_administradores():
+"""
+ad: Administrador
+ADMINISTRADORES: Arreglo multi de 1x2 de string
+ind: int
+"""
+
+
+def mockear_administradores():
     global ar_lo_administradores, ar_fi_administradores
 
     ar_lo_administradores = open(ar_fi_administradores, "w+b")
@@ -723,11 +799,8 @@ def ingresar_contrasenia() -> str:
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-moderadores: Arreglo multi de 2x4 de string
 email: string
-ind: int
-valido: bool
+pos: int
 """
 
 
@@ -748,55 +821,10 @@ def validar_email(email: str) -> bool:
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-moderadores: Arreglo multi de 2x4 de string
-estados: Arreglo de 0 a 7 de bool
-acceso_valido: Arreglo de 0 a 1 de string
-intentos, ind: int
-email, password: string
+datos: BufferedRandom
+archivo, email: string
+id_usua, tam_ar: int
 """
-
-
-def validar_acceso(
-    acceso_valido: list[int],
-    estudiantes: list[list[str]],
-    moderadores: list[list[str]],
-    estados: list[bool],
-):
-    intentos = 3
-
-    while intentos > 0 and acceso_valido[0] == "":
-        email = input("Ingrese su email: ")
-        password = getpass("Ingrese su contraseña: ")
-
-        ind = 0
-        while ind < 8 and (
-            estudiantes[ind][0] != email or estudiantes[ind][1] != password
-        ):
-            ind = ind + 1
-
-        if ind < 8 and estados[ind]:
-            acceso_valido[0] = ind
-            acceso_valido[1] = 1
-        else:
-            ind = 0
-            while ind < 4 and (
-                moderadores[ind][0] != email or moderadores[ind][1] != password
-            ):
-                ind = ind + 1
-
-            if ind < 4:
-                acceso_valido[0] = ind
-                acceso_valido[1] = 0
-            else:
-                limpiar_consola()
-                intentos = intentos - 1
-                print("Datos incorrectos. Intentos restantes:", intentos, "\n")
-
-    if intentos == 0:
-        print("Ha superado el número máximo de intentos. El programa se cerrará.")
-        input("Presione Enter para continuar... ")
-    limpiar_consola()
 
 
 def buscar_id_usuario_por_email(
@@ -816,6 +844,13 @@ def buscar_id_usuario_por_email(
     return id_usua
 
 
+"""
+archivo: BufferedRandom
+email, password: string
+id_user, tam_reg: int
+"""
+
+
 def validar_login(
     id_user: int, email: str, password: str, archivo: io.BufferedRandom
 ) -> bool:
@@ -825,17 +860,16 @@ def validar_login(
     reg = pickle.load(archivo)
 
     return (
-        reg.email.strip() == email
-        and reg.password.strip() == password
-        and bool(reg.estado)
+        reg.email.strip() == email and reg.password.strip() == password and reg.estado
     )
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-moderadores: Arreglo multi de 2x4 de string
-estados: Arreglo de 0 a 7 de bool
+datos: Arreglo de 0 a 2 de BufferedRandom
+archivos: Arreglo de 0 a 2 de string
 acceso_valido: Arreglo de 0 a 1 de int
+id_usua, intentos, tipo_usua: int
+email, password: string
 """
 
 
@@ -882,9 +916,6 @@ def log_in() -> list[int]:
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-moderadores: Arreglo multi de 2x4 de string
-estados: Arreglo de 0 a 7 de bool
 decision, email, password, rol: string
 registrado: bool
 """
@@ -919,6 +950,11 @@ def registrar():
 
 
 ### Estudiante ###
+
+
+"""
+cant, tam_ar: int
+"""
 
 
 def contar_estudiantes():
@@ -958,18 +994,16 @@ def ingresar_propiedad(prop: str) -> str:
     return valor
 
 
-"""
-estudiantes: Arreglo multi de 9x8 de string
-moderadores: Arreglo multi de 2x4 de string
-estados: Arreglo de 0 a 7 de bool
-email, password: string
-cant, ind: int
-registrado: bool
-"""
-
-
 def test():
     input("test")
+
+
+"""
+nuevo_est: Estudiante
+email, password: string
+registrado: boolean
+cant_est: int
+"""
 
 
 def registrar_estudiante(email: str, password: str) -> bool:
@@ -996,6 +1030,8 @@ def registrar_estudiante(email: str, password: str) -> bool:
         nuevo_est.ciudad = ingresar_propiedad(PROPS_ESTUDIANTE[5])
         nuevo_est.pais = ingresar_propiedad(PROPS_ESTUDIANTE[6])
         nuevo_est.estado = True
+        nuevo_est.super_like = True
+        nuevo_est.creditos_revelar = 1
 
         formatear_estudiante(nuevo_est)
         pickle.dump(nuevo_est, ar_lo_estudiantes)
@@ -1011,19 +1047,8 @@ def registrar_estudiante(email: str, password: str) -> bool:
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-est_id: int
-"""
-
-
-def validar_id_estudiante(est_id: int, estudiantes: list[list[str]]) -> bool:
-    return 0 <= est_id and est_id <= contar_estudiantes()
-
-
-"""
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
-cant, ind: int
+est: Estudiante
+cant, tam_ar: int
 """
 
 
@@ -1031,6 +1056,7 @@ def contar_estudiantes_activos() -> int:
     global ar_lo_estudiantes, ar_fi_estudiantes
 
     cant = 0
+    est = Estudiante()
     ar_lo_estudiantes.seek(0)
     tam_ar = os.path.getsize(ar_fi_estudiantes)
 
@@ -1044,10 +1070,8 @@ def contar_estudiantes_activos() -> int:
 
 
 """
-me_gusta: Arreglo multi de 8x8 de bool
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
-cant, est_id, ind: int
+cant_est_act, cant_likes, est_id, pos, tam_ar: int
+cambio_est: boolean
 """
 
 
@@ -1060,7 +1084,7 @@ def contar_estudiantes_activos_no_matcheados(est_id: int) -> int:
     pos = buscar_primer_like(est_id)
     cambio_est = False
 
-    ar_lo_likesEstudiantes.seek(pos)
+    ar_lo_likesEstudiantes.seek(pos, 0)
     while ar_lo_likesEstudiantes.tell() < tam_ar and not cambio_est:
         like: Like = pickle.load(ar_lo_likesEstudiantes)
 
@@ -1073,24 +1097,8 @@ def contar_estudiantes_activos_no_matcheados(est_id: int) -> int:
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-ind: int
-nombre: string
-"""
-
-
-def obtener_id_estudiante_por_nombre(nombre: str) -> int:
-    ind = 0
-
-    # while ind < 8 and estudiantes[ind][2] != nombre:
-    #     ind = ind + 1
-
-    return ind
-
-
-"""
-estudiantes: Arreglo multi de 9x8 de string
-est_id, ind: int
+est: Estudiante
+est_id, tam_reg: int
 """
 
 
@@ -1098,15 +1106,15 @@ def obtener_nombre_estudiante_por_id(est_id: int) -> str:
     global ar_lo_estudiantes
 
     tam_reg = obtener_largo_registro(ar_lo_estudiantes)
-
     ar_lo_estudiantes.seek(tam_reg * est_id, 0)
+
+    est = Estudiante()
     est: Estudiante = pickle.load(ar_lo_estudiantes)
 
     return est.nombre
 
 
 """
-estados: Arreglo de 0 a 7 de bool
 est_id: int
 opc: string
 """
@@ -1127,12 +1135,9 @@ def eliminar_perfil(est_id: int):
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-reportes: Arreglo multi de 3x40 de int
-motivo_reportes: Arreglo de 0 a 39 de string
-estados: Arreglo de 0 a 7 de bool
-est_id, reporte_id, reporte_ind, reportado_id: int
-decision, motivo, opc, reportado: string
+r: Reporte
+reportante_id, reportado_id: int
+motivo: string
 """
 
 
@@ -1142,7 +1147,6 @@ def crear_reporte(reportante_id: int, reportado_id: int):
     r = Reporte()
 
     motivo = input("Motivo:\n\t")
-
     while motivo == "":
         print("Debe ingresar el motivo del reporte.")
         motivo = input("Por favor. Ingrese el motivo:\n\t")
@@ -1162,6 +1166,13 @@ def crear_reporte(reportante_id: int, reportado_id: int):
     print("Reporte generado con éxito.")
 
 
+"""
+est_repor: Estudiante
+est_id: int
+decision, opc, reportado: string
+"""
+
+
 def reportar_candidato(est_id: int):
     decision = ""
 
@@ -1169,6 +1180,7 @@ def reportar_candidato(est_id: int):
     while decision != "N":
         reportado = input("Ingrese el nombre o el id del candidato: ")
 
+        est_repor = Estudiante()
         if not reportado.isdigit():
             est_repor = obtener_estudiante_por_nombre(reportado)
         else:
@@ -1192,8 +1204,8 @@ def reportar_candidato(est_id: int):
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-est_id, ind: int
+est: Estudiante
+fec, genero: string
 """
 
 
@@ -1210,16 +1222,16 @@ def mostrar_datos_estudiante(est: Estudiante):
         genero = "Femenino"
     else:
         genero = "Masculino"
+
     print(f"Género: {genero}")
     print(f"Ciudad: {est.ciudad}")
     print(f"País: {est.pais}")
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
 est_id: int
 opc: string
+esta_borrado: boolean
 """
 
 
@@ -1248,13 +1260,13 @@ def manejador_submenu_gestionar_perfil(est_id: int):
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-nombre: string
-est_id: int
+est: Estudiante
+nom: string
 """
 
 
 def validar_nombre(nom: str) -> str:
+    est = Estudiante()
     est = obtener_estudiante_por_nombre(nom)
 
     while est.id == -1:
@@ -1266,42 +1278,47 @@ def validar_nombre(nom: str) -> str:
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
-me_gusta: Arreglo multi de 8x8 de bool
-formato_espaniol_nacimiento: string
-edad, est_id, ind: int
+like: Like
+id_destinatario, id_remitente, tam_ar: int
+tiene_l: boolean
 """
 
 
 def tiene_like(id_remitente: int, id_destinatario: int) -> bool:
     global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
-    ar_lo_likesEstudiantes.seek(0)
+    like = Like()
     tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
+
+    ar_lo_likesEstudiantes.seek(0)
     like: Like = pickle.load(ar_lo_likesEstudiantes)
-    tiene = like.remitente == id_remitente and like.destinatario == id_destinatario
+    tiene_l = like.remitente == id_remitente and like.destinatario == id_destinatario
 
-    while ar_lo_likesEstudiantes.tell() < tam_ar and not tiene:
+    while ar_lo_likesEstudiantes.tell() < tam_ar and not tiene_l:
         like = pickle.load(ar_lo_likesEstudiantes)
-        tiene = like.remitente == id_remitente and like.destinatario == id_destinatario
+        tiene_l = (
+            like.remitente == id_remitente and like.destinatario == id_destinatario
+        )
 
-    return tiene
+    return tiene_l
+
+
+"""
+est: Estudiante
+edad, est_id, tam_ar: int
+formato_espaniol_nacimiento: string
+"""
 
 
 def ver_perfil_estudiantes(est_id: int):
-    global ar_lo_estudiantes, ar_fi_estudiantes, ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
+    global ar_lo_estudiantes, ar_fi_estudiantes
 
     limpiar_consola()
 
+    est = Estudiante()
     ar_lo_estudiantes.seek(0)
     tam_ar = os.path.getsize(ar_fi_estudiantes)
 
-    ar_lo_likesEstudiantes.seek(0)
-
-    while ar_lo_likesEstudiantes.tell() < os.path.getsize(ar_fi_likesEstudiantes):
-        like: Like = pickle.load(ar_lo_likesEstudiantes)
-        print(like.__dict__)
     while ar_lo_estudiantes.tell() < tam_ar:
         est: Estudiante = pickle.load(ar_lo_estudiantes)
 
@@ -1326,15 +1343,12 @@ def ver_perfil_estudiantes(est_id: int):
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
-me_gusta: Arreglo multi de 8x8 de bool
-est_id, match_id: int
-decision, nombre_estudiante: string
+l: Like
+remitente_id, destinatario_id: int
 """
 
 
-def crear_like(remitente_id, destinatario_id):
+def crear_like(remitente_id: int, destinatario_id: int):
     global ar_lo_likesEstudiantes
 
     ar_lo_likesEstudiantes.seek(0, 2)
@@ -1348,6 +1362,13 @@ def crear_like(remitente_id, destinatario_id):
     ordenar_likes()
 
 
+"""
+est_match: Estudiante
+est_id, match_id: int
+decision, est_nom: string
+"""
+
+
 def marcar_match(est_id: int):
     decision = "S"
 
@@ -1357,6 +1378,8 @@ def marcar_match(est_id: int):
         )
 
         est_nom = validar_nombre(est_nom)
+
+        est_match = Estudiante()
         est_match = obtener_estudiante_por_nombre(est_nom)
         match_id = est_match.id
 
@@ -1373,12 +1396,8 @@ def marcar_match(est_id: int):
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
-me_gusta: Arreglo multi de 8x8 de bool
 est_id: int
 decision, opc: string
-realizo_matcheo: bool
 """
 
 
@@ -1406,25 +1425,24 @@ def manejador_matcheo_estudiantes(est_id: int):
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-me_gusta: Arreglo multi de 8x8 de bool
-reportes: Arreglo multi de 3x40 de int
-motivo_reportes: Arreglo de 0 a 39 de string
-estados: Arreglo de 0 a 7 de bool
-opc: string
-est_id: int
+est, usua: Estudiante
+like: Like
+cant_mostrado, est_id, pos, tam_ar: int
 """
 
 
 def revelar_candidatos(est_id: int):
     global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
-    limpiar_consola()
+    est = Estudiante()
+    usua = Estudiante()
+    like = Like()
 
     cant_mostrado = 0
     tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
     ar_lo_likesEstudiantes.seek(0)
-    est = Estudiante()
+
+    limpiar_consola()
 
     while ar_lo_likesEstudiantes.tell() < tam_ar and cant_mostrado < 3:
         like: Like = pickle.load(ar_lo_likesEstudiantes)
@@ -1447,6 +1465,13 @@ def revelar_candidatos(est_id: int):
     input("\nPresiona Enter para continuar...")
 
 
+"""
+est: Estudiante
+opc: string
+est_id, tam_re: int
+"""
+
+
 def manejador_submenu_gestionar_candidatos(est_id: int):
     global ar_lo_estudiantes
 
@@ -1454,6 +1479,8 @@ def manejador_submenu_gestionar_candidatos(est_id: int):
 
     tam_re = obtener_largo_registro(ar_lo_estudiantes)
     ar_lo_estudiantes.seek(est_id * tam_re, 0)
+
+    est = Estudiante()
     est: Estudiante = pickle.load(ar_lo_estudiantes)
 
     while opc != "f":
@@ -1516,13 +1543,19 @@ def manejador_submenu_matcheos():
             en_construccion()
 
 
+"""
+long: int
+cad: string
+"""
+
+
 def verificar_longitud_cadena(cad: str, long: int) -> bool:
     return len(cad) == long
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-est_id: int
+est: Estudiante
+est_id, tam_reg: int
 opc, valor: str
 """
 
@@ -1530,9 +1563,11 @@ opc, valor: str
 def editar_datos_estudiante(est_id: int):
     global ar_lo_estudiantes, ar_fi_estudiantes
 
-    opc = ""
+    est = Estudiante()
     est = obtener_estudiante_por_id(est_id)
     tam_reg = obtener_largo_registro(ar_lo_estudiantes)
+
+    opc = ""
 
     while opc != "n":
         ar_lo_estudiantes.seek(est_id * tam_reg, 0)
@@ -1556,6 +1591,7 @@ def editar_datos_estudiante(est_id: int):
             print("No es una opción válida.")
             opc = input("Ingrese una opción válida: ")
 
+        # TODO: añadir verificación de longitud
         match opc:
             case "a":
                 valor = solicitar_fecha_nacimiento()
@@ -1577,64 +1613,27 @@ def editar_datos_estudiante(est_id: int):
                 est.pais = valor
 
         formatear_estudiante(est)
+
         pickle.dump(est, ar_lo_estudiantes)
         ar_lo_estudiantes.flush()
 
 
 """
-estudiantes: Arreglo de multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
-me_gusta: Arreglo multi de 8x8 de bool
-cant_estudiantes, est_id, ind, likes_dados, likes_recibidos, matches: int
-like_dado, like_recibido: bool
-porcentaje: float
+like: Like
+est_id, pos, tam_ar, tam_re: int
 """
-
-
-def buscar_like(like: Like) -> int:
-    global ar_lo_likesEstudiantes, ar_fi_estudiantes
-
-    tam_re = obtener_largo_registro(ar_lo_likesEstudiantes)
-    tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
-    inf = 0
-    sup = tam_ar // tam_re
-    med = (inf + sup) // 2
-
-    pos = med
-    ar_lo_likesEstudiantes.seek(med * tam_re, 0)
-    l: Like = pickle.load(ar_lo_likesEstudiantes)
-
-    while inf < sup and (
-        l.destinatario != like.destinatario or l.remitente != like.remitente
-    ):
-        if l.remitente > like.remitente or (
-            l.remitente == like.remitente and l.destinatario > like.destinatario
-        ):
-            sup = med - 1
-        elif l.remitente < like.remitente or (
-            l.remitente == like.remitente and l.destinatario < like.destinatario
-        ):
-            inf = med + 1
-
-        med = (inf + sup) // 2
-        pos = med
-        ar_lo_likesEstudiantes.seek(med * tam_re, 0)
-        l = pickle.load(ar_lo_likesEstudiantes)
-
-    if l.destinatario != like.destinatario or l.remitente != like.remitente:
-        pos = -1
-
-    return pos
 
 
 def buscar_primer_like(est_id: int) -> int:
     global ar_lo_likesEstudiantes, ar_fi_estudiantes
 
-    like = Like()
+    tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
     tam_re = obtener_largo_registro(ar_lo_likesEstudiantes)
     ar_lo_likesEstudiantes.seek(0)
-    tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
+
+    like = Like()
     like: Like = pickle.load(ar_lo_likesEstudiantes)
+
     pos = ar_lo_likesEstudiantes.tell()
 
     while ar_lo_likesEstudiantes.tell() < tam_ar and like.remitente != est_id:
@@ -1649,6 +1648,12 @@ def buscar_primer_like(est_id: int) -> int:
     return pos
 
 
+"""
+like_1, like_2: Like
+cant_re, i, j, tam_ar, tam_re: int
+"""
+
+
 def ordenar_likes():
     global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
@@ -1659,9 +1664,11 @@ def ordenar_likes():
     for i in range(cant_re - 2):
         for j in range(i + 1, cant_re - 1):
             ar_lo_likesEstudiantes.seek(i * tam_re, 0)
+            like_1 = Like()
             like_1: Like = pickle.load(ar_lo_likesEstudiantes)
 
             ar_lo_likesEstudiantes.seek(j * tam_re, 0)
+            like_2 = Like()
             like_2: Like = pickle.load(ar_lo_likesEstudiantes)
 
             if (
@@ -1676,6 +1683,14 @@ def ordenar_likes():
     ar_lo_likesEstudiantes.flush()
 
 
+"""
+like: Like
+est_destinatario: Estudiante
+cant_est_act, est_id, like_dados, like_recibidos, matches, pos, pri_l_est, tam_ar: int
+porcentaje: float
+"""
+
+
 def reportes_estadisticos_estudiante(est_id: int):
     global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
@@ -1687,6 +1702,8 @@ def reportes_estadisticos_estudiante(est_id: int):
 
     if pri_l_est != -1:
         ar_lo_likesEstudiantes.seek(pri_l_est, 0)
+
+        like = Like()
         like: Like = pickle.load(ar_lo_likesEstudiantes)
         pos = ar_lo_likesEstudiantes.tell()
 
@@ -1711,7 +1728,7 @@ def reportes_estadisticos_estudiante(est_id: int):
             pos = ar_lo_likesEstudiantes.tell()
 
             if like.destinatario == est_id and not tiene_like(like.remitente, est_id):
-                like_recibido = like_recibido + 1
+                like_recibidos = like_recibidos + 1
 
             ar_lo_likesEstudiantes.seek(pos)
             like: Like = pickle.load(ar_lo_likesEstudiantes)
@@ -1724,6 +1741,13 @@ def reportes_estadisticos_estudiante(est_id: int):
     print("Likes dados y no recibidos:", like_dados)
     print("Likes recibidos y no respondidos:", like_recibidos)
     input("Presiona Enter para volver al menú... ")
+
+
+"""
+est: Estudiante
+nom_est: string
+tam_ar: int
+"""
 
 
 def obtener_estudiante_por_nombre(nom_est: str) -> Estudiante:
@@ -1742,15 +1766,22 @@ def obtener_estudiante_por_nombre(nom_est: str) -> Estudiante:
         est.id = -1
 
     desformatear_estudiante(est)
+
     return est
+
+
+"""
+est: Estudiante
+id_est, tam_ar, tam_reg: int
+"""
 
 
 def obtener_estudiante_por_id(id_est: int) -> Estudiante:
     global ar_lo_estudiantes, ar_fi_estudiantes
 
+    est = Estudiante()
     tam_ar = os.path.getsize(ar_fi_estudiantes)
     tam_reg = obtener_largo_registro(ar_lo_estudiantes)
-    est = Estudiante()
 
     if 0 <= id_est and id_est <= tam_ar // tam_reg:
         ar_lo_estudiantes.seek(id_est * tam_reg, 0)
@@ -1760,6 +1791,12 @@ def obtener_estudiante_por_id(id_est: int) -> Estudiante:
         est.id = -1
 
     return est
+
+
+"""
+est: Estudiante
+tam_reg: int
+"""
 
 
 def actualizar_estudiante(est: Estudiante):
@@ -1772,6 +1809,12 @@ def actualizar_estudiante(est: Estudiante):
 
     pickle.dump(est, ar_lo_estudiantes)
     ar_lo_estudiantes.flush()
+
+
+"""
+mod: Moderador
+tam_reg: int
+"""
 
 
 def actualizar_moderador(mod: Moderador):
@@ -1787,10 +1830,8 @@ def actualizar_moderador(mod: Moderador):
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
-decision, estudiante, opc: string
-est_id: int
+est: Estudiante
+dato_est, opc: string
 """
 
 
@@ -1822,6 +1863,12 @@ def desactivar_estudiante():
             actualizar_estudiante(est)
 
             print("Perfil borrado con exito.")
+
+
+"""
+mod: Moderador
+dato_mod, opc: string
+"""
 
 
 def desactivar_moderador():
@@ -1857,39 +1904,24 @@ def desactivar_moderador():
 
 
 """
-cand: Arreglo multi de 2x3 de int
+cand: Arreglo de 0 a 2 de int
 valores: Arreglo de 0 a 2 de int
 ind: int
 """
 
 
-def calcular_eleccion_candidatos(valores: list[int], cand: list[list[int]]):
+def calcular_eleccion_candidatos(valores: list[int], cand: list[int]):
     for ind in range(3):
         valores[ind] = randint(0, 100) * cand[ind][1]
 
 
 """
-candidatos: Arreglo multi de 2x3 de int
-est_id, ind: int
-"""
-
-
-def comprobar_nuevo_candidato(est_id: int, candidatos: list[list[int]]) -> bool:
-    ind = 0
-
-    while ind < 3 and candidatos[ind][0] != est_id:
-        ind = ind + 1
-
-    return ind == 3
-
-
-"""
-cand: Arreglo multi de 2x3 de int
+cand: Arreglo de 0 a 2 de int
 ind, total: int
 """
 
 
-def calcular_probabilidad_total_candidatos(cand: list[list[int]]) -> int:
+def calcular_probabilidad_total_candidatos(cand: list[int]) -> int:
     total = 0
 
     for ind in range(3):
@@ -1899,9 +1931,9 @@ def calcular_probabilidad_total_candidatos(cand: list[list[int]]) -> int:
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-cand: Arreglo multi de 2x3 de int
-est_id, ind: int
+cand: Arreglo de 0 a 2 de int
+ind: int
+nom: string
 """
 
 
@@ -1914,7 +1946,7 @@ def mostrar_candidatos(cand: list[int]):
 
 """
 valores: Arreglo de 0 a 2 de int
-ind, mayor, pos, valor: int
+ind, mayor, pos: int
 """
 
 
@@ -1923,30 +1955,38 @@ def buscar_candidato_mayor_valor(valores: list[int]) -> int:
     pos = 0
 
     for ind in range(3):
-        valor = valores[ind]
-
         if valores[ind] > mayor:
-            mayor = valor
+            mayor = valores[ind]
             pos = ind
 
     return pos
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-candidatos: Arreglo multi de 2x3 de int
-candidato_ind, cant_est_totales, est_id, usuario_id: int
+list: Arreglo de 0 a 2 de int
+ind, valor: int
+pertenece: boolean
 """
 
 
 def pertenece_array(valor: int, lista: list[int]):
     pertenece = False
+    ind = 0
 
-    for ind in range(3):
+    while ind < 3 and not pertenece:
         if lista[ind] == valor:
             pertenece = True
 
+        ind = ind + 1
+
     return pertenece
+
+
+"""
+est: Estudiante
+candidatos: Arreglo de 0 a 2 de int
+cant_est, elegidos, est_id, rand_id: int
+"""
 
 
 def obtener_candidatos(est_id: int, candidatos: list[int]):
@@ -1968,20 +2008,15 @@ def obtener_candidatos(est_id: int, candidatos: list[int]):
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-candidatos: Arreglo multi de 2x3 de int
-me_gusta: Arreglo multi de 8x8 de bool
+like: Like
+candidatos: Arreglo de 0 a 2 de int
 valores: Arreglo de 0 a 2 de int
-usuario_id, pos_elegido, pos_match, usuario: int
+elegido_id, pos_elegido, usua_id: int
 nombre_match: string
 """
 
 
-def matchear_candidato(
-    usua_id: int,
-    candidatos: list[int],
-    valores: list[int],
-):
+def matchear_candidato(usua_id: int, candidatos: list[int], valores: list[int]):
     global ar_lo_likesEstudiantes
 
     ar_lo_likesEstudiantes.seek(0, 2)
@@ -1999,13 +2034,11 @@ def matchear_candidato(
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-me_gusta: Arreglo multi de 8x8 de bool
-candidatos: Arreglo multi de 2x3 de int
-estados: Arreglo de 0 a 7 de bool
+puntuaciones: Arreglo de 0 a 2 de int
+candidatos: Arreglo de 0 a 2 de int
 valores_eleccion_candidatos: Arreglo de 0 a 2 de int
 continuar, valor: string
-cant_est_posibles, probabilidad_ingresada, probabilidad_match_1, probabilidad_match_2, probabilidad_match_3, usuario_id: int
+cant_est_posibles, est_id, prob_ingresada, probabilidad_total: int
 """
 
 
@@ -2078,8 +2111,7 @@ def ruleta(est_id: int):
 ### Reporte ###
 
 """
-reportes: Arreglo multi de 3x40 de int
-ind: int
+tam_ar, tam_reg: int
 """
 
 
@@ -2093,11 +2125,8 @@ def contar_reportes() -> int:
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-reportes: Arreglo multi de 3x40 de int
-motivo_reportes: Arreglo de 0 a 39 de sring
-nombre_reportante, nombre_reportado: string
-reporte_id: int
+rep: Reporte
+nom_reportado, nom_reportante: string
 """
 
 
@@ -2108,21 +2137,26 @@ def mostrar_detalle_reporte(rep: Reporte, nom_reportante: str, nom_reportado: st
     print(f"Motivo:\n\t{rep.razon}\n\n")
 
 
-def actualizar_reporte(rep: Reporte):
+"""
+re: Reporte
+tam_reg: int
+"""
+
+
+def actualizar_reporte(re: Reporte):
     global ar_lo_reportes
 
     tam_reg = obtener_largo_registro(ar_lo_reportes)
-    ar_lo_reportes.seek(rep.id * tam_reg, 0)
+    ar_lo_reportes.seek(re.id * tam_reg, 0)
 
-    formatear_reporte(rep)
+    formatear_reporte(re)
 
-    pickle.dump(rep, ar_lo_reportes)
+    pickle.dump(re, ar_lo_reportes)
     ar_lo_reportes.flush()
 
 
 """
-reportes: Arreglo multi de 3x40 de int
-reporte_id: int
+re: Reporte
 """
 
 
@@ -2134,12 +2168,19 @@ def ignorar_reporte(re: Reporte):
     print("El reporte fue ignorado.\n")
 
 
+"""
+re: Reporte
+id_reportado, tam_ar: int
+"""
+
+
 def actualizar_reportes(id_reportado: int):
     global ar_lo_reportes, ar_fi_reportes
 
     ar_lo_reportes.seek(0)
     tam_ar = os.path.getsize(ar_fi_reportes)
 
+    re = Reporte()
     while ar_lo_reportes.tell() < tam_ar:
         re: Reporte = pickle.load(ar_lo_reportes)
 
@@ -2149,17 +2190,16 @@ def actualizar_reportes(id_reportado: int):
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
-reportes: Arreglo multi de 3x40 de int
-cant_reportes, ind, reporte_id, reportado_id: int
-nombre_reportado: string
+est: Estudiante
+r, re: Reporte
+pos, pos_re, tam_ar: int
 """
 
 
 def bloquear_reportado(pos_re: int, est: Estudiante, re: Reporte):
     global ar_lo_reportes, ar_fi_reportes
 
+    r = Reporte()
     pos = pos_re
     est.estado = False
     actualizar_estudiante(est)
@@ -2169,24 +2209,24 @@ def bloquear_reportado(pos_re: int, est: Estudiante, re: Reporte):
 
     tam_ar = os.path.getsize(ar_fi_reportes)
     ar_lo_reportes.seek(pos_re, 0)
+
     while pos < tam_ar:
         r: Reporte = pickle.load(ar_lo_reportes)
         pos = ar_lo_reportes.tell()
+
         if r.id_reportado == re.id_reportado and r.estado == 0:
             r.estado = 2
             actualizar_reporte(r)
+            ar_lo_reportes.seek(pos, 0)
 
 
 """
-reportes: Arreglo multi de 3x40 de int
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
-opc: string
-ind, reportado_id, reporte_id: int
+mod: Moderador
+mod_id, tam_ar, tam_re: int
 """
 
 
-def obtener_moderador_por_id(mod_id: int):
+def obtener_moderador_por_id(mod_id: int) -> Moderador:
     global ar_lo_moderadores, ar_fi_moderadores
 
     mod = Moderador()
@@ -2203,7 +2243,14 @@ def obtener_moderador_por_id(mod_id: int):
     return mod
 
 
+"""
+mod: Moderador
+usua_id: int
+"""
+
+
 def incrementar_reporte_ignorado(usua_id: int):
+    mod = Moderador()
     mod = obtener_moderador_por_id(usua_id)
     mod.cant_ignorados = mod.cant_ignorados + 1
 
@@ -2211,12 +2258,28 @@ def incrementar_reporte_ignorado(usua_id: int):
     ar_lo_moderadores.flush()
 
 
+"""
+mod: Moderador
+usua_id: int
+"""
+
+
 def incrementar_reporte_aceptado(usua_id: int):
+    mod = Moderador()
     mod = obtener_moderador_por_id(usua_id)
     mod.cant_aceptados = mod.cant_aceptados + 1
 
     pickle.dump(mod, ar_lo_moderadores)
     ar_lo_moderadores.flush()
+
+
+"""
+est: Estudiante
+rep: Reporte
+usua: Arreglo de 0 a 1 de int
+pos_re: int
+opc: string
+"""
 
 
 def procesar_reporte(pos_re: int, est: Estudiante, usua: list[int], rep: Reporte):
@@ -2241,14 +2304,12 @@ def procesar_reporte(pos_re: int, est: Estudiante, usua: list[int], rep: Reporte
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
-reportes: Arreglo multi de 3x40 de int
-motivo_reportes: Arreglo de 0 a 39 de string
-reporte: Arreglo de 0 a 4 de string
-cant_reportes, ind: int
+est_reportado, est_reportante: Estudiante
+rep: Reporte
+usua: Arreglo de 0 a 1 de int
 opc: string
-estudiantes_activos: bool
+pos, tam_ar: int
+estudiantes_activos: boolean
 """
 
 
@@ -2262,14 +2323,17 @@ def ver_reportes(usua: list[int]):
 
     pos = 0
     while pos < tam_ar and opc != "N":
-        rep: Reporte = pickle.load(ar_lo_reportes)
+        rep = Reporte()
+        rep = pickle.load(ar_lo_reportes)
         pos = ar_lo_reportes.tell()
 
         desformatear_reporte(rep)
 
         limpiar_consola()
 
+        est_reportado = Estudiante()
         est_reportado = obtener_estudiante_por_id(rep.id_reportado)
+        est_reportante = Estudiante()
         est_reportante = obtener_estudiante_por_id(rep.id_reportante)
 
         estudiantes_activos = est_reportante.estado and est_reportado.estado
@@ -2289,8 +2353,8 @@ def ver_reportes(usua: list[int]):
 ### Moderador ###
 
 """
-moderadores: Arreglo multi de 2x4 de string
-ind: int
+mod: Moderador
+cant, tam_ar: int
 """
 
 
@@ -2302,7 +2366,8 @@ def contar_moderadores() -> int:
 
     cant = 0
     while ar_lo_moderadores.tell() < tam_ar:
-        mod: Moderador = pickle.load(ar_lo_moderadores)
+        mod = Moderador()
+        mod = pickle.load(ar_lo_moderadores)
 
         if mod.estado:
             cant = cant + 1
@@ -2311,11 +2376,9 @@ def contar_moderadores() -> int:
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-moderadores: Arreglo multi de 2x4 de string
+mod, nuevo_mod: Moderador
 email, password: string
-registrado: bool
-cant: int
+registrado: boolean
 """
 
 
@@ -2329,10 +2392,10 @@ def registrar_moderador(email: str, password: str) -> bool:
     else:
         ar_lo_moderadores.seek(0, 2)
 
+        mod = Moderador()
         mod: Moderador = pickle.load(ar_lo_moderadores)
 
         nuevo_mod = Moderador()
-
         nuevo_mod.id = mod.id + 1
         nuevo_mod.email = email
         nuevo_mod.password = password
@@ -2352,14 +2415,13 @@ def registrar_moderador(email: str, password: str) -> bool:
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
-opc: string
+decision, tipo_usua: string
 """
 
 
 def eliminar_usuario():
     decision = ""
+
     while decision != "N":
         limpiar_consola()
 
@@ -2382,13 +2444,24 @@ def eliminar_usuario():
         decision = validar_continuacion(decision)
 
 
+"""
+email, password: string
+"""
+
+
 def dar_alta_moderador():
     limpiar_consola()
     print("\n........Registro moderador........\n")
 
     email = ingresar_propiedad("email")
     password = ingresar_contrasenia()
+
     registrar_moderador(email, password)
+
+
+"""
+opc: string
+"""
 
 
 def manejador_submenu_gestionar_usuarios():
@@ -2416,7 +2489,14 @@ def manejador_submenu_gestionar_usuarios():
             en_construccion()
 
 
+"""
+decision, opc: string
+"""
+
+
 def manejador_submenu_gestionar_estudiantes():
+    global ar_lo_estudiantes
+
     opc = ""
 
     while opc != "b":
@@ -2432,23 +2512,20 @@ def manejador_submenu_gestionar_estudiantes():
             opc = input("Ingrese una opción válida: ")
 
         if opc == "a":
-            global ar_lo_estudiantes
-
             decision = ""
+
             while decision != "N":
                 limpiar_consola()
 
                 desactivar_estudiante()
-
                 limpiar_consola()
+
                 decision = input("Desactivar otra cuenta. S/N: ").upper()
                 decision = validar_continuacion(decision)
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-reportes: Arreglo multi de 3x40 de int
-motivo_reportes: Arreglo de 0 a 39 de string
+usua: Arreglo de 0 a 1 de int
 opc: string
 """
 
@@ -2475,7 +2552,7 @@ def manejador_submenu_gestionar_reportes(usua: list[int]):
 ### Mostrar ###
 
 """
-opcion: string
+opc: string
 """
 
 
@@ -2492,22 +2569,22 @@ def mostrar_menu_principal_estudiante() -> str:
     print("7. Matcheos combinandos")
     print("0. Salir")
 
-    opcion = input("\nSeleccione una opción: ")
+    opc = input("\nSeleccione una opción: ")
 
     while (
-        opcion != "1"
-        and opcion != "2"
-        and opcion != "3"
-        and opcion != "4"
-        and opcion != "5"
-        and opcion != "6"
-        and opcion != "7"
-        and opcion != "0"
+        opc != "1"
+        and opc != "2"
+        and opc != "3"
+        and opc != "4"
+        and opc != "5"
+        and opc != "6"
+        and opc != "7"
+        and opc != "0"
     ):
         print("La opción introducida no es válida.")
-        opcion = input("Por favor, introduzca una opción válida: ")
+        opc = input("Por favor, introduzca una opción válida: ")
 
-    return opcion
+    return opc
 
 
 """
@@ -2533,6 +2610,11 @@ def mostrar_menu_principal_moderadores() -> str:
     return opc
 
 
+"""
+opc: string
+"""
+
+
 def mostrar_menu_principal_administradores() -> str:
     limpiar_consola()
 
@@ -2553,12 +2635,7 @@ def mostrar_menu_principal_administradores() -> str:
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-reportes: Arreglo multi de 3x40 de int
-motivo_reportes: Arreglo de 0 a 39 de string
-me_gusta: Arreglo multi de 8x8 de bool
-estados: Arreglo de 0 a 7 de bool
-rol, usuario_id: int
+usuario: Arreglo de 0 a 1 de int
 """
 
 
@@ -2596,11 +2673,7 @@ def mostrar_menu_principal() -> str:
 ### Gestionar ###
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-estados: Arreglo de 0 a 7 de bool
-me_gusta: Arreglo multi de 8x8 de bool
-reportes: Arreglo multi de 3x40 de int
-motivo_reportes: Arreglo de 0 a 39 de string
+est: Estudiante
 est_id: int
 opc: string
 """
@@ -2609,6 +2682,7 @@ opc: string
 def manejador_menu_principal_estudiante(est_id: int):
     opc = ""
 
+    est = Estudiante()
     est = obtener_estudiante_por_id(est_id)
 
     while opc != "0" and est.estado:
@@ -2635,15 +2709,7 @@ def manejador_menu_principal_estudiante(est_id: int):
         est = obtener_estudiante_por_id(est_id)
 
 
-"""
-estudiantes: Arreglo multi de 9x8 de string
-reportes: Arreglo multi de 3x40 de int
-motivo_reportes: Arreglo de 0 a 39 de string
-estados: Arreglo de 0 a 7 de bool
-opc: string
-"""
-
-
+# TODO: Borrar
 def mostrar_estudiantes():
     global ar_lo_estudiantes, ar_fi_estudiantes
 
@@ -2656,6 +2722,12 @@ def mostrar_estudiantes():
         # print(ar_lo_estudiantes.tell())
 
     test()
+
+
+"""
+usuario: Arreglo de 0 a 1 de int
+opc: string
+"""
 
 
 def manejador_menu_principal_moderador(usuario: list[int]):
@@ -2673,17 +2745,33 @@ def manejador_menu_principal_moderador(usuario: list[int]):
                 en_construccion()
 
 
+"""
+est: Estudiante
+score: Arreglo de 0 a 2 de int
+est_id: int
+"""
+
+
 def mostrar_puntuacion(est_id: int, score: list[int]):
-    est: Estudiante = obtener_estudiante_por_id(est_id)
+    est = Estudiante()
+    est = obtener_estudiante_por_id(est_id)
 
     print(f"El estudiante {est.nombre}")
     print(f"Puntuaje: {score[0]}")
     print(f"Mayor racha: {score[2]}\n")
 
 
+"""
+like: Like
+score: Arreglo de 0 a 2 de int
+tiene_match: boolean
+"""
+
+
 def actualizar_puntuacion(score: list[int], like: Like):
     tiene_match = tiene_like(like.destinatario, like.remitente)
 
+    # ! Mirar funcionalidad
     if tiene_match and score[1] < 3:
         score[0] = score[0] + 1
         score[1] = score[1] + 1
@@ -2698,6 +2786,13 @@ def actualizar_puntuacion(score: list[int], like: Like):
         score[1] = 0
 
 
+"""
+like: Like
+score: Arreglo de 0 a 2 de int
+est_id, pos, tam_ar: int
+"""
+
+
 def puntuar_candidatos():
     global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
@@ -2709,6 +2804,8 @@ def puntuar_candidatos():
 
     limpiar_consola()
     print("........Puntuación de candidatos........\n\n")
+
+    like = Like()
 
     while ar_lo_likesEstudiantes.tell() < tam_ar:
         like: Like = pickle.load(ar_lo_likesEstudiantes)
@@ -2732,15 +2829,24 @@ def puntuar_candidatos():
     input("\nPresiona Enter para continuar...")
 
 
+"""
+mod, mod_repo_ign, mod_repo_acep, mod_mas_repo_procesados: Moderador
+cant_repo, cant_repo_ign, cant_repo_acep, cant_repo_procesados, mayor_cant_repo_ign, mayor_cant_repo_acep, mayor_cant_repo_procesados, tam_ar: int
+porc_repo_ign, porc_repo_acep: float
+"""
+
+
 def reportes_estadisticos_administrador():
     global ar_lo_reportes, ar_fi_reportes, ar_lo_moderadores, ar_fi_moderadores
 
     cant_repo = contar_reportes()
     cant_repo_ign = -1
     cant_repo_acep = -1
+
     mayor_cant_repo_ign = -1
-    mayor_cant_repo_acep = -1
     mod_repo_ign = Moderador()
+
+    mayor_cant_repo_acep = -1
     mod_repo_acep = Moderador()
 
     mayor_cant_repo_procesados = -1
@@ -2787,6 +2893,12 @@ def reportes_estadisticos_administrador():
     input("\n\nPresione Enter para continuar...")
 
 
+"""
+usuario: Arreglo de 0 a 1 de int
+opc: string
+"""
+
+
 def manejador_menu_principal_administrador(usuario: list[int]):
     opc = ""
 
@@ -2805,13 +2917,7 @@ def manejador_menu_principal_administrador(usuario: list[int]):
 
 
 """
-estudiantes: Arreglo multi de 9x8 de string
-moderadores: Arreglo multi de 2x4 de string
-me_gusta: Arreglo multi de 8x8 de bool
-reportes: Arreglo multi de 3x40 de int
-motivo_reportes: Arreglo de 0 a 39 de string
 usuario: Arreglo de 0 a 1 de int
-estados: Arreglo de 0 a 7 de bool
 opc: string
 """
 
@@ -2821,9 +2927,6 @@ def main():
 
     opc = ""
     usuario = [0] * 2
-
-    mostrar_likes()
-    test()
 
     while opc != "0" and usuario[0] != -1:
         opc = mostrar_menu_principal()
