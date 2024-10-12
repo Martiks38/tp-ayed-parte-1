@@ -308,7 +308,7 @@ opc: string
 
 
 def validar_continuacion(opc: str) -> str:
-    while opc != "S" and opc != "N":
+    while opc.upper() != "S" and opc.upper() != "N":
         opc = input("Opción incorrecta S o N: ").upper()
 
     limpiar_consola()
@@ -1363,6 +1363,7 @@ def crear_like(remitente_id: int, destinatario_id: int):
 
 
 """
+est: Estudiante
 est_match: Estudiante
 est_id, match_id: int
 decision, est_nom: string
@@ -1371,6 +1372,17 @@ decision, est_nom: string
 
 def marcar_match(est_id: int):
     decision = "S"
+
+    est = Estudiante()
+    est: Estudiante = obtener_estudiante_por_id(est_id)
+
+    usar_super_like = False
+
+    if est.super_like:
+        decision_super_like = input("\nUtilizar super like. (S/N)")
+        decision_super_like = validar_continuacion(decision_super_like)
+
+        usar_super_like = decision_super_like == "S"
 
     if decision == "S":
         est_nom = input(
@@ -1387,6 +1399,12 @@ def marcar_match(est_id: int):
             print("\nYa tiene match con", est_nom)
         else:
             crear_like(est_id, match_id)
+
+            if usar_super_like:
+                crear_like(match_id, est_id)
+                est.super_like = False
+
+                actualizar_estudiante(est)
 
             limpiar_consola()
             ver_perfil_estudiantes(est_id)
