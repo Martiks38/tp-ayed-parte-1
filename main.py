@@ -625,15 +625,15 @@ def mockear_estudiantes():
 
     for ind in range(4):
         est.id = ind
-        est.email = ESTUDIANTES[ind][0]
-        est.password = ESTUDIANTES[ind][1]
-        est.nombre = ESTUDIANTES[ind][2]
-        est.fecha_nac = ESTUDIANTES[ind][3]
-        est.biografia = ESTUDIANTES[ind][4]
-        est.hobbies = ESTUDIANTES[ind][5]
-        est.genero = ESTUDIANTES[ind][6]
-        est.ciudad = ESTUDIANTES[ind][7]
-        est.pais = ESTUDIANTES[ind][8]
+        est.email = validar_cadena(ESTUDIANTES[ind][0], 32)
+        est.password = validar_cadena(ESTUDIANTES[ind][1], 32)
+        est.nombre = validar_cadena(ESTUDIANTES[ind][2], 32)
+        est.fecha_nac = validar_cadena(ESTUDIANTES[ind][3], 10)
+        est.biografia = validar_cadena(ESTUDIANTES[ind][4], 255)
+        est.hobbies = validar_cadena(ESTUDIANTES[ind][5], 255)
+        est.genero = validar_cadena(ESTUDIANTES[ind][6], 1)
+        est.ciudad = validar_cadena(ESTUDIANTES[ind][7], 32)
+        est.pais = validar_cadena(ESTUDIANTES[ind][8], 32)
 
         formatear_estudiante(est)
         pickle.dump(est, ar_lo_estudiantes)
@@ -662,8 +662,8 @@ def mockear_moderadores():
 
     for ind in range(1):
         mod.id = ind
-        mod.email = MODERADORES[ind][0]
-        mod.password = MODERADORES[ind][1]
+        mod.email = validar_cadena([ind][0], 32)
+        mod.password = validar_cadena(MODERADORES[ind][1], 32)
 
         formatear_moderador(mod)
         pickle.dump(mod, ar_lo_moderadores)
@@ -699,7 +699,7 @@ def mockear_reportes():
         re.id = ind
         re.id_reportante = REPORTES[ind][0]
         re.id_reportado = REPORTES[ind][1]
-        re.razon = MOTIVOS[ind]
+        re.razon = validar_cadena(MOTIVOS[ind], 255)
         formatear_reporte(re)
         pickle.dump(re, ar_lo_reportes)
 
@@ -772,8 +772,8 @@ def mockear_administradores():
 
     for ind in range(1):
         ad.id = ind
-        ad.email = ADMINISTRADORES[ind][0]
-        ad.password = ADMINISTRADORES[ind][1]
+        ad.email = validar_cadena(ADMINISTRADORES[ind][0], 32)
+        ad.password = validar_cadena(ADMINISTRADORES[ind][1], 32)
 
         formatear_administrador(ad)
         pickle.dump(ad, ar_lo_administradores)
@@ -930,7 +930,11 @@ def registrar():
         print("\n........Registro........\n")
 
         email = ingresar_propiedad("email")
+        email = validar_cadena(email, 32)
+
         password = ingresar_contrasenia()
+        password = validar_cadena(email, 32)
+
         rol = input("Ingrese el rol estudiante(E) o moderador(M). (E/M): ").upper()
 
         while rol != "E" and rol != "M":
@@ -1023,12 +1027,17 @@ def registrar_estudiante(email: str, password: str) -> bool:
         nuevo_est.email = email
         nuevo_est.password = password
         nuevo_est.nombre = ingresar_propiedad(PROPS_ESTUDIANTE[0])
+        nuevo_est.nombre = validar_cadena(nuevo_est.nombre, 32)
         nuevo_est.fecha_nac = ingresar_propiedad(PROPS_ESTUDIANTE[1])
         nuevo_est.biografia = ingresar_propiedad(PROPS_ESTUDIANTE[2])
+        nuevo_est.biografia = validar_cadena(nuevo_est.biografia, 255)
         nuevo_est.hobbies = ingresar_propiedad(PROPS_ESTUDIANTE[3])
+        nuevo_est.hobbies = validar_cadena(nuevo_est.hobbies, 255)
         nuevo_est.genero = ingresar_propiedad(PROPS_ESTUDIANTE[4])
         nuevo_est.ciudad = ingresar_propiedad(PROPS_ESTUDIANTE[5])
+        nuevo_est.ciudad = validar_cadena(nuevo_est.ciudad, 32)
         nuevo_est.pais = ingresar_propiedad(PROPS_ESTUDIANTE[6])
+        nuevo_est.pais = validar_cadena(nuevo_est.pais, 32)
         nuevo_est.estado = True
         nuevo_est.super_like = True
         nuevo_est.creditos_revelar = 1
@@ -1150,6 +1159,7 @@ def crear_reporte(reportante_id: int, reportado_id: int):
     while motivo == "":
         print("Debe ingresar el motivo del reporte.")
         motivo = input("Por favor. Ingrese el motivo:\n\t")
+        motivo = validar_cadena(motivo, 255)
 
     r.id = contar_reportes()
     r.id_reportante = reportante_id
@@ -1562,6 +1572,18 @@ def manejador_submenu_matcheos():
 
 
 """
+"""
+
+
+def validar_cadena(cad: str, long: int) -> str:
+    while long < len(cad):
+        print(f"No es válido debe tener como máximo {long} caracteres.\n")
+        cad = input("Por favor. Vuelva a intentar: ")
+
+    return cad
+
+
+"""
 long: int
 cad: string
 """
@@ -1609,26 +1631,25 @@ def editar_datos_estudiante(est_id: int):
             print("No es una opción válida.")
             opc = input("Ingrese una opción válida: ")
 
-        # TODO: añadir verificación de longitud
         match opc:
             case "a":
                 valor = solicitar_fecha_nacimiento()
                 est.fecha_nac = valor
             case "b":
                 valor = ingresar_propiedad(PROPS_ESTUDIANTE[2])
-                est.biografia = valor
+                est.biografia = validar_cadena(valor, 255)
             case "c":
                 valor = ingresar_propiedad(PROPS_ESTUDIANTE[3])
-                est.hobbies = valor
+                est.hobbies = validar_cadena(valor, 255)
             case "d":
                 valor = ingresar_propiedad(PROPS_ESTUDIANTE[4])
                 est.genero = valor
             case "e":
                 valor = ingresar_propiedad(PROPS_ESTUDIANTE[5])
-                est.ciudad = valor
+                est.ciudad = validar_cadena(valor, 32)
             case "f":
                 valor = ingresar_propiedad(PROPS_ESTUDIANTE[6])
-                est.pais = valor
+                est.pais = validar_cadena(valor, 32)
 
         formatear_estudiante(est)
 
@@ -2472,7 +2493,9 @@ def dar_alta_moderador():
     print("\n........Registro moderador........\n")
 
     email = ingresar_propiedad("email")
+    email = validar_cadena(email, 32)
     password = ingresar_contrasenia()
+    password = validar_cadena(password, 32)
 
     registrar_moderador(email, password)
 
@@ -2725,21 +2748,6 @@ def manejador_menu_principal_estudiante(est_id: int):
                 limpiar_consola()
 
         est = obtener_estudiante_por_id(est_id)
-
-
-# TODO: Borrar
-def mostrar_estudiantes():
-    global ar_lo_estudiantes, ar_fi_estudiantes
-
-    ar_lo_estudiantes.seek(0)
-    tam_ar = os.path.getsize(ar_fi_estudiantes)
-
-    while ar_lo_estudiantes.tell() < tam_ar:
-        est: Estudiante = pickle.load(ar_lo_estudiantes)
-        print(est.__dict__)
-        # print(ar_lo_estudiantes.tell())
-
-    test()
 
 
 """
