@@ -416,7 +416,7 @@ def mostrar_likes():
     global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
     like = Like()
-    ar_lo_likesEstudiantes.seek(0)
+    ar_lo_likesEstudiantes.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
 
     while ar_lo_likesEstudiantes.tell() < tam_ar:
@@ -595,7 +595,7 @@ datos: BufferedRandom
 
 
 def obtener_largo_registro(datos: io.BufferedRandom) -> int:
-    datos.seek(0)
+    datos.seek(0, 0)
     pickle.load(datos)
 
     return datos.tell()
@@ -614,7 +614,7 @@ def mockear_estudiantes():
     global ar_lo_estudiantes, ar_fi_estudiantes
 
     ar_lo_estudiantes = open(ar_fi_estudiantes, "w+b")
-    ar_lo_estudiantes.seek(0)
+    ar_lo_estudiantes.seek(0, 0)
 
     ESTUDIANTES = [
         [
@@ -696,7 +696,7 @@ def mockear_moderadores():
     global ar_lo_moderadores, ar_fi_moderadores
 
     ar_lo_moderadores = open(ar_fi_moderadores, "w+b")
-    ar_lo_moderadores.seek(0)
+    ar_lo_moderadores.seek(0, 0)
 
     MODERADORES = [["moderador1@ayed.com", "111222"], ["moderador2@ayed.com", "333444"]]
 
@@ -707,7 +707,7 @@ def mockear_moderadores():
 
     for ind in range(1):
         mod.id = ind
-        mod.email = validar_cadena([ind][0], 32)
+        mod.email = validar_cadena(MODERADORES[ind][0], 32)
         mod.password = validar_cadena(MODERADORES[ind][1], 32)
 
         formatear_moderador(mod)
@@ -728,7 +728,7 @@ def mockear_reportes():
     global ar_lo_reportes, ar_fi_reportes
 
     ar_lo_reportes = open(ar_fi_reportes, "w+b")
-    ar_lo_reportes.seek(0)
+    ar_lo_reportes.seek(0, 0)
 
     REPORTES = [
         [0, 1],
@@ -761,7 +761,7 @@ def mockear_likes():
     global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
     ar_lo_likesEstudiantes = open(ar_fi_likesEstudiantes, "w+b")
-    ar_lo_likesEstudiantes.seek(0)
+    ar_lo_likesEstudiantes.seek(0, 0)
 
     cant_est = contar_estudiantes()
 
@@ -789,7 +789,7 @@ def mockear_administradores():
     global ar_lo_administradores, ar_fi_administradores
 
     ar_lo_administradores = open(ar_fi_administradores, "w+b")
-    ar_lo_administradores.seek(0)
+    ar_lo_administradores.seek(0, 0)
 
     ADMINISTRADORES = [["administrador1@ayed.com", "111222"]]
 
@@ -890,7 +890,7 @@ pos: int
 """
 
 
-def validar_email(email: str) -> bool:
+def existe_email(email: str) -> bool:
     global ar_lo_estudiantes, ar_lo_moderadores, ar_lo_administradores, ar_fi_estudiantes, ar_fi_moderadores, ar_fi_administradores
 
     pos = buscar_id_usuario_por_email(email, ar_lo_estudiantes, ar_fi_estudiantes)
@@ -903,7 +903,7 @@ def validar_email(email: str) -> bool:
             email, ar_lo_administradores, ar_fi_administradores
         )
 
-    return pos == -1
+    return pos != -1
 
 
 """
@@ -918,15 +918,15 @@ def buscar_id_usuario_por_email(
 ) -> int:
     id_usua = -1
 
-    datos.seek(0)
+    datos.seek(0, 0)
     tam_ar = os.path.getsize(archivo)
 
     while datos.tell() < tam_ar and id_usua == -1:
         reg = pickle.load(datos)
-
+        print(reg.email.strip(), email)
         if reg.email.strip() == email:
             id_usua = reg.id
-
+    test()
     return id_usua
 
 
@@ -1142,7 +1142,7 @@ id_reportado, tam_ar: int
 def actualizar_reportes(id_reportado: int):
     global ar_lo_reportes, ar_fi_reportes
 
-    ar_lo_reportes.seek(0)
+    ar_lo_reportes.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_reportes)
 
     re = Reporte()
@@ -1201,7 +1201,7 @@ def tiene_like(id_remitente: int, id_destinatario: int) -> bool:
     like = Like()
     tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
 
-    ar_lo_likesEstudiantes.seek(0)
+    ar_lo_likesEstudiantes.seek(0, 0)
     like: Like = pickle.load(ar_lo_likesEstudiantes)
     tiene_l = like.remitente == id_remitente and like.destinatario == id_destinatario
 
@@ -1225,7 +1225,7 @@ def buscar_primer_like(est_id: int) -> int:
 
     tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
     tam_re = obtener_largo_registro(ar_lo_likesEstudiantes)
-    ar_lo_likesEstudiantes.seek(0)
+    ar_lo_likesEstudiantes.seek(0, 0)
 
     like = Like()
     like: Like = pickle.load(ar_lo_likesEstudiantes)
@@ -1312,7 +1312,7 @@ tam_ar: int
 def obtener_estudiante_por_nombre(nom_est: str) -> Estudiante:
     global ar_lo_estudiantes, ar_fi_estudiantes
 
-    ar_lo_estudiantes.seek(0)
+    ar_lo_estudiantes.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_estudiantes)
 
     est = Estudiante()
@@ -1380,7 +1380,7 @@ def contar_estudiantes():
 
     cant = 0
 
-    ar_lo_estudiantes.seek(0)
+    ar_lo_estudiantes.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_estudiantes)
 
     while ar_lo_estudiantes.tell() < tam_ar:
@@ -1430,7 +1430,7 @@ def registrar_estudiante(email: str, password: str) -> bool:
 
     registrado = False
 
-    if validar_email(email):
+    if existe_email(email):
         print("El email ingresado ya está en uso.")
     else:
         cant_est = contar_estudiantes()
@@ -1466,6 +1466,7 @@ def registrar_estudiante(email: str, password: str) -> bool:
         print("\nRegistro exitoso!!!")
 
     input("Presione Enter para continuar...")
+    limpiar_consola()
 
     return registrado
 
@@ -1481,7 +1482,7 @@ def contar_estudiantes_activos() -> int:
 
     cant = 0
     est = Estudiante()
-    ar_lo_estudiantes.seek(0)
+    ar_lo_estudiantes.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_estudiantes)
 
     while ar_lo_estudiantes.tell() < tam_ar:
@@ -1669,7 +1670,7 @@ def ver_perfil_estudiantes(est_id: int):
     limpiar_consola()
 
     est = Estudiante()
-    ar_lo_estudiantes.seek(0)
+    ar_lo_estudiantes.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_estudiantes)
 
     while ar_lo_estudiantes.tell() < tam_ar:
@@ -1791,7 +1792,7 @@ def revelar_candidatos(est_id: int):
 
     cant_mostrado = 0
     tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
-    ar_lo_likesEstudiantes.seek(0)
+    ar_lo_likesEstudiantes.seek(0, 0)
 
     limpiar_consola()
 
@@ -1995,7 +1996,7 @@ def reportes_estadisticos_estudiante(est_id: int):
             pos = ar_lo_likesEstudiantes.tell()
             like: Like = pickle.load(ar_lo_likesEstudiantes)
 
-        ar_lo_likesEstudiantes.seek(0)
+        ar_lo_likesEstudiantes.seek(0, 0)
         tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
 
         while ar_lo_likesEstudiantes.tell() < tam_ar:
@@ -2277,7 +2278,7 @@ def ver_reportes(usua: list[int]):
 
     opc = ""
 
-    ar_lo_reportes.seek(0)
+    ar_lo_reportes.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_reportes)
 
     pos = 0
@@ -2374,7 +2375,7 @@ cant, tam_ar: int
 def contar_moderadores() -> int:
     global ar_lo_moderadores, ar_fi_moderadores
 
-    ar_lo_moderadores.seek(0)
+    ar_lo_moderadores.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_moderadores)
 
     cant = 0
@@ -2400,7 +2401,7 @@ def registrar_moderador(email: str, password: str) -> bool:
 
     registrado = False
 
-    if validar_email(email):
+    if existe_email(email):
         print("El email ingresado ya está en uso.")
     else:
         ar_lo_moderadores.seek(0, 2)
@@ -2550,11 +2551,13 @@ cant, tam_ar: int
 def contar_administradores():
     global ar_lo_administradores, ar_fi_administradores
 
-    ar_lo_administradores.seek(0)
+    ad = Administrador()
+    ar_lo_administradores.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_administradores)
     cant = 0
 
     while ar_lo_administradores.tell() < tam_ar:
+        ad: Administrador = pickle.load(ar_lo_administradores)
         cant = cant + 1
 
     return cant
@@ -2611,7 +2614,7 @@ est_id, pos, tam_ar: int
 def puntuar_candidatos():
     global ar_lo_likesEstudiantes, ar_fi_likesEstudiantes
 
-    ar_lo_likesEstudiantes.seek(0)
+    ar_lo_likesEstudiantes.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_likesEstudiantes)
 
     est_id = -1
@@ -2667,7 +2670,7 @@ def reportes_estadisticos_administrador():
     mayor_cant_repo_procesados = -1
     mod_mas_repo_procesados = Moderador()
 
-    ar_lo_moderadores.seek(0)
+    ar_lo_moderadores.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_moderadores)
 
     while ar_lo_moderadores.tell() < tam_ar:
@@ -2978,7 +2981,7 @@ opc: string
 def mostrar_est():
     global ar_lo_estudiantes, ar_fi_estudiantes
 
-    ar_lo_estudiantes.seek(0)
+    ar_lo_estudiantes.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_estudiantes)
 
     while ar_lo_estudiantes.tell() < tam_ar:
@@ -2990,7 +2993,7 @@ def mostrar_est():
 def mostrar_mod():
     global ar_lo_moderadores, ar_fi_moderadores
 
-    ar_lo_moderadores.seek(0)
+    ar_lo_moderadores.seek(0, 0)
     tam_ar = os.path.getsize(ar_fi_moderadores)
 
     while ar_lo_moderadores.tell() < tam_ar:
@@ -3005,6 +3008,7 @@ def verificar_cant_usuarios():
     cant_adm = contar_administradores()
 
     return cant_est >= 4 and cant_mod >= 1 and cant_adm >= 1
+
 
 def main():
     inicializar_archivos()
