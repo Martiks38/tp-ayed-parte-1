@@ -1019,7 +1019,7 @@ def registrar():
         email = validar_cadena(email, 32)
 
         password = ingresar_contrasenia()
-        password = validar_cadena(email, 32)
+        password = validar_cadena(password, 32)
 
         rol = input("Ingrese el rol estudiante(E) o moderador(M). (E/M): ").upper()
 
@@ -1433,12 +1433,10 @@ def registrar_estudiante(email: str, password: str) -> bool:
     if existe_email(email):
         print("El email ingresado ya está en uso.")
     else:
-        cant_est = contar_estudiantes()
-
         ar_lo_estudiantes.seek(0, 2)
 
         nuevo_est = Estudiante()
-        nuevo_est.id = cant_est
+        nuevo_est.id = contar_estudiantes()
         nuevo_est.email = email
         nuevo_est.password = password
         nuevo_est.nombre = ingresar_propiedad(PROPS_ESTUDIANTE[0])
@@ -2406,11 +2404,8 @@ def registrar_moderador(email: str, password: str) -> bool:
     else:
         ar_lo_moderadores.seek(0, 2)
 
-        mod = Moderador()
-        mod: Moderador = pickle.load(ar_lo_moderadores)
-
         nuevo_mod = Moderador()
-        nuevo_mod.id = mod.id + 1
+        nuevo_mod.id = contar_moderadores()
         nuevo_mod.email = email
         nuevo_mod.password = password
         nuevo_mod.estado = True
